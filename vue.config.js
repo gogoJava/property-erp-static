@@ -57,7 +57,7 @@ module.exports = {
   configureWebpack: {
     // We provide the app's title in Webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
-    name: 'vue-element-admin', // TODO: change to Settings
+    name: 'ERP物业管理', // TODO: change to Settings
     resolve: {
       alias: {
         '@': resolve('src')

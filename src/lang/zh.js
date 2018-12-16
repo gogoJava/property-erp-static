@@ -153,5 +153,13 @@ export default {
     close: '关闭',
     closeOthers: '关闭其它',
     closeAll: '关闭所有'
+  },
+  // 社区
+  community: {
+    num: '社区编号',
+    name: '社区名字',
+    address: '社区地址',
+    latitudeLongitude: '社区经纬度',
+    createTime: '创建时间'
   }
 }

@@ -142,6 +142,20 @@ export const asyncRouterMap = [
   //   ]
   // },
 
+  // 社区管理
+  {
+    path: '/community',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/community/view'),
+        name: 'Community',
+        meta: { title: '社区管理', icon: 'table', noCache: true }
+      }
+    ]
+  },
+
   {
     path: '/icon',
     component: Layout,

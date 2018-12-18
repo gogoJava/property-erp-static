@@ -74,7 +74,7 @@ export const constantRouterMap = [
         meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
       }
     ]
-  },
+  }
   // {
   //   path: '/documentation',
   //   component: Layout,
@@ -88,19 +88,19 @@ export const constantRouterMap = [
   //     }
   //   ]
   // },
-  {
-    path: '/guide',
-    component: Layout,
-    redirect: '/guide/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/guide/index'),
-        name: 'Guide',
-        meta: { title: 'guide', icon: 'guide', noCache: true }
-      }
-    ]
-  }
+  // {
+  //   path: '/guide',
+  //   component: Layout,
+  //   redirect: '/guide/index',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/guide/index'),
+  //       name: 'Guide',
+  //       meta: { title: 'guide', icon: 'guide', noCache: true }
+  //     }
+  //   ]
+  // }
 ]
 
 export default new Router({
@@ -146,12 +146,51 @@ export const asyncRouterMap = [
   {
     path: '/community',
     component: Layout,
+    redirect: '/community/list',
+    name: 'Community',
+    meta: {
+      title: '社区管理',
+      icon: 'table'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/community/view'),
+        name: 'List',
+        meta: { title: '社区列表', icon: 'list', noCache: true }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/community/create'),
+        name: 'CreateCommunity',
+        meta: { title: '创建社区', icon: 'edit' }
+      },
+      {
+        path: 'edit/:id',
+        component: () => import('@/views/community/edit'),
+        name: 'EditCommunity',
+        meta: { title: '编辑社区', noCache: true },
+        hidden: true
+      },
+      {
+        path: 'detail/:id',
+        component: () => import('@/views/community/detail'),
+        name: 'DetailCommunity',
+        meta: { title: '社区详情', noCache: true },
+        hidden: true
+      }
+    ]
+  },
+  // 物业管理员
+  {
+    path: '/administrator',
+    component: Layout,
     children: [
       {
         path: 'index',
-        component: () => import('@/views/community/view'),
-        name: 'Community',
-        meta: { title: '社区管理', icon: 'table', noCache: true }
+        component: () => import('@/views/administrator/view'),
+        name: 'administrator',
+        meta: { title: '社区物业管理员', icon: 'user', noCache: true }
       }
     ]
   },

@@ -5,12 +5,24 @@ const count = 100
 
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
-    id: '@increment',
-    num: '@increment',
-    name: '@name',
-    address: '@county(true)',
-    latitude_longitude: '经纬度',
-    create_time: '@datetime'
+    communityId: '@increment',
+    communityNo: '@increment',
+    communityName: '@name',
+    communityAddress: '@county(true)', // 社区全址
+    communityArea: '@natural(60, 100)', // 总面积(平方米)
+    communityBuildingArea: '@natural(60, 100)', // 建筑面积
+    communityCommonArea: '@natural(60, 100)', // 公用面积
+    communityContacts: '@name', // 联系人
+    communityContactsPhone: '', // 联系人号码
+    communityGarageArea: '@natural(60, 100)', // 车库面积
+    communityGarageCount: '@natural(60, 100)', // 车位数量
+    communityGreenarea: '@natural(60, 100)', // 绿化面积
+    communityLocX: '@natural(60, 100)', // 社区纬度
+    communityLocY: '@natural(60, 100)', // 社区经度
+    communityManagementType: '@integer(0,1)', // 管理类型(0普通管理1综合管理)
+    communityRemark: '', // 备注
+    communityRoadArea: '@natural(60, 100)', // 道路面积
+    communityRoomCount: '@natural(60, 100)' // 房间总数
   }))
 }
 

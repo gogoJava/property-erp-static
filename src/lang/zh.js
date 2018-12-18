@@ -122,12 +122,14 @@ export default {
     readings: '阅读数',
     status: '状态',
     actions: '操作',
+    detail: '详情',
     edit: '编辑',
+    updatePwd: '密码',
     publish: '发布',
     draft: '草稿',
     delete: '删除',
-    cancel: '取 消',
-    confirm: '确 定'
+    cancel: '取消',
+    confirm: '确定'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',
@@ -156,10 +158,32 @@ export default {
   },
   // 社区
   community: {
-    num: '社区编号',
-    name: '社区名字',
-    address: '社区地址',
-    latitudeLongitude: '社区经纬度',
-    createTime: '创建时间'
+    communityNo: '社区编号',
+    communityName: '社区名字',
+    communityAddress: '社区全址', // 社区全址
+    communityArea: '总面积', // 总面积(平方米)
+    communityBuildingArea: '建筑面积', // 建筑面积
+    communityCommonArea: '公用面积', // 公用面积
+    communityContacts: '联系人', // 联系人
+    communityContactsPhone: '联系人号码', // 联系人号码
+    communityGarageArea: '车库面积', // 车库面积
+    communityGarageCount: '车位数量', // 车位数量
+    communityGreenarea: '绿化面积', // 绿化面积
+    communityLocX: '社区纬度', // 社区纬度
+    communityLocY: '社区经度', // 社区经度
+    communityManagementType: '管理类型', // 管理类型(0普通管理1综合管理)
+    communityRemark: '备注', // 备注
+    communityRoadArea: '道路面积', // 道路面积
+    communityRoomCount: '房间总数' // 房间总数
+  },
+  // 管理员
+  administrator: {
+    communityId: '社区', // 社区id
+    email: '邮箱', // 邮箱
+    managerId: 'id',
+    name: '名字', // 名字
+    sex: '性别', // 性别0女1男
+    type: '类型', // 类型0普通管理员1超级管理员
+    username: '用户名' // 用户名
   }
 }

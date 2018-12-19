@@ -185,5 +185,33 @@ export default {
     sex: '性别', // 性别0女1男
     type: '类型', // 类型0普通管理员1超级管理员
     username: '用户名' // 用户名
+  },
+  // 大厦
+  building: {
+    buildingDirection: '楼宇方向', // 楼宇方向
+    buildingId: 'ID', // buildingId
+    buildingName: '楼宇名字', // 楼宇名字
+    buildingNo: '楼宇编号', // 楼宇编号
+    buildingStruct: '楼宇结构', // 楼宇结构
+    communityId: '社区', // 社区ID
+    deleted: '是否注销', // 是否注销
+    floorLowNum: '楼下几层', // 楼下几层
+    floorUpNum: '楼上几层', // 楼上几层
+    fullAddress: '楼宇全址' // 楼宇全址
+  },
+  // 单位
+  unit: {
+    unitChildRelativeProportion: '分层建筑物之子部分相对比(千分之一)', // 分层建筑物之子部分相对比(千分之一)
+    buildingId: '大厦', // buildingId
+    unitCoveredArea: '覆盖面积大小(单位平方米)', // 覆盖面积大小(单位平方米)
+    unitName: '单位名字', // 单元名字
+    unitFullAddress: '全址', // 全址
+    unitId: 'ID', // unitId
+    unitNo: '单位编号', // 单位编号
+    unitPosition: '位置', // 位置(地下,一楼,二楼,三楼,户外.)
+    unitPurpose: '用途', // 用途
+    unitRelativeProportion: '分层建筑物相对比(千分之一)', // 分层建筑物相对比(千分之一)
+    unitStatus: '单位状态', // 单位状态0空置1租赁2装修中3入住
+    unitType: '单位类型' // 单位类型1商铺2住宅3停车场
   }
 }

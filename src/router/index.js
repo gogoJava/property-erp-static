@@ -194,6 +194,31 @@ export const asyncRouterMap = [
       }
     ]
   },
+  // 大厦管理
+  {
+    path: '/building',
+    component: Layout,
+    redirect: '/building/list',
+    name: 'building',
+    meta: {
+      title: '大厦管理',
+      icon: 'chart'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/building/list'),
+        name: 'BuildList',
+        meta: { title: '大厦列表', icon: 'list', noCache: true }
+      },
+      {
+        path: 'unit',
+        component: () => import('@/views/building/unit'),
+        name: 'UnitList',
+        meta: { title: '单位列表', icon: 'excel' }
+      }
+    ]
+  },
 
   {
     path: '/icon',

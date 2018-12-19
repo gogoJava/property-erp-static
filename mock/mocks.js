@@ -4,6 +4,8 @@ import search from './remoteSearch'
 import transaction from './transaction'
 import community from './community'
 import administrator from './administrator'
+import building from './building'
+import unit from './unit'
 
 export default {
   ...login,
@@ -11,6 +13,8 @@ export default {
   ...search,
   ...transaction,
   ...community,
-  ...administrator
+  ...administrator,
+  ...building,
+  ...unit
 }
 

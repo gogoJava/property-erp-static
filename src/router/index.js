@@ -219,6 +219,19 @@ export const asyncRouterMap = [
       }
     ]
   },
+  // 业主管理
+  {
+    path: '/proprietor',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/proprietor/list'),
+        name: 'proprietor',
+        meta: { title: '业主管理', icon: 'peoples', noCache: true }
+      }
+    ]
+  },
 
   {
     path: '/icon',

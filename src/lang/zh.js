@@ -124,7 +124,7 @@ export default {
     actions: '操作',
     detail: '详情',
     edit: '编辑',
-    updatePwd: '密码',
+    updatePwd: '修改密码',
     publish: '发布',
     draft: '草稿',
     delete: '删除',
@@ -213,5 +213,25 @@ export default {
     unitRelativeProportion: '分层建筑物相对比(千分之一)', // 分层建筑物相对比(千分之一)
     unitStatus: '单位状态', // 单位状态0空置1租赁2装修中3入住
     unitType: '单位类型' // 单位类型1商铺2住宅3停车场
+  },
+  // 业主
+  proprietor: {
+    birthday: '出生日期', // 出生日期
+    communityId: '社区', // 社区ID
+    countryCode: '区号', // 区号
+    createTime: '创建时间', // 创建时间
+    email: '电邮', // 邮编
+    englishName: '英文名字', // 英文名字
+    deleted: false, // 是否注销
+    idCard: '身份证号码', // 身份证号码
+    marriageSystem: '婚姻制度', // 婚姻制度
+    mateName: '配偶名字', // 配偶名字
+    name: '名字', // 名字
+    portrait: '用户头像', // 用户头像
+    sex: '性别', // 性别(0女1男)
+    tel: '手机号', // 手机号
+    updateTime: '更新日期', // 更新时间
+    userId: '用户ID', // 用户id
+    username: '用户登录账号' // 用户登录账号
   }
 }

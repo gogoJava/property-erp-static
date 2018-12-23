@@ -6,6 +6,7 @@ import community from './community'
 import administrator from './administrator'
 import building from './building'
 import unit from './unit'
+import proprietor from './proprietor'
 
 export default {
   ...login,
@@ -15,6 +16,7 @@ export default {
   ...community,
   ...administrator,
   ...building,
-  ...unit
+  ...unit,
+  ...proprietor
 }
 

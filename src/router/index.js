@@ -232,6 +232,31 @@ export const asyncRouterMap = [
       }
     ]
   },
+  // 物业管理
+  {
+    path: '/property',
+    component: Layout,
+    redirect: '/property/asset/list',
+    name: 'Property',
+    meta: {
+      title: '物业管理',
+      icon: 'example'
+    },
+    children: [
+      {
+        path: 'asset/list',
+        component: () => import('@/views/property/asset/list'),
+        name: 'Asset',
+        meta: { title: '物业资产', icon: 'money', noCache: true }
+      },
+      {
+        path: 'unit',
+        component: () => import('@/views/building/unit'),
+        name: 'UnitList',
+        meta: { title: '单位列表', icon: 'excel' }
+      }
+    ]
+  },
 
   {
     path: '/icon',

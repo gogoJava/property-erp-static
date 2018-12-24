@@ -7,6 +7,7 @@ import administrator from './administrator'
 import building from './building'
 import unit from './unit'
 import proprietor from './proprietor'
+import asset from './asset'
 
 export default {
   ...login,
@@ -17,6 +18,7 @@ export default {
   ...administrator,
   ...building,
   ...unit,
-  ...proprietor
+  ...proprietor,
+  ...asset
 }
 

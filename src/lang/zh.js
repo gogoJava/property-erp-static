@@ -233,5 +233,19 @@ export default {
     updateTime: '更新日期', // 更新时间
     userId: '用户ID', // 用户id
     username: '用户登录账号' // 用户登录账号
+  },
+  asset: {
+    assetDescribe: '描述', // 描述
+    assetEnglishDescribe: '描述（英文）', // 描述（英文）
+    assetEnglishName: '资产名字（英文）', // 资产名字（英文）
+    assetEnglishPosition: '位置信息（英文）', // 位置信息（英文）
+    assetId: 'ID', // id
+    assetName: '资产名字', // 资产名字
+    assetPosition: '位置信息', // 位置信息
+    assetTraditionalDescribe: '描述（繁体）', // 描述（繁体）
+    assetTraditionalName: '资产名字（繁体）', // 资产名字（繁体）
+    assetTraditionalPosition: '位置信息（繁体）', // 位置信息（繁体）
+    assetType: '资产类型', // 资产类型：电器、公共设备
+    communityId: '社区ID' // 社区ID
   }
 }

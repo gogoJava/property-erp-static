@@ -7,9 +7,9 @@ Vue.use(Router)
 import Layout from '@/views/layout/Layout'
 
 /* Router Modules */
-import componentsRouter from './modules/components'
-import chartsRouter from './modules/charts'
-import tableRouter from './modules/table'
+// import componentsRouter from './modules/components'
+// import chartsRouter from './modules/charts'
+// import tableRouter from './modules/table'
 // import nestedRouter from './modules/nested'
 
 /** note: Submenu only appear when children.length>=1
@@ -250,102 +250,239 @@ export const asyncRouterMap = [
         meta: { title: '物业资产', icon: 'money', noCache: true }
       },
       {
-        path: 'unit',
-        component: () => import('@/views/building/unit'),
-        name: 'UnitList',
-        meta: { title: '单位列表', icon: 'excel' }
-      }
-    ]
-  },
-
-  {
-    path: '/icon',
-    component: Layout,
-    children: [
+        path: 'type',
+        component: () => import('@/views/property/type/view.vue'),
+        name: 'type',
+        meta: { title: '设备类型', icon: 'size' }
+      },
       {
-        path: 'index',
-        component: () => import('@/views/svg-icons/index'),
-        name: 'Icons',
-        meta: { title: 'icons', icon: 'icon', noCache: true }
+        path: 'fault',
+        component: () => import('@/views/property/fault/view.vue'),
+        name: 'fault',
+        meta: { title: '故障记录', icon: 'bug' }
+      },
+      {
+        path: 'outgoing',
+        component: () => import('@/views/property/outgoing/view.vue'),
+        name: 'outgoing',
+        meta: { title: '资产出入库', icon: 'nested' }
+      },
+      {
+        path: 'file',
+        component: () => import('@/views/property/file/view.vue'),
+        name: 'file',
+        meta: { title: '物业档案', icon: 'clipboard' }
       }
     ]
   },
-
-  /** When your routing table is too long, you can split it into small modules**/
-  componentsRouter,
-  chartsRouter,
-  // nestedRouter,
-  tableRouter,
-
+  // 物业事件
   {
-    path: '/example',
+    path: '/event',
     component: Layout,
-    redirect: '/example/list',
-    name: 'Example',
+    redirect: '/bulletin',
+    name: 'event',
     meta: {
-      title: 'example',
-      icon: 'example'
+      title: '物业事件',
+      icon: 'form'
     },
     children: [
       {
-        path: 'create',
-        component: () => import('@/views/example/create'),
-        name: 'CreateArticle',
-        meta: { title: 'createArticle', icon: 'edit' }
+        path: 'bulletin',
+        component: () => import('@/views/event/bulletin/view.vue'),
+        name: 'Bulletin',
+        meta: { title: '公告', icon: 'wechat', noCache: true }
       },
       {
-        path: 'edit/:id(\\d+)',
-        component: () => import('@/views/example/edit'),
-        name: 'EditArticle',
-        meta: { title: 'editArticle', noCache: true },
-        hidden: true
+        path: 'purchase',
+        component: () => import('@/views/event/purchase/view.vue'),
+        name: 'Purchase',
+        meta: { title: '物业采购', icon: 'dashboard' }
       },
+      {
+        path: 'maintenance',
+        component: () => import('@/views/event/maintenance/view.vue'),
+        name: 'Maintenance',
+        meta: { title: '资产保养', icon: 'bug' }
+      }
+    ]
+  },
+  // 物业报表
+  {
+    path: '/report',
+    component: Layout,
+    redirect: '/report',
+    name: 'report',
+    meta: {
+      title: '物业报表',
+      icon: 'excel'
+    },
+    children: [
+      {
+        path: 'payment',
+        component: () => import('@/views/report/payment/view.vue'),
+        name: 'Payment',
+        meta: { title: '缴费通知', icon: 'list', noCache: true }
+      },
+      {
+        path: 'arrears',
+        component: () => import('@/views/report/arrears/view.vue'),
+        name: 'Arrears',
+        meta: { title: '欠费查询', icon: 'list' }
+      },
+      {
+        path: 'charged',
+        component: () => import('@/views/report/charged/view.vue'),
+        name: 'Charged',
+        meta: { title: '已收款查询', icon: 'list' }
+      },
+      // {
+      //   path: 'purchase',
+      //   component: () => import('@/views/report/purchase/view.vue'),
+      //   name: 'Purchase',
+      //   meta: { title: '个人收费明细', icon: 'list' }
+      // },
+      {
+        path: 'summary',
+        component: () => import('@/views/report/summary/view.vue'),
+        name: 'Summary',
+        meta: { title: '费用汇总', icon: 'list' }
+      },
+      {
+        path: 'fund',
+        component: () => import('@/views/report/fund/view.vue'),
+        name: 'Fund',
+        meta: { title: '基金费用管理', icon: 'list' }
+      }
+    ]
+  },
+   // 物业投诉
+   {
+    path: '/complaint',
+    component: Layout,
+    children: [
       {
         path: 'list',
-        component: () => import('@/views/example/list'),
-        name: 'ArticleList',
-        meta: { title: 'articleList', icon: 'list' }
+        component: () => import('@/views/complaint/list'),
+        name: 'Complaint',
+        meta: { title: '物业投诉', icon: 'email', noCache: true }
+      }
+    ]
+  },
+  // 访客登记
+  {
+    path: '/visitor',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/visitor/list'),
+        name: 'Visitor',
+        meta: { title: '访客登记', icon: 'edit', noCache: true }
+      }
+    ]
+  },
+  // 会所管理
+  {
+    path: '/clubhouse',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/clubhouse/list'),
+        name: 'Clubhouse',
+        meta: { title: '会所管理', icon: 'drag', noCache: true }
       }
     ]
   },
 
-  {
-    path: '/tab',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/tab/index'),
-        name: 'Tab',
-        meta: { title: 'tab', icon: 'tab' }
-      }
-    ]
-  },
+  // {
+  //   path: '/icon',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/svg-icons/index'),
+  //       name: 'Icons',
+  //       meta: { title: 'icons', icon: 'icon', noCache: true }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/error',
-    component: Layout,
-    redirect: 'noredirect',
-    name: 'ErrorPages',
-    meta: {
-      title: 'errorPages',
-      icon: '404'
-    },
-    children: [
-      {
-        path: '401',
-        component: () => import('@/views/errorPage/401'),
-        name: 'Page401',
-        meta: { title: 'page401', noCache: true }
-      },
-      {
-        path: '404',
-        component: () => import('@/views/errorPage/404'),
-        name: 'Page404',
-        meta: { title: 'page404', noCache: true }
-      }
-    ]
-  },
+  /** When your routing table is too long, you can split it into small modules**/
+  // componentsRouter,
+  // chartsRouter,
+  // nestedRouter,
+  // tableRouter,
+
+  // {
+  //   path: '/example',
+  //   component: Layout,
+  //   redirect: '/example/list',
+  //   name: 'Example',
+  //   meta: {
+  //     title: 'example',
+  //     icon: 'example'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'create',
+  //       component: () => import('@/views/example/create'),
+  //       name: 'CreateArticle',
+  //       meta: { title: 'createArticle', icon: 'edit' }
+  //     },
+  //     {
+  //       path: 'edit/:id(\\d+)',
+  //       component: () => import('@/views/example/edit'),
+  //       name: 'EditArticle',
+  //       meta: { title: 'editArticle', noCache: true },
+  //       hidden: true
+  //     },
+  //     {
+  //       path: 'list',
+  //       component: () => import('@/views/example/list'),
+  //       name: 'ArticleList',
+  //       meta: { title: 'articleList', icon: 'list' }
+  //     }
+  //   ]
+  // },
+
+  // {
+  //   path: '/tab',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/tab/index'),
+  //       name: 'Tab',
+  //       meta: { title: 'tab', icon: 'tab' }
+  //     }
+  //   ]
+  // },
+
+  // {
+  //   path: '/error',
+  //   component: Layout,
+  //   redirect: 'noredirect',
+  //   name: 'ErrorPages',
+  //   meta: {
+  //     title: 'errorPages',
+  //     icon: '404'
+  //   },
+  //   children: [
+  //     {
+  //       path: '401',
+  //       component: () => import('@/views/errorPage/401'),
+  //       name: 'Page401',
+  //       meta: { title: 'page401', noCache: true }
+  //     },
+  //     {
+  //       path: '404',
+  //       component: () => import('@/views/errorPage/404'),
+  //       name: 'Page404',
+  //       meta: { title: 'page404', noCache: true }
+  //     }
+  //   ]
+  // },
 
   // 错误日志
   // {
@@ -362,36 +499,36 @@ export const asyncRouterMap = [
   //   ]
   // },
 
-  {
-    path: '/excel',
-    component: Layout,
-    redirect: '/excel/export-excel',
-    name: 'Excel',
-    meta: {
-      title: 'excel',
-      icon: 'excel'
-    },
-    children: [
-      {
-        path: 'export-excel',
-        component: () => import('@/views/excel/exportExcel'),
-        name: 'ExportExcel',
-        meta: { title: 'exportExcel' }
-      },
-      {
-        path: 'export-selected-excel',
-        component: () => import('@/views/excel/selectExcel'),
-        name: 'SelectExcel',
-        meta: { title: 'selectExcel' }
-      },
-      {
-        path: 'upload-excel',
-        component: () => import('@/views/excel/uploadExcel'),
-        name: 'UploadExcel',
-        meta: { title: 'uploadExcel' }
-      }
-    ]
-  },
+  // {
+  //   path: '/excel',
+  //   component: Layout,
+  //   redirect: '/excel/export-excel',
+  //   name: 'Excel',
+  //   meta: {
+  //     title: 'excel',
+  //     icon: 'excel'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'export-excel',
+  //       component: () => import('@/views/excel/exportExcel'),
+  //       name: 'ExportExcel',
+  //       meta: { title: 'exportExcel' }
+  //     },
+  //     {
+  //       path: 'export-selected-excel',
+  //       component: () => import('@/views/excel/selectExcel'),
+  //       name: 'SelectExcel',
+  //       meta: { title: 'selectExcel' }
+  //     },
+  //     {
+  //       path: 'upload-excel',
+  //       component: () => import('@/views/excel/uploadExcel'),
+  //       name: 'UploadExcel',
+  //       meta: { title: 'uploadExcel' }
+  //     }
+  //   ]
+  // },
 
   // zip
   // {

@@ -45,13 +45,21 @@ const user = {
 
   actions: {
     // 用户名登录
-    LoginByUsername({ commit }, userInfo) {
+    LoginByUsername({ commit, dispatch }, userInfo) {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
-          const data = response.data
+          const data = response.data.data
           commit('SET_TOKEN', data.token)
           setToken(response.data.token)
+          commit('SET_ROLES', [data.manager])
+          commit('SET_NAME', data.manager.username)
+          // type 类型0普通管理员1超级管理员
+          console.log('333', data.manager)
+          const role = { roles: [data.manager.type === 1 ? 'super' : 'admin'] }
+          dispatch('GenerateRoutes', role) // 动态修改权限后 重绘侧边菜单
+          // commit('SET_AVATAR', data.avatar)
+          // commit('SET_INTRODUCTION', data.introduction)
           resolve()
         }).catch(error => {
           reject(error)

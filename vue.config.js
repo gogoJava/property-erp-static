@@ -29,15 +29,18 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    proxy: {
-      '/api': {
-        target: `http://localhost:${port}/mock`,
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api': ''
-        }
-      }
-    },
+    proxy: 'http://47.107.131.1:8089/backstage',
+    disableHostCheck: true,
+    // proxy: {
+    //   '/': {
+    //     // target: `http://localhost:${port}/mock`,http://47.107.131.1:8089
+    //     target: `http://47.107.131.1:8089/backstage`,
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       '^/': ''
+    //     }
+    //   }
+    // },
     after(app) {
       console.log('apple')
       const bodyParser = require('body-parser')

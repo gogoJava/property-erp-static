@@ -51,11 +51,11 @@ const user = {
         loginByUsername(username, userInfo.password).then(response => {
           const data = response.data.data
           commit('SET_TOKEN', data.token)
-          setToken(response.data.token)
+          setToken(data.token)
           commit('SET_ROLES', [data.manager])
           commit('SET_NAME', data.manager.username)
           // type 类型0普通管理员1超级管理员
-          console.log('333', data.manager)
+          // console.log('333', data.manager)
           const role = { roles: [data.manager.type === 1 ? 'super' : 'admin'] }
           dispatch('GenerateRoutes', role) // 动态修改权限后 重绘侧边菜单
           // commit('SET_AVATAR', data.avatar)
@@ -68,23 +68,20 @@ const user = {
     },
 
     // 获取用户信息
-    GetUserInfo({ commit, state }) {
+    GetUserInfo({ commit, dispatch, state }) {
       return new Promise((resolve, reject) => {
-        getUserInfo(state.token).then(response => {
+        getUserInfo().then(response => {
           if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
             reject('error')
           }
-          const data = response.data
+          const data = response.data.data
 
-          if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', data.roles)
-          } else {
-            reject('getInfo: roles must be a non-null array !')
-          }
-
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
-          commit('SET_INTRODUCTION', data.introduction)
+          commit('SET_ROLES', [data])
+          commit('SET_NAME', data.username)
+          // commit('SET_AVATAR', data.avatar)
+          // commit('SET_INTRODUCTION', data.introduction)
+          const role = { roles: [data.type === 1 ? 'super' : 'admin'] }
+          dispatch('GenerateRoutes', role) // 动态修改权限后 重绘侧边菜单
           resolve(response)
         }).catch(error => {
           reject(error)

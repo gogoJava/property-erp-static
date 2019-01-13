@@ -100,7 +100,7 @@
       </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="230" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="handleDetail()">{{ $t('table.detail') }}</el-button>
+          <el-button size="mini" type="text" @click="handleDetail(scope.row)">{{ $t('table.detail') }}</el-button>
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
           <el-button size="mini" type="text" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
           </el-button>
@@ -108,13 +108,13 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
 
   </div>
 </template>
 
 <script>
-import { getCommunityList } from '@/api/community'
+import { getCommunityList, delCommunity } from '@/api/community'
 import waves from '@/directive/waves' // Waves directive
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
@@ -139,8 +139,8 @@ export default {
       total: 0,
       listLoading: true,
       listQuery: {
-        page: 1,
-        limit: 10,
+        pageNo: 1,
+        pageSize: 10,
         importance: undefined,
         title: undefined,
         type: undefined,
@@ -183,20 +183,23 @@ export default {
     this.getList()
   },
   methods: {
-    getList() {
+    async getList() {
       this.listLoading = true
-      getCommunityList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
-
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
-      })
+      const response = await getCommunityList(this.listQuery).catch(e => e)
+      if (response.data.code !== 200) {
+          return this.$notify({
+          title: '查询失败',
+          message: response.data.msg,
+          type: 'error',
+          duration: 2000
+         })
+      }
+      this.list = response.data.data.list
+      this.total = response.data.data.total
+      this.listLoading = false
     },
     handleFilter() {
-      this.listQuery.page = 1
+      this.listQuery.pageNo = 1
       this.getList()
     },
     handleModifyStatus(row, status) {
@@ -231,26 +234,29 @@ export default {
         type: ''
       }
     },
-    handleDetail() {
-      this.$router.push('/community/detail/id')
+    handleDetail(row) {
+      this.$router.push('/community/detail/' + row.communityId)
     },
     handleUpdate(row) {
-      this.$router.push('/community/edit/id')
+      this.$router.push('/community/edit/' + row.communityId)
     },
     handleDelete(row) {
-      this.$confirm('确定删除社区【' + row.name + '】?', '提示', {
+      this.$confirm('确定删除社区【' + row.communityName + '】?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
+      }).then(async() => {
+        const { data: { code, msg }} = await delCommunity({ communityId: row.communityId }).catch(e => e)
+        if (code !== 200) {
+          return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+        }
         this.$notify({
           title: '成功',
           message: '删除成功',
           type: 'success',
           duration: 2000
         })
-        const index = this.list.indexOf(row)
-        this.list.splice(index, 1)
+        this.getList()
       }).catch(() => {})
     }
   }

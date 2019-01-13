@@ -16,10 +16,11 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item :label="$t('community.communityAddress')">
-            <el-select v-model="communityInfo.communityAddress" placeholder="请选择">
+            <!-- <el-select v-model="communityInfo.communityAddress" placeholder="请选择">
               <el-option label="区域一" value="shanghai" />
               <el-option label="区域二" value="beijing" />
-            </el-select>
+            </el-select> -->
+            <el-input v-model="communityInfo.communityAddress" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -84,7 +85,10 @@
         </el-col>
         <el-col :span="12">
           <el-form-item :label="$t('community.communityManagementType')">
-            <el-input v-model="communityInfo.communityManagementType" />
+            <el-select v-model="communityInfo.communityManagementType" placeholder="请选择">
+              <el-option :value="0" label="普通管理" />
+              <el-option :value="1" label="综合管理" />
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -109,10 +113,10 @@
         <!-- <el-col :span="12"></el-col> -->
       </el-row>
       <el-row>
-        <el-col>
+        <el-col style="text-align: center;padding-top: 30px;">
           <el-form-item>
             <el-button @click="$router.back()">取消</el-button>
-            <el-button type="primary">立即创建</el-button>
+            <el-button type="primary" @click="createClick">立即创建</el-button>
           </el-form-item>
         </el-col>
       </el-row>
@@ -125,6 +129,7 @@
   //   ElSelect,
   //   ElOption
   // } from 'element-ui'
+  import { createCommunity } from '@/api/community'
   export default {
 
     name: 'CreateForm',
@@ -150,11 +155,32 @@
           communityGreenarea: null, // 绿化面积
           communityLocX: null, // 社区纬度
           communityLocY: null, // 社区经度
-          communityManagementType: null, // 管理类型(0普通管理1综合管理)
+          communityManagementType: 0, // 管理类型(0普通管理1综合管理)
           communityRemark: null, // 备注
           communityRoadArea: null, // 道路面积
           communityRoomCount: null // 房间总数
         }
+      }
+    },
+    methods: {
+      // 创建
+      async createClick() {
+        const response = await createCommunity(this.communityInfo).catch(e => e)
+        if (response.data.code !== 200) {
+          return this.$notify({
+          title: '创建失败',
+          message: response.data.msg,
+          type: 'error',
+          duration: 2000
+        })
+        }
+        this.$notify({
+          title: '成功',
+          message: '创建成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.$router.push('/community/list')
       }
     }
   }

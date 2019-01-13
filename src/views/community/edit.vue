@@ -16,10 +16,11 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item :label="$t('community.communityAddress')">
-            <el-select v-model="communityInfo.communityAddress" placeholder="请选择">
+            <!-- <el-select v-model="communityInfo.communityAddress" placeholder="请选择">
               <el-option label="区域一" value="shanghai" />
               <el-option label="区域二" value="beijing" />
-            </el-select>
+            </el-select> -->
+            <el-input v-model="communityInfo.communityAddress" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -84,7 +85,11 @@
         </el-col>
         <el-col :span="12">
           <el-form-item :label="$t('community.communityManagementType')">
-            <el-input v-model="communityInfo.communityManagementType" />
+            <!-- <el-input v-model="communityInfo.communityManagementType" /> -->
+            <el-select v-model="communityInfo.communityManagementType" placeholder="请选择">
+              <el-option :value="0" label="普通管理" />
+              <el-option :value="1" label="综合管理" />
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -120,13 +125,8 @@
   </div>
 </template>
 <script>
-  // import {
-  //   ElInput,
-  //   ElSelect,
-  //   ElOption
-  // } from 'element-ui'
+  import { queryCommunityDetail } from '@/api/community'
   export default {
-
     name: 'EditCommunity',
     components: {
       // ElInput,
@@ -150,10 +150,22 @@
           communityGreenarea: null, // 绿化面积
           communityLocX: null, // 社区纬度
           communityLocY: null, // 社区经度
-          communityManagementType: null, // 管理类型(0普通管理1综合管理)
+          communityManagementType: 0, // 管理类型(0普通管理1综合管理)
           communityRemark: null, // 备注
           communityRoadArea: null, // 道路面积
           communityRoomCount: null // 房间总数
+        }
+      }
+    },
+    mounted() {
+      this.getCommunityDetail()
+    },
+    methods: {
+      // 获取社区详情
+      async getCommunityDetail() {
+        const { data: { code, msg }} = await queryCommunityDetail({ id: 'ssss' }).catch(e => e)
+        if (code !== 200) {
+          return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
         }
       }
     }

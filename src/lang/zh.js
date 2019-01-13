@@ -184,7 +184,8 @@ export default {
     name: '名字', // 名字
     sex: '性别', // 性别0女1男
     type: '类型', // 类型0普通管理员1超级管理员
-    username: '用户名' // 用户名
+    username: '用户名', // 用户名
+    password: '密码' // 密码
   },
   // 大厦
   building: {

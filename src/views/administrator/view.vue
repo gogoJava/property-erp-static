@@ -46,7 +46,7 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
     <!-- 添加、编辑、详情 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="90px" style="width: 400px; margin-left:50px;">
@@ -63,19 +63,21 @@
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('administrator.type')" prop="type">
-          <el-select v-model="temp.sex" placeholder="请选择">
+          <el-select v-model="temp.type" placeholder="请选择">
             <el-option :key="0" :value="0" label="普通管理员" />
             <el-option :key="1" :value="1" label="超级管理员" />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('administrator.communityId')" prop="communityId">
           <el-select v-model="temp.communityId" placeholder="请绑定社区">
-            <el-option :key="0" :value="0" label="社区1" />
-            <el-option :key="1" :value="1" label="社区2" />
+            <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('administrator.email')" prop="email">
           <el-input v-model="temp.email" />
+        </el-form-item>
+        <el-form-item v-if="dialogStatus==='create'" :label="$t('administrator.password')" prop="email">
+          <el-input v-model="temp.password" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -93,7 +95,7 @@
           <el-input v-model="temp.username" />
         </el-form-item> -->
         <el-form-item label="新密码" prop="password">
-          <el-input v-model="password" />
+          <el-input v-model="temp.password" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -106,8 +108,12 @@
 
 <script>
   import {
-    getAdministratorList
+    getAdministratorList,
+    addManager,
+    delManager,
+    updateManager
   } from '@/api/administrator'
+  import { getCommunityList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
   import {
     parseTime
@@ -153,12 +159,12 @@
         total: 0,
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 10,
+          pageNo: 1,
+          pageSize: 10,
           importance: undefined,
           title: undefined,
-          type: undefined,
-          sort: '+id'
+          type: undefined
+          // sort: '+id'
         },
         importanceOptions: [1, 2, 3],
         sortOptions: [{
@@ -171,12 +177,15 @@
         statusOptions: ['published', 'draft', 'deleted'],
         showReviewer: false,
         temp: {
-          type: 0,
-          sex: 0,
+          communityId: '',
+          managerId: '',
           name: '',
           username: '',
+          sex: 1,
+          type: 0,
+          password: '',
           email: '',
-          communityId: null
+          roleIds: null
         },
         dialogFormVisible: false,
         dialogUpdateVisible: false,
@@ -187,6 +196,7 @@
         },
         dialogPvVisible: false,
         pvData: [],
+        communityList: [], // 社区列表
         rules: {
           type: [{
             required: true,
@@ -206,27 +216,36 @@
           }]
         },
         downloadLoading: false,
-        password: null
+        password: ''
       }
     },
     created() {
       this.getList()
+      this.queryCommunityList()
     },
     methods: {
-      getList() {
+      async getList() {
         this.listLoading = true
-        getAdministratorList(this.listQuery).then(response => {
-          this.list = response.data.items
-          this.total = response.data.total
-
-          // Just to simulate the time of the request
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
+        const response = await getAdministratorList(this.listQuery).catch(e => e)
+        if (response.data.code !== 200) {
+          return this.$notify({
+          title: '查询失败',
+          message: response.data.msg,
+          type: 'error',
+          duration: 2000
         })
+        }
+        this.list = response.data.data.list
+        this.total = response.data.data.total
+        this.listLoading = false
       },
+      // 获取社区列表
+      async queryCommunityList() {
+        const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        this.communityList = response.data.data.list
+    },
       handleFilter() {
-        this.listQuery.page = 1
+        this.listQuery.pageNo = 1
         this.getList()
       },
       handleModifyStatus(row, status) {
@@ -255,13 +274,15 @@
       },
       resetTemp() {
         this.temp = {
-          id: undefined,
-          importance: 1,
-          remark: '',
-          timestamp: new Date(),
-          title: '',
-          status: 'published',
-          type: ''
+          communityId: '',
+          managerId: '',
+          name: '',
+          username: '',
+          sex: 1,
+          type: 0,
+          password: '',
+          email: '',
+          roleIds: null
         }
       },
       handleCreate() {
@@ -272,13 +293,19 @@
           this.$refs['dataForm'].clearValidate()
         })
       },
-      createData() {
+      async createData() {
+        const response = await addManager(this.temp).catch(e => e)
+        if (response.data.code !== 200) {
+          return this.$notify({ title: '创建失败', message: response.data.msg, type: 'error', duration: 2000 })
+        }
+        this.dialogFormVisible = false
         this.$notify({
           title: '成功',
           message: '创建成功',
           type: 'success',
           duration: 2000
         })
+        this.getList()
       },
       handleUpdate(row) {
         this.temp = Object.assign({}, row) // copy obj
@@ -290,57 +317,43 @@
       },
       // 修改密码
       handleUpdatePwd(row) {
-        this.password = null
+        // this.password = ''
         this.temp = Object.assign({}, row) // copy obj
+        this.temp.password = ''
         this.dialogUpdateVisible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
       },
-      updateData() {
-        this.$notify({
-          title: '成功',
-          message: '更新成功',
-          type: 'success',
-          duration: 2000
-        })
-        // this.$refs['dataForm'].validate((valid) => {
-        //   if (valid) {
-        //     const tempData = Object.assign({}, this.temp)
-        //     tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-        //     updateArticle(tempData).then(() => {
-        //       for (const v of this.list) {
-        //         if (v.id === this.temp.id) {
-        //           const index = this.list.indexOf(v)
-        //           this.list.splice(index, 1, this.temp)
-        //           break
-        //         }
-        //       }
-        //       this.dialogFormVisible = false
-        //       this.$notify({
-        //         title: '成功',
-        //         message: '更新成功',
-        //         type: 'success',
-        //         duration: 2000
-        //       })
-        //     })
-        //   }
-        // })
+      async updateData() {
+        this.listLoading = true
+        const response = await updateManager(this.temp).catch(e => e)
+        this.listLoading = false
+        if (response.data.code !== 200) {
+          return this.$notify({ title: '修改失败', message: response.data.msg, type: 'error', duration: 2000 })
+        }
+        this.$notify({ title: '成功', message: '修改成功', type: 'success', duration: 2000 })
+        this.dialogFormVisible = false
+        this.dialogUpdateVisible = false
+        this.getList()
       },
       handleDelete(row) {
         this.$confirm('确定删除管理员【' + row.name + '】?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
+        }).then(async() => {
+          const { data: { code, msg }} = await delManager({ managerId: row.managerId }).catch(e => e)
+          if (code !== 200) {
+            return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+          }
           this.$notify({
             title: '成功',
             message: '删除成功',
             type: 'success',
             duration: 2000
           })
-          const index = this.list.indexOf(row)
-          this.list.splice(index, 1)
+          this.getList()
         }).catch(() => {})
       },
       handleDownload() {

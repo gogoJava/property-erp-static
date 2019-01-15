@@ -13,7 +13,7 @@
       </el-table-column>
       <el-table-column :label="$t('administrator.communityId')" min-width="100px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.communityId }}</span>
+          <span>{{ scope.row.communityName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('administrator.username')" min-width="150px">

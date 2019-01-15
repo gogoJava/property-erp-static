@@ -36,3 +36,12 @@ export function queryCommunityDetail(query) {
     params: query
   })
 }
+
+// 修改社区信息
+export function updateCommunityDetail(params) {
+  return request({
+    url: '/back/community/upd',
+    method: 'post',
+    data: params
+  })
+}

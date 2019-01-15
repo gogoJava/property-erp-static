@@ -114,10 +114,10 @@
         <!-- <el-col :span="12"></el-col> -->
       </el-row>
       <el-row>
-        <el-col>
+        <el-col style="text-align: center;">
           <el-form-item>
             <el-button @click="$router.back()">取消</el-button>
-            <el-button type="primary">编辑</el-button>
+            <el-button type="primary" @click="updateInfo">编辑</el-button>
           </el-form-item>
         </el-col>
       </el-row>
@@ -125,7 +125,7 @@
   </div>
 </template>
 <script>
-  import { queryCommunityDetail } from '@/api/community'
+  import { queryCommunityDetail, updateCommunityDetail } from '@/api/community'
   export default {
     name: 'EditCommunity',
     components: {
@@ -157,16 +157,30 @@
         }
       }
     },
+    computed: {
+      communityId() {
+        return this.$route.params.id
+      }
+    },
     mounted() {
       this.getCommunityDetail()
     },
     methods: {
       // 获取社区详情
       async getCommunityDetail() {
-        const { data: { code, msg }} = await queryCommunityDetail({ id: 'ssss' }).catch(e => e)
+        const { data: { code, msg, data }} = await queryCommunityDetail({ communityId: this.communityId }).catch(e => e)
         if (code !== 200) {
           return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
         }
+        this.communityInfo = { ...data, communityManagementType: data.communityManagementType - 0 }
+      },
+      async updateInfo() {
+        const { data: { code, msg }} = await updateCommunityDetail(this.communityInfo).catch(e => e)
+        if (code !== 200) {
+          return this.$notify({ title: '修改失败', message: msg, type: 'error', duration: 2000 })
+        }
+        this.$notify({ title: '修改成功', message: '修改社区资料成功！', type: 'success', duration: 2000 })
+        this.$router.push('/community/list')
       }
     }
   }

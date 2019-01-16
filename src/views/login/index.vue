@@ -51,7 +51,7 @@
       <!-- <el-button class="thirdparty-button" type="primary" @click="showDialog=true">{{ $t('login.thirdparty') }}</el-button> -->
     </el-form>
 
-    <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog" append-to-body>
+    <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog">
       {{ $t('login.thirdpartyTips') }}
       <br>
       <br>
@@ -213,18 +213,17 @@ $dark_gray:#889aa4;
 $light_gray:#eee;
 
 .login-container {
-  position: fixed;
-  height: 100%;
+  min-height: 100%;
   width: 100%;
   background-color: $bg;
+  overflow: hidden;
   .login-form {
-    position: absolute;
-    left: 0;
-    right: 0;
+    position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 35px 35px 15px 35px;
-    margin: 120px auto;
+    padding: 160px 35px 0;
+    margin: 0 auto;
+    overflow: hidden;
   }
   .tips {
     font-size: 14px;
@@ -270,8 +269,8 @@ $light_gray:#eee;
   }
   .thirdparty-button {
     position: absolute;
-    right: 35px;
-    bottom: 28px;
+    right: 0;
+    bottom: 6px;
   }
 }
 </style>

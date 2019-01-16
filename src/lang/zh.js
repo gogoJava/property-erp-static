@@ -233,7 +233,8 @@ export default {
     tel: '手机号', // 手机号
     updateTime: '更新日期', // 更新时间
     userId: '用户ID', // 用户id
-    username: '用户登录账号' // 用户登录账号
+    username: '用户登录账号', // 用户登录账号
+    password: '密码' // 密码
   },
   asset: {
     assetDescribe: '描述', // 描述

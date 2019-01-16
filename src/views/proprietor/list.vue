@@ -117,8 +117,7 @@
           <el-col :span="12">
             <el-form-item :label="$t('proprietor.communityId')" prop="communityId">
               <el-select v-model="temp.communityId" placeholder="请绑定社区">
-                <el-option :key="0" :value="0" label="社区1" />
-                <el-option :key="1" :value="1" label="社区2" />
+                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -159,6 +158,18 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('proprietor.password')" prop="password">
+              <el-input v-model="temp.password" />
+            </el-form-item>
+          </el-col>
+          <!-- <el-col :span="12">
+            <el-form-item :label="$t('proprietor.mateName')" prop="mateName">
+              <el-input v-model="temp.mateName" />
+            </el-form-item>
+          </el-col> -->
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{ $t('table.cancel') }}</el-button>
@@ -170,12 +181,13 @@
 
 <script>
   import {
-    getProprietorList
+    getProprietorList,
+    createProprietor,
+    updateProprietor,
+    delProprietor
   } from '@/api/proprietor'
+  import { getCommunityList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
-  import {
-    parseTime
-  } from '@/utils'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
   export default {
@@ -251,7 +263,8 @@
           tel: '手机号', // 手机号
           updateTime: '更新日期', // 更新时间
           userId: '用户ID', // 用户id
-          username: '用户登录账号' // 用户登录账号
+          username: '用户登录账号', // 用户登录账号
+          password: '密码'
         },
         dialogFormVisible: false,
         dialogStatus: '',
@@ -285,17 +298,18 @@
     },
     created() {
       this.getList()
+      this.queryCommunityList()
     },
     methods: {
-      getList() {
+      async getList() {
         this.listLoading = true
-        getProprietorList(this.listQuery).then(response => {
-          this.list = response.data.items
-          this.total = response.data.total
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
+        const { data: { code, msg, data }} = await getProprietorList(this.listQuery).catch(e => e)
+        this.listLoading = false
+        if (code !== 200) {
+          return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+        }
+        this.list = [... data.list]
+        this.total = data.total
       },
       handleFilter() {
         this.listQuery.page = 1
@@ -333,7 +347,8 @@
           timestamp: new Date(),
           title: '',
           status: 'published',
-          type: ''
+          type: '',
+          password: ''
         }
       },
       handleCreate() {
@@ -344,68 +359,64 @@
           this.$refs['dataForm'].clearValidate()
         })
       },
-      createData() {
+      async createData() {
+        const response = await createProprietor(this.temp).catch(e => e)
+        if (response.data.code !== 200) {
+          return this.$notify({ title: '创建失败', message: response.data.msg, type: 'error', duration: 2000 })
+        }
+        this.dialogFormVisible = false
         this.$notify({
           title: '成功',
           message: '创建成功',
           type: 'success',
           duration: 2000
         })
+        this.getList()
       },
       handleUpdate(row) {
         this.temp = Object.assign({}, row) // copy obj
+        this.temp.password = ''
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
       },
-      updateData() {
-        this.$notify({
-          title: '成功',
-          message: '更新成功',
-          type: 'success',
-          duration: 2000
-        })
+      async updateData() {
+        this.listLoading = true
+        const response = await updateProprietor(this.temp).catch(e => e)
+        this.listLoading = false
+        if (response.data.code !== 200) {
+          return this.$notify({ title: '修改失败', message: response.data.msg, type: 'error', duration: 2000 })
+        }
+        this.$notify({ title: '成功', message: '修改成功', type: 'success', duration: 2000 })
+        this.dialogFormVisible = false
+        this.dialogUpdateVisible = false
+        this.getList()
       },
       handleDelete(row) {
-        this.$confirm('确定删除业主【' + row.name + '】?', '提示', {
+        this.$confirm('确定删除业主【' + row.username + '】?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
+        }).then(async() => {
+          const { data: { code, msg }} = await delProprietor({ userId: row.userId }).catch(e => e)
+          if (code !== 200) {
+            return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+          }
           this.$notify({
             title: '成功',
             message: '删除成功',
             type: 'success',
             duration: 2000
           })
-          const index = this.list.indexOf(row)
-          this.list.splice(index, 1)
+          this.getList()
         }).catch(() => {})
       },
-      handleDownload() {
-        this.downloadLoading = true
-        import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-          const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-          const data = this.formatJson(filterVal, this.list)
-          excel.export_json_to_excel({
-            header: tHeader,
-            data,
-            filename: 'table-list'
-          })
-          this.downloadLoading = false
-        })
-      },
-      formatJson(filterVal, jsonData) {
-        return jsonData.map(v => filterVal.map(j => {
-          if (j === 'timestamp') {
-            return parseTime(v[j])
-          } else {
-            return v[j]
-          }
-        }))
+      // 获取社区列表
+      async queryCommunityList() {
+        const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        this.communityList = response.data.data.list
       }
     }
   }

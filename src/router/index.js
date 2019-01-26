@@ -105,7 +105,7 @@ export const constantRouterMap = [
 ]
 
 export default new Router({
-  // mode: 'history', // require service support
+  mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 })
@@ -280,7 +280,7 @@ export const asyncRouterMap = [
   {
     path: '/event',
     component: Layout,
-    redirect: '/bulletin',
+    redirect: '/notice',
     name: 'event',
     meta: {
       title: '物业事件',
@@ -288,8 +288,8 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: 'bulletin',
-        component: () => import('@/views/event/bulletin/view.vue'),
+        path: 'notice',
+        component: () => import('@/views/event/notice/view.vue'),
         name: 'Bulletin',
         meta: { title: '公告', icon: 'wechat', noCache: true }
       },

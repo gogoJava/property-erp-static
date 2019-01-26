@@ -18,7 +18,7 @@
       </el-table-column>
       <el-table-column :label="$t('proprietor.portrait')" min-width="120px" align="center">
         <template slot-scope="scope">
-          <img :src="scope.row.portrait" class="proprietor-portrait">
+          <img :src="(imgPrefix + scope.row.portrait)" class="proprietor-portrait">
         </template>
       </el-table-column>
       <el-table-column :label="$t('proprietor.englishName')" min-width="110px" align="center">
@@ -38,7 +38,7 @@
       </el-table-column>
       <el-table-column :label="$t('proprietor.sex')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.sex }}</span>
+          <span>{{ scope.row.sex | sexFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('proprietor.tel')" min-width="80px" align="center">
@@ -70,7 +70,6 @@
       <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-          <!-- <el-button size="mini" @click="handleUpdatePwd(scope.row)">{{ $t('table.updatePwd') }}</el-button> -->
           <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
           </el-button>
         </template>
@@ -95,8 +94,8 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('proprietor.portrait')" prop="portrait">
-              <el-input v-model="temp.portrait" />
+            <el-form-item :label="$t('proprietor.idCard')" prop="idCard">
+              <el-input v-model="temp.idCard" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -141,8 +140,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('proprietor.idCard')" prop="idCard">
-              <el-input v-model="temp.idCard" />
+            <el-form-item :label="$t('proprietor.mateName')" prop="mateName">
+              <el-input v-model="temp.mateName" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -153,22 +152,17 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('proprietor.mateName')" prop="mateName">
-              <el-input v-model="temp.mateName" />
+            <el-form-item :label="$t('proprietor.password')" prop="password">
+              <el-input v-model="temp.password" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('proprietor.password')" prop="password">
-              <el-input v-model="temp.password" />
+            <el-form-item :label="$t('proprietor.portrait')" prop="portrait">
+              <single-image :value.sync="temp.portrait" />
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="12">
-            <el-form-item :label="$t('proprietor.mateName')" prop="mateName">
-              <el-input v-model="temp.mateName" />
-            </el-form-item>
-          </el-col> -->
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -189,11 +183,13 @@
   import { getCommunityList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+  import SingleImage from './singleImage'
 
   export default {
     name: 'Proprietor',
     components: {
-      Pagination
+      Pagination,
+      SingleImage
     },
     directives: {
       waves
@@ -293,7 +289,9 @@
           }]
         },
         downloadLoading: false,
-        password: null
+        password: null,
+        communityList: [],
+        imgPrefix: 'http://songsong.fun:8080/file' // 图片前缀
       }
     },
     created() {
@@ -417,6 +415,23 @@
       async queryCommunityList() {
         const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
         this.communityList = response.data.data.list
+      },
+      // 上传图片成功
+      handleAvatarSuccess(res, file) {
+        console.log('handleAvatarSuccess')
+        this.temp.portrait = URL.createObjectURL(file.raw)
+      },
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg'
+        const isLt2M = file.size / 1024 / 1024 < 2
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!')
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!')
+        }
+        return isJPG && isLt2M
       }
     }
   }

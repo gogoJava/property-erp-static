@@ -253,5 +253,32 @@ export default {
     assetTraditionalPosition: '位置信息（繁体）', // 位置信息（繁体）
     assetType: '资产类型', // 资产类型：电器、公共设备
     communityId: '社区ID' // 社区ID
+  },
+  notice: {
+    buildingId: '建筑', // 建筑id
+    communityId: '社区ID', // 社区ID
+    createTime: '创建时间', // 创建时间
+    noticeDetails: '详情', // 详情
+    noticeEnglishDetails: '详情（英文）', // 详情英文
+    noticeEnglishTitle: '场所标题（英文）', // 场所标题
+    noticeId: 'ID', // ID
+    noticeImage: '图片', // 图片
+    noticeTitle: '场所标题', // 场所标题
+    noticeTraditionalDetails: '详情（繁体）', // 详情（繁体）
+    noticeTraditionalTitle: '标题（繁体）', // 标题
+    noticeType: '通知类型', // 通知类型
+    updateTime: '更新时间' // 更新时间
+  },
+  event: {
+    communityId: '社区ID', // 社区ID
+    eventCause: '事件起因', // 事件起因
+    eventContent: '事件内容', // 事件内容
+    eventDate: '事件日期', // 事件日期
+    eventFinishDate: '完成时间', // 完成时间
+    eventId: 'ID', // ID
+    eventRemark: '备注', // 备注
+    eventSolve: '解决方案', // 解决方案
+    eventStatus: '事件进度', // 事件进度
+    eventType: '事件类型' // 事件类型1采购2保养3其他
   }
 }

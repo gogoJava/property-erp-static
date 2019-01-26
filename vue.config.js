@@ -5,6 +5,9 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
+// const CompressionWebpackPlugin = require('compression-webpack-plugin')
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+
 const port = 9527 // TODO: change to Settings
 
 // Explanation of each configuration item You can find it in https://cli.vuejs.org/config/
@@ -18,10 +21,10 @@ module.exports = {
    * Detail https://cli.vuejs.org/config/#baseurl
    */
   baseUrl: '/',
-  outputDir: 'dist',
-  assetsDir: 'static',
-  lintOnSave: process.env.NODE_ENV !== 'production',
-  productionSourceMap: false,
+  // outputDir: 'dist',
+  // assetsDir: 'static',
+  // lintOnSave: process.env.NODE_ENV !== 'production',
+  // productionSourceMap: false,
   devServer: {
     port: port,
     open: true,
@@ -29,7 +32,7 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    proxy: 'http://47.107.131.1:8089/backstage',
+    proxy: 'http://47.107.131.1:8089',
     disableHostCheck: true,
     // proxy: {
     //   '/': {

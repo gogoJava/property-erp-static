@@ -39,18 +39,16 @@
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">{{ $t('login.logIn') }}</el-button>
 
-      <div style="position:relative">
-        <div class="tips">
-          <span>{{ $t('login.username') }} : admin</span>
-          <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-        </div>
-        <div class="tips">
-          <span style="margin-right:18px;">{{ $t('login.username') }} : editor</span>
-          <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-        </div>
-
-        <el-button class="thirdparty-button" type="primary" @click="showDialog=true">{{ $t('login.thirdparty') }}</el-button>
+      <!-- <div class="tips">
+        <span>{{ $t('login.username') }} : admin</span>
+        <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
       </div>
+      <div class="tips">
+        <span style="margin-right:18px;">{{ $t('login.username') }} : editor</span>
+        <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
+      </div> -->
+
+      <!-- <el-button class="thirdparty-button" type="primary" @click="showDialog=true">{{ $t('login.thirdparty') }}</el-button> -->
     </el-form>
 
     <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog">
@@ -90,7 +88,7 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: '1111111'
+        password: '123456'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],

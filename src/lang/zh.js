@@ -66,6 +66,7 @@ export default {
   },
   navbar: {
     logOut: '退出登录',
+    updatePwd: '修改密码',
     dashboard: '首页',
     github: '项目地址',
     screenfull: '全屏',
@@ -122,12 +123,14 @@ export default {
     readings: '阅读数',
     status: '状态',
     actions: '操作',
+    detail: '详情',
     edit: '编辑',
+    updatePwd: '修改密码',
     publish: '发布',
     draft: '草稿',
     delete: '删除',
-    cancel: '取 消',
-    confirm: '确 定'
+    cancel: '取消',
+    confirm: '确定'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',
@@ -156,5 +159,126 @@ export default {
     close: '关闭',
     closeOthers: '关闭其它',
     closeAll: '关闭所有'
+  },
+  // 社区
+  community: {
+    communityNo: '社区编号',
+    communityName: '社区名字',
+    communityAddress: '社区全址', // 社区全址
+    communityArea: '总面积', // 总面积(平方米)
+    communityBuildingArea: '建筑面积', // 建筑面积
+    communityCommonArea: '公用面积', // 公用面积
+    communityContacts: '联系人', // 联系人
+    communityContactsPhone: '联系人号码', // 联系人号码
+    communityGarageArea: '车库面积', // 车库面积
+    communityGarageCount: '车位数量', // 车位数量
+    communityGreenarea: '绿化面积', // 绿化面积
+    communityLocX: '社区纬度', // 社区纬度
+    communityLocY: '社区经度', // 社区经度
+    communityManagementType: '管理类型', // 管理类型(0普通管理1综合管理)
+    communityRemark: '备注', // 备注
+    communityRoadArea: '道路面积', // 道路面积
+    communityRoomCount: '房间总数' // 房间总数
+  },
+  // 管理员
+  administrator: {
+    communityId: '社区', // 社区id
+    email: '邮箱', // 邮箱
+    managerId: 'id',
+    name: '名字', // 名字
+    sex: '性别', // 性别0女1男
+    type: '类型', // 类型0普通管理员1超级管理员
+    username: '用户名', // 用户名
+    password: '密码' // 密码
+  },
+  // 大厦
+  building: {
+    buildingDirection: '楼宇方向', // 楼宇方向
+    buildingId: 'ID', // buildingId
+    buildingName: '楼宇名字', // 楼宇名字
+    buildingNo: '楼宇编号', // 楼宇编号
+    buildingStruct: '楼宇结构', // 楼宇结构
+    communityId: '社区', // 社区ID
+    deleted: '是否注销', // 是否注销
+    floorLowNum: '楼下几层', // 楼下几层
+    floorUpNum: '楼上几层', // 楼上几层
+    fullAddress: '楼宇全址' // 楼宇全址
+  },
+  // 单位
+  unit: {
+    unitChildRelativeProportion: '分层建筑物之子部分相对比(千分之一)', // 分层建筑物之子部分相对比(千分之一)
+    buildingId: '大厦', // buildingId
+    unitCoveredArea: '覆盖面积大小(单位平方米)', // 覆盖面积大小(单位平方米)
+    unitName: '单位名字', // 单元名字
+    unitFullAddress: '全址', // 全址
+    unitId: 'ID', // unitId
+    unitNo: '单位编号', // 单位编号
+    unitPosition: '位置', // 位置(地下,一楼,二楼,三楼,户外.)
+    unitPurpose: '用途', // 用途
+    unitRelativeProportion: '分层建筑物相对比(千分之一)', // 分层建筑物相对比(千分之一)
+    unitStatus: '单位状态', // 单位状态0空置1租赁2装修中3入住
+    unitType: '单位类型' // 单位类型1商铺2住宅3停车场
+  },
+  // 业主
+  proprietor: {
+    birthday: '出生日期', // 出生日期
+    communityId: '社区', // 社区ID
+    countryCode: '区号', // 区号
+    createTime: '创建时间', // 创建时间
+    email: '电邮', // 邮编
+    englishName: '英文名字', // 英文名字
+    deleted: false, // 是否注销
+    idCard: '身份证号码', // 身份证号码
+    marriageSystem: '婚姻制度', // 婚姻制度
+    mateName: '配偶名字', // 配偶名字
+    name: '名字', // 名字
+    portrait: '用户头像', // 用户头像
+    sex: '性别', // 性别(0女1男)
+    tel: '手机号', // 手机号
+    updateTime: '更新日期', // 更新时间
+    userId: '用户ID', // 用户id
+    username: '用户登录账号', // 用户登录账号
+    password: '密码' // 密码
+  },
+  asset: {
+    assetDescribe: '描述', // 描述
+    assetEnglishDescribe: '描述（英文）', // 描述（英文）
+    assetEnglishName: '资产名字（英文）', // 资产名字（英文）
+    assetEnglishPosition: '位置信息（英文）', // 位置信息（英文）
+    assetId: 'ID', // id
+    assetName: '资产名字', // 资产名字
+    assetPosition: '位置信息', // 位置信息
+    assetTraditionalDescribe: '描述（繁体）', // 描述（繁体）
+    assetTraditionalName: '资产名字（繁体）', // 资产名字（繁体）
+    assetTraditionalPosition: '位置信息（繁体）', // 位置信息（繁体）
+    assetType: '资产类型', // 资产类型：电器、公共设备
+    communityId: '社区ID' // 社区ID
+  },
+  notice: {
+    buildingId: '建筑', // 建筑id
+    communityId: '社区ID', // 社区ID
+    createTime: '创建时间', // 创建时间
+    noticeDetails: '详情', // 详情
+    noticeEnglishDetails: '详情（英文）', // 详情英文
+    noticeEnglishTitle: '场所标题（英文）', // 场所标题
+    noticeId: 'ID', // ID
+    noticeImage: '图片', // 图片
+    noticeTitle: '场所标题', // 场所标题
+    noticeTraditionalDetails: '详情（繁体）', // 详情（繁体）
+    noticeTraditionalTitle: '标题（繁体）', // 标题
+    noticeType: '通知类型', // 通知类型
+    updateTime: '更新时间' // 更新时间
+  },
+  event: {
+    communityId: '社区ID', // 社区ID
+    eventCause: '事件起因', // 事件起因
+    eventContent: '事件内容', // 事件内容
+    eventDate: '事件日期', // 事件日期
+    eventFinishDate: '完成时间', // 完成时间
+    eventId: 'ID', // ID
+    eventRemark: '备注', // 备注
+    eventSolve: '解决方案', // 解决方案
+    eventStatus: '事件进度', // 事件进度
+    eventType: '事件类型' // 事件类型1采购2保养3其他
   }
 }

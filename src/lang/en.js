@@ -66,6 +66,7 @@ export default {
   },
   navbar: {
     logOut: 'Log Out',
+    updatePwd: 'Update PassWord',
     dashboard: 'Dashboard',
     github: 'Github',
     screenfull: 'Screenfull',

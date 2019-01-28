@@ -6,8 +6,6 @@ function resolve(dir) {
 }
 
 const port = 9527 // TODO: change to Settings
-const CompressionWebpackPlugin = require('compression-webpack-plugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 // Explanation of each configuration item You can find it in https://cli.vuejs.org/config/
 module.exports = {
@@ -31,18 +29,15 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    proxy: 'http://47.107.131.1:8089',
-    disableHostCheck: true,
-    // proxy: {
-    //   '/': {
-    //     // target: `http://localhost:${port}/mock`,http://47.107.131.1:8089
-    //     target: `http://47.107.131.1:8089/backstage`,
-    //     changeOrigin: true,
-    //     pathRewrite: {
-    //       '^/': ''
-    //     }
-    //   }
-    // },
+    proxy: {
+      '/api': {
+        target: `http://localhost:${port}/mock`,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    },
     after(app) {
       console.log('apple')
       const bodyParser = require('body-parser')
@@ -59,38 +54,35 @@ module.exports = {
       }
     }
   },
-  // configureWebpack: {
-  //   // We provide the app's title in Webpack's name field, so that
-  //   // it can be accessed in index.html to inject the correct title.
-  //   name: 'ERP物业管理', // TODO: change to Settings
-  //   resolve: {
-  //     alias: {
-  //       '@': resolve('src')
-  //     }
-  //   }
-  // },
-  configureWebpack: config => {
-    const plugins = [
-      new CompressionWebpackPlugin({
-        filename: '[path].gz[query]',
-        algorithm: 'gzip',
-        test: new RegExp(
-          '\\.(' +
-          ['js', 'css'].join('|') +
-          ')$',
-        ),
-        threshold: 10240,
-        minRatio: 0.8
-      })
-    ]
-    if (process.env.npm_config_report) {
-      plugins.push(new BundleAnalyzerPlugin())
-    }
-    if (process.env.NODE_ENV !== 'development') {
-      config.plugins = [...config.plugins, ...plugins]
+  configureWebpack: {
+    // We provide the app's title in Webpack's name field, so that
+    // it can be accessed in index.html to inject the correct title.
+    name: 'vue-element-admin', // TODO: change to Settings
+    resolve: {
+      alias: {
+        '@': resolve('src')
+      }
     }
   },
   chainWebpack(config) {
+    config.plugins.delete('preload')// TODO: need test
+    config.plugins.delete('prefetch')// TODO: need test
+    config.module
+      .rule('svg')
+      .exclude.add(resolve('src/icons'))
+      .end()
+    config.module
+      .rule('icons')
+      .test(/\.svg$/)
+      .include.add(resolve('src/icons'))
+      .end()
+      .use('svg-sprite-loader')
+      .loader('svg-sprite-loader')
+      .options({
+        symbolId: 'icon-[name]'
+      })
+      .end()
+
     config
       .when(process.env.NODE_ENV === 'development',
         config => config.devtool('cheap-source-map')
@@ -133,65 +125,4 @@ module.exports = {
         }
       )
   }
-  // chainWebpack(config) {
-  //   config.plugins.delete('preload')// TODO: need test
-  //   config.plugins.delete('prefetch')// TODO: need test
-  //   config.module
-  //     .rule('svg')
-  //     .exclude.add(resolve('src/icons'))
-  //     .end()
-  //   config.module
-  //     .rule('icons')
-  //     .test(/\.svg$/)
-  //     .include.add(resolve('src/icons'))
-  //     .end()
-  //     .use('svg-sprite-loader')
-  //     .loader('svg-sprite-loader')
-  //     .options({
-  //       symbolId: 'icon-[name]'
-  //     })
-  //     .end()
-
-  //   config
-  //     .when(process.env.NODE_ENV === 'development',
-  //       config => config.devtool('cheap-source-map')
-  //     )
-
-  //   config
-  //     .when(process.env.NODE_ENV !== 'development',
-  //       config => {
-  //         config
-  //           .plugin('ScriptExtHtmlWebpackPlugin')
-  //           .use('script-ext-html-webpack-plugin', [{
-  //             // `runtime` must same as runtimeChunk name. default is `runtime`
-  //             inline: /runtime\..*\.js$/
-  //           }])
-  //         config
-  //           .optimization.splitChunks({
-  //             chunks: 'all',
-  //             cacheGroups: {
-  //               libs: {
-  //                 name: 'chunk-libs',
-  //                 test: /[\\/]node_modules[\\/]/,
-  //                 priority: 10,
-  //                 chunks: 'initial' // 只打包初始时依赖的第三方
-  //               },
-  //               elementUI: {
-  //                 name: 'chunk-elementUI', // 单独将 elementUI 拆包
-  //                 priority: 20, // 权重要大于 libs 和 app 不然会被打包进 libs 或者 app
-  //                 test: /[\\/]node_modules[\\/]element-ui[\\/]/
-  //               },
-  //               commons: {
-  //                 name: 'chunk-commons',
-  //                 test: resolve('src/components'), // 可自定义拓展你的规则
-  //                 minChunks: 3, // 最小公用次数
-  //                 priority: 5,
-  //                 reuseExistingChunk: true
-  //               }
-  //             }
-  //           })
-  //         config.optimization.runtimeChunk('single')
-  //       }
-  //     )
-  // }
 }

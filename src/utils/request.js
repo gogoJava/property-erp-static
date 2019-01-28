@@ -7,6 +7,7 @@ import { Message, MessageBox } from 'element-ui'
 const service = axios.create({
   // baseURL: process.env.VUE_APP_BASE_API, // api 的 base_url
   baseURL: '/backstage/', // api 的 base_url
+  // baseURL: '/', // api 的 base_url
   withCredentials: true, // 跨域请求时发送 cookies
   timeout: 5000 // request timeout
 })

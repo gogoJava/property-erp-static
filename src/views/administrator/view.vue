@@ -91,9 +91,6 @@
         <el-form-item :label="$t('administrator.name')" prop="name">
           <el-input v-model="temp.name" />
         </el-form-item>
-        <!-- <el-form-item label="$t('administrator.username')" prop="username">
-          <el-input v-model="temp.username" />
-        </el-form-item> -->
         <el-form-item label="新密码" prop="password">
           <el-input v-model="temp.password" />
         </el-form-item>
@@ -227,22 +224,22 @@
       async getList() {
         this.listLoading = true
         const response = await getAdministratorList(this.listQuery).catch(e => e)
-        if (response.data.code !== 200) {
+        if (response.code !== 200) {
           return this.$notify({
           title: '查询失败',
-          message: response.data.msg,
+          message: response.msg,
           type: 'error',
           duration: 2000
         })
         }
-        this.list = response.data.data.list
-        this.total = response.data.data.total
+        this.list = response.data.list
+        this.total = response.data.total
         this.listLoading = false
       },
       // 获取社区列表
       async queryCommunityList() {
         const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
-        this.communityList = response.data.data.list
+        this.communityList = response.data.list
     },
       handleFilter() {
         this.listQuery.pageNo = 1
@@ -295,8 +292,8 @@
       },
       async createData() {
         const response = await addManager(this.temp).catch(e => e)
-        if (response.data.code !== 200) {
-          return this.$notify({ title: '创建失败', message: response.data.msg, type: 'error', duration: 2000 })
+        if (response.code !== 200) {
+          return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
         }
         this.dialogFormVisible = false
         this.$notify({
@@ -329,8 +326,8 @@
         this.listLoading = true
         const response = await updateManager(this.temp).catch(e => e)
         this.listLoading = false
-        if (response.data.code !== 200) {
-          return this.$notify({ title: '修改失败', message: response.data.msg, type: 'error', duration: 2000 })
+        if (response.code !== 200) {
+          return this.$notify({ title: '修改失败', message: response.msg, type: 'error', duration: 2000 })
         }
         this.$notify({ title: '成功', message: '修改成功', type: 'success', duration: 2000 })
         this.dialogFormVisible = false
@@ -343,7 +340,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async() => {
-          const { data: { code, msg }} = await delManager({ managerId: row.managerId }).catch(e => e)
+          const { code, msg } = await delManager({ managerId: row.managerId }).catch(e => e)
           if (code !== 200) {
             return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
           }

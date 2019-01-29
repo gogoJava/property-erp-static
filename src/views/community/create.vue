@@ -166,10 +166,10 @@
       // 创建
       async createClick() {
         const response = await createCommunity(this.communityInfo).catch(e => e)
-        if (response.data.code !== 200) {
+        if (response.code !== 200) {
           return this.$notify({
           title: '创建失败',
-          message: response.data.msg,
+          message: response.msg,
           type: 'error',
           duration: 2000
         })

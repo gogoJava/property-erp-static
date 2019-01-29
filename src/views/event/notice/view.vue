@@ -219,7 +219,7 @@
     methods: {
       async getList() {
         this.listLoading = true
-        const { data: { code, msg, data }} = await getNoticeList(this.listQuery).catch(e => e)
+        const { code, msg, data } = await getNoticeList(this.listQuery).catch(e => e)
         this.listLoading = false
         if (code !== 200) {
           return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
@@ -230,12 +230,12 @@
       // 获取社区列表
       async queryCommunityList() {
         const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
-        this.communityList = response.data.data.list
+        this.communityList = response.data.list
       },
       // 获取建筑列表
       async queryBuildingList() {
         const response = await getBuildingList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
-        this.buildingList = response.data.data.list
+        this.buildingList = response.data.list
       },
       resetTemp() {
         this.temp = {
@@ -264,8 +264,8 @@
       },
       async createData() {
         const response = await createNotice(this.temp).catch(e => e)
-        if (response.data.code !== 200) {
-          return this.$notify({ title: '创建失败', message: response.data.msg, type: 'error', duration: 2000 })
+        if (response.code !== 200) {
+          return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
         }
         this.dialogFormVisible = false
         this.$notify({
@@ -288,8 +288,8 @@
         this.listLoading = true
         const response = await updateNotice(this.temp).catch(e => e)
         this.listLoading = false
-        if (response.data.code !== 200) {
-          return this.$notify({ title: '修改失败', message: response.data.msg, type: 'error', duration: 2000 })
+        if (response.code !== 200) {
+          return this.$notify({ title: '修改失败', message: response.msg, type: 'error', duration: 2000 })
         }
         this.$notify({ title: '成功', message: '修改成功', type: 'success', duration: 2000 })
         this.dialogFormVisible = false
@@ -302,7 +302,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async() => {
-          const { data: { code, msg }} = await delNotice({ noticeId: row.noticeId }).catch(e => e)
+          const { code, msg } = await delNotice({ noticeId: row.noticeId }).catch(e => e)
           if (code !== 200) {
             return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
           }

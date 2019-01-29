@@ -172,7 +172,7 @@
     methods: {
       // 获取社区详情
       async getCommunityDetail() {
-        const { data: { code, msg, data }} = await queryCommunityDetail({ communityId: this.communityId }).catch(e => e)
+        const { code, msg, data } = await queryCommunityDetail({ communityId: this.communityId }).catch(e => e)
         if (code !== 200) {
           return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
         }

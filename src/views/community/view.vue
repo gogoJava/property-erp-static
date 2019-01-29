@@ -186,16 +186,17 @@ export default {
     async getList() {
       this.listLoading = true
       const response = await getCommunityList(this.listQuery).catch(e => e)
-      if (response.data.code !== 200) {
+      console.log('response', response)
+      if (response.code !== 200) {
           return this.$notify({
           title: '查询失败',
-          message: response.data.msg,
+          message: response.msg,
           type: 'error',
           duration: 2000
          })
       }
-      this.list = response.data.data.list
-      this.total = response.data.data.total
+      this.list = response.data.list
+      this.total = response.data.total
       this.listLoading = false
     },
     handleFilter() {
@@ -246,7 +247,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async() => {
-        const { data: { code, msg }} = await delCommunity({ communityId: row.communityId }).catch(e => e)
+        const { code, msg } = await delCommunity({ communityId: row.communityId }).catch(e => e)
         if (code !== 200) {
           return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
         }

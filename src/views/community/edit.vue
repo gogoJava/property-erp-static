@@ -16,10 +16,6 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item :label="$t('community.communityAddress')">
-            <!-- <el-select v-model="communityInfo.communityAddress" placeholder="请选择">
-              <el-option label="区域一" value="shanghai" />
-              <el-option label="区域二" value="beijing" />
-            </el-select> -->
             <el-input v-model="communityInfo.communityAddress" />
           </el-form-item>
         </el-col>
@@ -111,7 +107,6 @@
             <el-input v-model="communityInfo.communityRoomCount" />
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="12"></el-col> -->
       </el-row>
       <el-row>
         <el-col style="text-align: center;">
@@ -168,14 +163,14 @@
     methods: {
       // 获取社区详情
       async getCommunityDetail() {
-        const { data: { code, msg, data }} = await queryCommunityDetail({ communityId: this.communityId }).catch(e => e)
+        const { code, msg, data } = await queryCommunityDetail({ communityId: this.communityId }).catch(e => e)
         if (code !== 200) {
           return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
         }
         this.communityInfo = { ...data, communityManagementType: data.communityManagementType - 0 }
       },
       async updateInfo() {
-        const { data: { code, msg }} = await updateCommunityDetail(this.communityInfo).catch(e => e)
+        const { code, msg } = await updateCommunityDetail(this.communityInfo).catch(e => e)
         if (code !== 200) {
           return this.$notify({ title: '修改失败', message: msg, type: 'error', duration: 2000 })
         }

@@ -1,10 +1,10 @@
-import login from './login'
+// import login from './login'
 import article from './article'
 import search from './remoteSearch'
 import transaction from './transaction'
 
 export default {
-  ...login,
+  // ...login,
   ...article,
   ...search,
   ...transaction

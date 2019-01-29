@@ -29,15 +29,16 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    proxy: {
-      '/api': {
-        target: `http://localhost:${port}/mock`,
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api': ''
-        }
-      }
-    },
+    proxy: 'http://47.107.131.1:8089',
+    // proxy: {
+    //   '/api': {
+    //     target: `http://localhost:${port}/mock`,
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       '^/api': ''
+    //     }
+    //   }
+    // },
     after(app) {
       console.log('apple')
       const bodyParser = require('body-parser')
@@ -57,7 +58,7 @@ module.exports = {
   configureWebpack: {
     // We provide the app's title in Webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
-    name: 'vue-element-admin', // TODO: change to Settings
+    name: '物业管理系统', // TODO: change to Settings
     resolve: {
       alias: {
         '@': resolve('src')

@@ -98,9 +98,33 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="24">
+            <el-form-item :label="$t('event.eventStatus')" prop="eventStatus">
+              <!-- <el-input v-model="temp.eventStatus" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" /> -->
+              <el-select v-model="temp.eventStatus" placeholder="请选择">
+                <el-option :value="0" label="开始" />
+                <el-option :value="1" label="待定" />
+                <el-option :value="2" label="完成" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item :label="$t('event.eventType')" prop="eventType">
+              <!-- <el-input v-model="temp.eventType" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" /> -->
+              <el-select v-model="temp.eventType" placeholder="请选择">
+                <el-option :value="1" label="采购" />
+                <el-option :value="2" label="保养" />
+                <el-option :value="3" label="其他" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
             <el-form-item :label="$t('event.eventRemark')" prop="eventRemark">
-              <el-input v-model="temp.eventRemark" />
+              <el-input v-model="temp.eventRemark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -108,20 +132,6 @@
           <el-col :span="24">
             <el-form-item :label="$t('event.eventSolve')" prop="eventSolve">
               <el-input v-model="temp.eventSolve" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item :label="$t('event.eventStatus')" prop="eventStatus">
-              <el-input v-model="temp.eventStatus" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item :label="$t('event.eventType')" prop="eventType">
-              <el-input v-model="temp.eventType" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" />
             </el-form-item>
           </el-col>
         </el-row>

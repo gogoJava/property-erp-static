@@ -280,5 +280,38 @@ export default {
     eventSolve: '解决方案', // 解决方案
     eventStatus: '事件进度', // 事件进度
     eventType: '事件类型' // 事件类型1采购2保养3其他
+  },
+  adv: {
+    adv: '广告',
+    advId: 'ID', // ID
+    buildingId: '楼宇id', // 楼宇id
+    community: '社区', // 社区
+    communityId: 'communityId', // communityId
+    describe: '描述', // 描述
+    residenceTime: '播放时间',
+    title: '标题', // title
+    type: '广告类型', // 广告类型 0普通图片1视频
+    url: '资源url', // url
+    used: '是否使用' // 是否使用0否1是
+  },
+  complain: {
+    complain: '投诉/保修',
+    complainClassType: '分类', // 类型分类（供电系统，发电机…）
+    complainDescribe: '描述', // 描述
+    complainFinishTime: '完成时间', // 完成时间
+    complainHandler: '处理人', // complainHandler
+    complainId: 'id', // complainId
+    complainLiaisonsEmail: '联络人电邮',
+    complainLiaisonsName: '联络人', // complainLiaisonsName
+    complainLiaisonsSex: '联络人性别', // 联络人性别(0女1男)
+    complainPosition: '位置', // complainPosition
+    complainStatus: '状态', // 状态:0发起1收到2处理中3处理完成
+    complainType: '类型', // 类型(土木工程，清洁，保安…)
+    complainVoice: '声音', // example: E:/XXX/投诉.mp3
+    createTime: '创建时间', // createTime
+    images: '图片', // images 【】
+    updateTime: '更新时间', // updateTime
+    userId: '用户id',
+    complainSpecificPosition: '具体位置' // complainSpecificPosition
   }
 }

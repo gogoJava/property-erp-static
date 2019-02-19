@@ -58,7 +58,7 @@
       async httpRequest(option) {
         const loadingInstance = Loading.service({
           fullscreen: true,
-          text: '上传图片中...'
+          text: '上传文件中...'
         })
         // formData
         const formData = new FormData()
@@ -81,7 +81,6 @@
           this.imageUrl = this.imgPrefix + res.data.data.originalUrl
           this.$emit('update:value', res.data.data.originalUrl)
         })
-
         return null
       }
     }

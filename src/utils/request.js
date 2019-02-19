@@ -11,18 +11,12 @@ axios.defaults.withCredentials = true
 const defaultConfig = {
   baseURL: '/backstage/',
   headers: {
-    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    // 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
     'Authorization': localStorage.getItem('Admin-Token') || ''
   }
-  // paramsSerializer: function (params) {
-  //   return qs.stringify(params, {arrayFormat: 'repeat'})
-  // },
-  // errorCodeField: 'code',
-  // errorMsgField: 'msg'
 }
 
 export const createInstance = (config) => {
-  // document.cookie = 'JSESSIONID=' + '2CE301936F13639D574B632E661B4B93'
   config = merge({}, defaultConfig, config)
   const instance = axios.create(config)
 
@@ -32,6 +26,7 @@ export const createInstance = (config) => {
     if (requestMapKeys) {
       config.data = data ? requestMapKeys(data) : data
     }
+    config.headers.Authorization = localStorage.getItem('Admin-Token') || ''
     return config
   }, (error) => {
     return Promise.reject(error)
@@ -40,9 +35,13 @@ export const createInstance = (config) => {
 // response
   instance.interceptors.response.use((response) => {
     const { config: { responseMapKeys }} = response
-    console.log('response --> ', response)
+    // console.log('response --> ', response)
     let { data } = response
 
+    if (data && data.code === 100) {
+      alert(data.msg)
+      return
+    }
     if (responseMapKeys && data) {
       data = responseMapKeys(data)
     }

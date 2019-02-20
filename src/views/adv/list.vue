@@ -37,11 +37,11 @@
           <span>{{ scope.row.used ? '是' : '否' }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
+      <el-table-column :label="$t('table.actions')" align="center" width="186" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-          <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
-          </el-button>
+          <el-button size="mini" type="text" @click="handlePublish(scope.row)">{{ scope.row.used ? $t('table.cancel') : $t('table.publish') }}</el-button>
+          <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -112,7 +112,8 @@
     getAdvList,
     addAdv,
     updateAdv,
-    delAdv
+    delAdv,
+    publishAdv
   } from '@/api/adv'
   import { getCommunityList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
@@ -338,6 +339,21 @@
           })
           this.getList()
         }).catch(() => {})
+      },
+      // 发布/取消
+      async handlePublish(row) {
+        const text = row.used ? '取消' : '发布'
+        const { code, msg } = await publishAdv({ advId: row.advId }).catch(e => e)
+        if (code !== 200) {
+          return this.$notify({ title: text + '广告失败', message: msg, type: 'error', duration: 2000 })
+        }
+        this.$notify({
+          title: '成功',
+          message: text + '广告成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.getList()
       },
       // 获取社区列表
       async queryCommunityList() {

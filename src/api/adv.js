@@ -36,3 +36,12 @@ export function updateAdv(params) {
     data: params
   })
 }
+
+// 发布/取消广告
+export function publishAdv(query) {
+  return request({
+    url: '/back/adv/publish',
+    method: 'get',
+    params: query
+  })
+}

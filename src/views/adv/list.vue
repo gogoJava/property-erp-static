@@ -83,10 +83,17 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item :label="$t('adv.community')" prop="communityId">
               <el-select v-model="temp.communityId" placeholder="请绑定社区">
                 <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('adv.building')" prop="buildingId">
+              <el-select v-model="temp.buildingId" placeholder="请绑定大厦">
+                <el-option v-for="(item, index) in buildingList" :key="index" :value="item.buildingId" :label="item.buildingName" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -116,6 +123,7 @@
     publishAdv
   } from '@/api/adv'
   import { getCommunityList } from '@/api/community'
+  import { getBuildingList } from '@/api/building'
   import waves from '@/directive/waves' // Waves directive
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import SingleImage from './singleImage'
@@ -218,12 +226,14 @@
         downloadLoading: false,
         password: null,
         communityList: [],
+        buildingList: [],
         imgPrefix: 'http://songsong.fun:8080/file' // 图片前缀
       }
     },
     created() {
       this.getList()
       this.queryCommunityList()
+      this.queryBuildList()
     },
     methods: {
       async getList() {
@@ -359,6 +369,11 @@
       async queryCommunityList() {
         const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
         this.communityList = response.data.list
+      },
+       // 获取大厦列表
+      async queryBuildList() {
+        const response = await getBuildingList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        this.buildingList = response.data.list
       },
       // 上传图片成功
       handleAvatarSuccess(res, file) {

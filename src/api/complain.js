@@ -36,3 +36,12 @@ export function updateComplain(params) {
     data: params
   })
 }
+
+// 处理投诉/保修
+export function dealComplain(query) {
+  return request({
+    url: '/back/complain/changStatus',
+    method: 'get',
+    params: query
+  })
+}

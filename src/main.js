@@ -18,6 +18,11 @@ import './icons' // icon
 import './errorLog' // error log
 import './permission' // permission control
 
+// moment
+import moment from 'moment'
+
+Vue.prototype.$moment = moment
+
 import * as filters from './filters' // global filters
 
 import { mockXHR } from '../mock' // simulation data

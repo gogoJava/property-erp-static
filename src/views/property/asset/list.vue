@@ -16,12 +16,12 @@
           <span>{{ scope.row.assetEnglishDescribe }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('asset.assetEnglishName')" min-width="120px" align="center">
+      <el-table-column :label="$t('asset.assetEnglishName')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.assetEnglishName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('asset.assetEnglishPosition')" min-width="110px" align="center">
+      <el-table-column :label="$t('asset.assetEnglishPosition')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.assetEnglishPosition }}</span>
         </template>
@@ -36,17 +36,17 @@
           <span>{{ scope.row.assetPosition }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('asset.assetTraditionalDescribe')" min-width="80px" align="center">
+      <el-table-column :label="$t('asset.assetTraditionalDescribe')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.assetTraditionalDescribe }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('asset.assetTraditionalName')" min-width="80px" align="center">
+      <el-table-column :label="$t('asset.assetTraditionalName')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.assetTraditionalName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('asset.assetTraditionalPosition')" min-width="80px" align="center">
+      <el-table-column :label="$t('asset.assetTraditionalPosition')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.assetTraditionalPosition }}</span>
         </template>
@@ -56,9 +56,9 @@
           <span>{{ scope.row.assetType }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('asset.communityId')" min-width="180px" align="center">
+      <el-table-column :label="$t('asset.community')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.communityId }}</span>
+          <span>{{ scope.row.community.communityName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">

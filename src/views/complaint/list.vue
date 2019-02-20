@@ -1,7 +1,7 @@
 <template>
   <div class="complain-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('complain.name')" v-model="listQuery.title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input :placeholder="$t('complain.complainClassType')" v-model="listQuery.title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
 
@@ -11,26 +11,16 @@
           <span>{{ scope.row.complainClassType }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('complain.complainDescribe')" min-width="100px" align="center">
+      <el-table-column :label="$t('complain.complainDescribe')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.complainDescribe }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('complain.complainFinishTime')" min-width="150px">
-        <template slot-scope="scope">
-          <span>{{ scope.row.complainFinishTime }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('complain.complainHandler')" min-width="60px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.complainHandler }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('complain.complainId')" min-width="110px" align="center">
+      <!-- <el-table-column :label="$t('complain.complainId')" min-width="110px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.complainId }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column :label="$t('complain.complainLiaisonsEmail')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.complainLiaisonsEmail }}</span>
@@ -41,9 +31,9 @@
           <span>{{ scope.row.complainLiaisonsName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('complain.complainLiaisonsSex')" min-width="180px" align="center">
+      <el-table-column :label="$t('complain.complainLiaisonsSex')" min-width="100px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.complainLiaisonsSex }}</span>
+          <span>{{ scope.row.complainLiaisonsSex === '1' ? '男' : '女' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('complain.complainPosition')" min-width="180px" align="center">
@@ -58,7 +48,8 @@
       </el-table-column>
       <el-table-column :label="$t('complain.complainStatus')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.complainStatus }}</span>
+          <!-- 状态:0发起1收到2处理中3处理完成 -->
+          <span>{{ scope.row.complainStatus | complainStatusFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('complain.complainType')" min-width="180px" align="center">
@@ -73,23 +64,36 @@
       </el-table-column>
       <el-table-column :label="$t('complain.createTime')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.createTime }}</span>
+          <span>{{ scope.row.createTime ? $moment(scope.row.createTime).format('YYYY-MM-DD') : '--' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('complain.images')" min-width="180px" align="center">
         <template slot-scope="scope">
           <img v-for="(item, index) of scope.row.images" :key="index" :src="(imgPrefix + item.imageUrl)" class="complain-img">
-          <!-- <span>{{ scope.row.images }}</span> -->
         </template>
       </el-table-column>
       <el-table-column :label="$t('complain.updateTime')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.updateTime }}</span>
+          <span>{{ scope.row.updateTime ? $moment(scope.row.updateTime).format('YYYY-MM-DD') : '--' }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="80" class-name="small-padding fixed-width" fixed="right">
+      <el-table-column :label="$t('complain.complainFinishTime')" min-width="150px" align="center">
         <template slot-scope="scope">
-          <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
+          <span>{{ scope.row.complainFinishTime ? $moment(scope.row.complainFinishTime).format('YYYY-MM-DD') : '--' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('complain.complainHandler')" min-width="160px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.complainHandler || '--' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('table.actions')" align="center" width="280" class-name="small-padding fixed-width" fixed="right">
+        <template slot-scope="scope">
+          <span class="btn-text" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</span>
+          <!-- <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button> -->
+          <span v-if="scope.row.complainStatus !== '1'" class="btn-text" @click="handleStatus(scope.row, 1)">收到</span>
+          <span v-if="scope.row.complainStatus !== '2'" class="btn-text" @click="handleStatus(scope.row, 2)">处理中</span>
+          <span v-if="scope.row.complainStatus !== '3'" class="btn-text" @click="handleStatus(scope.row, 3)">处理完成</span>
           <!-- <el-button type="text" size="mini" @click="handleUpdatePwd(scope.row)">{{ $t('table.updatePwd') }}</el-button>
           <el-button size="mini" type="text" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
           </el-button> -->
@@ -159,7 +163,8 @@
     getComplainList,
     addComplain,
     delComplain,
-    updateComplain
+    updateComplain,
+    dealComplain
   } from '@/api/complain'
   import { getCommunityList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
@@ -198,6 +203,15 @@
           1: '超级管理员'
         }
         return typeMap[type]
+      },
+      complainStatusFilter(status) {
+        const statusMap = {
+          0: '发起',
+          1: '收到',
+          2: '处理中',
+          3: '处理完成'
+        }
+        return statusMap[status]
       }
     },
     data() {
@@ -380,6 +394,21 @@
           this.$refs['dataForm'].clearValidate()
         })
       },
+      // 处理投诉
+      async handleStatus(row, status) {
+        const response = await dealComplain({ complainId: row.complainId, complainStatus: status }).catch(e => e)
+        if (response.code !== 200) {
+          return this.$notify({ title: '处理失败', message: response.msg, type: 'error', duration: 2000 })
+        }
+        this.dialogFormVisible = false
+        this.$notify({
+          title: '成功',
+          message: '处理成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.getList()
+      },
       // 修改密码
       handleUpdatePwd(row) {
         // this.password = ''
@@ -456,6 +485,11 @@
     width: 48px;
     height: 48px;
     cursor: pointer;
+  }
+  .btn-text {
+    cursor: pointer;
+    color: #409EFF;
+    padding: 5px 8px;
   }
 </style>
 

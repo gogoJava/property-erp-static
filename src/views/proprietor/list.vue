@@ -28,7 +28,7 @@
       </el-table-column>
       <el-table-column :label="$t('proprietor.communityId')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.communityId }}</span>
+          <span>{{ scope.row.community.communityName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('proprietor.countryCode')" min-width="180px" align="center">
@@ -41,7 +41,7 @@
           <span>{{ scope.row.sex | sexFilter }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('proprietor.tel')" min-width="80px" align="center">
+      <el-table-column :label="$t('proprietor.tel')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.tel }}</span>
         </template>

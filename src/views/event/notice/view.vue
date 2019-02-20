@@ -21,7 +21,7 @@
           <span>{{ scope.row.noticeTraditionalTitle }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('notice.noticeDetails')" min-width="110px" align="center">
+      <el-table-column :label="$t('notice.noticeDetails')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.noticeDetails }}</span>
         </template>
@@ -43,25 +43,25 @@
       </el-table-column>
       <el-table-column :label="$t('notice.communityId')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.communityId }}</span>
+          <span>{{ scope.row.community.communityName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('notice.buildingId')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.buildingId }}</span>
+          <span>{{ scope.row.buildingName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('notice.noticeType')" min-width="180px" align="center">
+      <el-table-column :label="$t('notice.noticeType')" min-width="80px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.noticeType }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :label="$t('notice.updateTime')" min-width="180px" align="center">
+      <!-- <el-table-column :label="$t('notice.updateTime')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.updateTime }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>

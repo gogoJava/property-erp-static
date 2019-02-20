@@ -252,10 +252,11 @@ export default {
     assetTraditionalName: '资产名字（繁体）', // 资产名字（繁体）
     assetTraditionalPosition: '位置信息（繁体）', // 位置信息（繁体）
     assetType: '资产类型', // 资产类型：电器、公共设备
+    community: '社区',
     communityId: '社区ID' // 社区ID
   },
   notice: {
-    buildingId: '建筑', // 建筑id
+    buildingId: '大厦', // 建筑id
     communityId: '社区ID', // 社区ID
     createTime: '创建时间', // 创建时间
     noticeDetails: '详情', // 详情
@@ -284,6 +285,7 @@ export default {
   adv: {
     adv: '广告',
     advId: 'ID', // ID
+    building: '大厦',
     buildingId: '楼宇id', // 楼宇id
     community: '社区', // 社区
     communityId: 'communityId', // communityId

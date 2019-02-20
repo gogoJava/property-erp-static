@@ -28,7 +28,7 @@
       </el-table-column>
       <el-table-column :label="$t('building.communityId')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.communityId }}</span>
+          <span>{{ scope.row.buildingName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('building.floorLowNum')" min-width="80px" align="center">

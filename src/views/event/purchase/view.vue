@@ -6,9 +6,14 @@
     </div>
 
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
-      <el-table-column :label="$t('event.communityId')" prop="communityId" align="center" min-width="120">
+      <el-table-column :label="$t('event.community')" prop="communityId" align="center" min-width="120">
         <template slot-scope="scope">
-          <span>{{ scope.row.communityId }}</span>
+          <span>{{ scope.row.community.communityName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('event.eventType')" min-width="80px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.eventType | eventTypeFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('event.eventCause')" min-width="180px" align="center">
@@ -23,12 +28,12 @@
       </el-table-column>
       <el-table-column :label="$t('event.eventDate')" min-width="110px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.eventDate }}</span>
+          <span>{{ scope.row.eventDate ? $moment(scope.row.eventDate).format('YYYY-MM-DD') : '--' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('event.eventFinishDate')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.eventFinishDate }}</span>
+          <span>{{ scope.row.eventFinishDate ? $moment(scope.row.eventFinishDate).format('YYYY-MM-DD') : '--' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('event.eventRemark')" min-width="180px" align="center">
@@ -43,12 +48,7 @@
       </el-table-column>
       <el-table-column :label="$t('event.eventStatus')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.eventStatus }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('event.eventType')" min-width="80px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.eventType }}</span>
+          <span>{{ scope.row.eventStatus | eventStatusFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
@@ -160,6 +160,24 @@
       Pagination
     },
     filters: {
+      // 事件进度0开始1待定2完成
+      eventStatusFilter(status) {
+        const statusMap = {
+          0: '开始',
+          1: '待定',
+          2: '完成'
+        }
+        return statusMap[status]
+      },
+      // 事件类型1采购2保养3其他
+      eventTypeFilter(type) {
+        const typeMap = {
+          1: '采购',
+          2: '保养',
+          3: '其他'
+        }
+        return typeMap[type]
+      }
     },
     data() {
       return {

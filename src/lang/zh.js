@@ -271,6 +271,7 @@ export default {
     updateTime: '更新时间' // 更新时间
   },
   event: {
+    community: '社区',
     communityId: '社区ID', // 社区ID
     eventCause: '事件起因', // 事件起因
     eventContent: '事件内容', // 事件内容
@@ -302,6 +303,7 @@ export default {
     complainDescribe: '描述', // 描述
     complainFinishTime: '完成时间', // 完成时间
     complainHandler: '处理人', // complainHandler
+    community: '社区',
     complainId: 'id', // complainId
     complainLiaisonsEmail: '联络人电邮',
     complainLiaisonsName: '联络人', // complainLiaisonsName
@@ -315,5 +317,38 @@ export default {
     updateTime: '更新时间', // updateTime
     userId: '用户id',
     complainSpecificPosition: '具体位置' // complainSpecificPosition
+  },
+  visitor: {
+    building: '大厦',
+    buildingId: '楼宇id', // 楼宇id
+    community: '社区', // 社区
+    communityId: 'communityId', // communityId
+    createTime: '创建时间', // createTime
+    updateTime: '更新时间', // updateTime
+    visitorCause: '访问事由', // visitorCause
+    visitorId: 'id', // visitorId
+    visitorName: '访问者名字', // visitorName
+    visitorSex: '性别', // 性别0女1男
+    visitorPhone: '联系号码' // visitorPhone
+  },
+  clubhouse: {
+    community: '社区',
+    createTime: '创建时间', // createTime
+    updateTime: '更新时间', // updateTime
+    images: '图片', // images 【】
+    placeAdvanceOrderDay: '提前天数', // 提前天数
+    placeEndTime: '结束时间', // placeEndTime
+    placeEnglishIntroduction: '简介', // 简介(英文)
+    placeEnglishName: '场所名字(英文)', // 场所名字(英文)
+    placeFarthestOrderDay: '最大天数', // 最大天数
+    placeId: 'id', // placeId
+    placeIntroduction: '简介(中文)',
+    placeName: '场所名字(简体)', // 场所名字(简体)
+    placeNeedOrder: '是否预定', // 需要预定(0否1是)
+    placeStartTime: '起始时间', // 起始时间
+    placeStatus: '场所状态', // 场所状态(0未开放1开放)
+    placeTraditionalIntroduction: '简介(简体)', // 简介(简体)
+    placeTraditionalName: '场所名字(繁体)', // 场所名字(繁体)
+    placeUpperLimit: '预约时间上限'
   }
 }

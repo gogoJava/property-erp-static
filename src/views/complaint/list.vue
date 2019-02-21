@@ -2,9 +2,8 @@
   <div class="complain-container">
     <div class="filter-container">
       <el-input :placeholder="$t('complain.complainClassType')" v-model="listQuery.title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
+      <!-- <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button> -->
     </div>
-
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
       <el-table-column :label="$t('complain.complainClassType')" prop="id" align="center" min-width="100">
         <template slot-scope="scope">
@@ -16,11 +15,6 @@
           <span>{{ scope.row.complainDescribe }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column :label="$t('complain.complainId')" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.complainId }}</span>
-        </template>
-      </el-table-column> -->
       <el-table-column :label="$t('complain.complainLiaisonsEmail')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.complainLiaisonsEmail }}</span>
@@ -87,9 +81,9 @@
           <span>{{ scope.row.complainHandler || '--' }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="280" class-name="small-padding fixed-width" fixed="right">
+      <el-table-column :label="$t('table.actions')" align="center" width="250" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
-          <span class="btn-text" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</span>
+          <!-- <span class="btn-text" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</span> -->
           <!-- <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button> -->
           <span v-if="scope.row.complainStatus !== '1'" class="btn-text" @click="handleStatus(scope.row, 1)">收到</span>
           <span v-if="scope.row.complainStatus !== '2'" class="btn-text" @click="handleStatus(scope.row, 2)">处理中</span>
@@ -104,55 +98,72 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
     <!-- 添加、编辑、详情 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="90px" style="width: 400px; margin-left:50px;">
-        <el-form-item :label="$t('complain.name')" prop="name">
-          <el-input v-model="temp.name" />
-        </el-form-item>
-        <el-form-item :label="$t('complain.username')" prop="username">
-          <el-input v-model="temp.username" />
-        </el-form-item>
-        <el-form-item :label="$t('complain.sex')" prop="sex">
-          <el-select v-model="temp.sex" placeholder="请选择">
-            <el-option :key="0" :value="0" label="女" />
-            <el-option :key="1" :value="1" label="男" />
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('complain.type')" prop="type">
-          <el-select v-model="temp.type" placeholder="请选择">
-            <el-option :key="0" :value="0" label="普通管理员" />
-            <el-option :key="1" :value="1" label="超级管理员" />
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('complain.communityId')" prop="communityId">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" width="80%" label-width="90px">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('complain.complainClassType')" prop="complainClassType">
+              <el-input v-model="temp.complainClassType" />
+            </el-form-item>
+            <el-form-item :label="$t('complain.complainDescribe')" prop="complainDescribe">
+              <el-input v-model="temp.complainDescribe" />
+            </el-form-item>
+            <el-form-item :label="$t('complain.complainLiaisonsEmail')" prop="complainLiaisonsEmail">
+              <el-input v-model="temp.complainLiaisonsEmail" />
+            </el-form-item>
+            <el-form-item :label="$t('complain.complainLiaisonsName')" prop="complainLiaisonsName">
+              <el-input v-model="temp.complainLiaisonsName" />
+            </el-form-item>
+            <el-form-item :label="$t('complain.complainPosition')" prop="complainPosition">
+              <el-input v-model="temp.complainPosition" />
+            </el-form-item>
+            <el-form-item :label="$t('complain.complainType')" prop="complainType">
+              <el-input v-model="temp.complainType" />
+            </el-form-item>
+            <el-form-item :label="$t('complain.complainStatus')" prop="complainStatus">
+              <el-select v-model="temp.complainStatus" placeholder="请选择">
+                <el-option :key="0" value="0" label="发起" />
+                <el-option :key="1" value="1" label="收到" />
+                <el-option :key="2" value="2" label="处理中" />
+                <el-option :key="3" value="3" label="处理完成" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('complain.complainVoice')" prop="complainType">
+              <el-input v-model="temp.complainVoice" />
+            </el-form-item>
+            <el-form-item :label="$t('complain.images')" prop="images">
+              <!-- <el-input v-model="temp.images" /> -->
+            </el-form-item>
+            <el-form-item :label="$t('complain.createTime')" prop="createTime">
+              <el-input v-model="temp.createTime" />
+            </el-form-item>
+            <el-form-item :label="$t('complain.updateTime')" prop="updateTime">
+              <el-input v-model="temp.updateTime" />
+            </el-form-item>
+            <el-form-item :label="$t('complain.complainFinishTime')" prop="complainFinishTime">
+              <el-input v-model="temp.complainFinishTime" />
+            </el-form-item>
+            <el-form-item :label="$t('complain.complainHandler')" prop="complainHandler">
+              <el-input v-model="temp.complainHandler" disabled />
+            </el-form-item>
+            <el-form-item :label="$t('complain.complainLiaisonsSex')" prop="complainLiaisonsSex">
+              <el-select v-model="temp.complainLiaisonsSex" placeholder="请选择">
+                <el-option :key="0" value="0" label="女" />
+                <el-option :key="1" value="1" label="男" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <!-- <el-form-item :label="$t('complain.community')" prop="communityId">
           <el-select v-model="temp.communityId" placeholder="请绑定社区">
             <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
           </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('complain.email')" prop="email">
-          <el-input v-model="temp.email" />
-        </el-form-item>
-        <el-form-item v-if="dialogStatus==='create'" :label="$t('complain.password')" prop="email">
-          <el-input v-model="temp.password" />
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{ $t('table.cancel') }}</el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">{{ $t('table.confirm') }}</el-button>
-      </div>
-    </el-dialog>
-    <!-- 修改密码 -->
-    <el-dialog :title="'修改密码'" :visible.sync="dialogUpdateVisible">
-      <el-form ref="dataForm" :rules="rules" label-position="right" label-width="90px" style="width: 400px; margin-left:50px;">
-        <el-form-item :label="$t('complain.name')" prop="name">
-          <el-input v-model="temp.name" />
-        </el-form-item>
-        <el-form-item label="新密码" prop="password">
-          <el-input v-model="temp.password" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogUpdateVisible = false">{{ $t('table.cancel') }}</el-button>
-        <el-button type="primary" @click="updateData()">{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>

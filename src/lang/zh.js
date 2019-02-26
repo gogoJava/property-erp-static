@@ -191,7 +191,7 @@ export default {
     username: '用户名', // 用户名
     password: '密码' // 密码
   },
-  // 大厦
+  // 建筑
   building: {
     buildingDirection: '楼宇方向', // 楼宇方向
     buildingId: 'ID', // buildingId
@@ -207,7 +207,8 @@ export default {
   // 单位
   unit: {
     unitChildRelativeProportion: '分层建筑物之子部分相对比(千分之一)', // 分层建筑物之子部分相对比(千分之一)
-    buildingId: '大厦', // buildingId
+    buildingId: '建筑', // buildingId
+    community: '社区',
     unitCoveredArea: '覆盖面积大小(单位平方米)', // 覆盖面积大小(单位平方米)
     unitName: '单位名字', // 单元名字
     unitFullAddress: '全址', // 全址
@@ -256,7 +257,7 @@ export default {
     communityId: '社区ID' // 社区ID
   },
   notice: {
-    buildingId: '大厦', // 建筑id
+    buildingId: '建筑', // 建筑id
     communityId: '社区ID', // 社区ID
     createTime: '创建时间', // 创建时间
     noticeDetails: '详情', // 详情
@@ -286,7 +287,7 @@ export default {
   adv: {
     adv: '广告',
     advId: 'ID', // ID
-    building: '大厦',
+    building: '建筑',
     buildingId: '楼宇id', // 楼宇id
     community: '社区', // 社区
     communityId: 'communityId', // communityId
@@ -319,7 +320,7 @@ export default {
     complainSpecificPosition: '具体位置' // complainSpecificPosition
   },
   visitor: {
-    building: '大厦',
+    building: '建筑',
     buildingId: '楼宇id', // 楼宇id
     community: '社区', // 社区
     communityId: 'communityId', // communityId
@@ -350,5 +351,33 @@ export default {
     placeTraditionalIntroduction: '简介(简体)', // 简介(简体)
     placeTraditionalName: '场所名字(繁体)', // 场所名字(繁体)
     placeUpperLimit: '预约时间上限'
+  },
+  charge: {
+    recordActualAmount: '实际收取金额', // 实际收取金额
+    recordAmount: '收费金额', // 收费金额
+    recordDate: '收费记录年月份', // 收费记录年月份(2019-01)
+    recordId: '', // recordId
+    recordLateDate: '滞纳金天数', // 滞纳金天数
+    recordLateFee: '滞纳金额', // 滞纳金额
+    recordRemark: '备注', // 备注
+    recordStatus: '状态', // 状态0欠费1已付2预支付
+    recordTime: '收费时间', // 收费时间
+    unitItemId: '单位收费项目', // 单位收费项目
+    userId: '住户' // 住户
+  },
+  chargeItem: {
+    additionalCost: '额外费用(基金费用)', // 额外费用(基金费用)
+    alculationMethod: '计算方式', // 计算方式0定额1公式
+    billingMode: '收费模式', // 收费模式0周期性1临时性
+    communityId: '社区id', // 社区id
+    community: '社区', // 社区
+    describe: '金额', // 金额
+    formula: '计算公式', // 计算公式
+    itemId: 'id', // itemId
+    itemName: '收费项目名字', // 收费项目名字
+    itemNo: '收费项目编号', // 收费项目编号
+    lateFee: '滞纳金率', // 滞纳金率(单位:百分之一)
+    unitPrice: '计算单价', // 计算单价
+    lateDate: '滞纳开始天数' // 滞纳开始天数
   }
 }

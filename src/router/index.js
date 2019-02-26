@@ -132,14 +132,14 @@ export const asyncRouterMap = [
       }
     ]
   },
-  // 大厦管理
+  // 建筑管理
   {
     path: '/building',
     component: Layout,
     redirect: '/building/list',
     name: 'building',
     meta: {
-      title: '大厦管理',
+      title: '建筑管理',
       icon: 'chart'
     },
     children: [
@@ -147,7 +147,7 @@ export const asyncRouterMap = [
         path: 'list',
         component: () => import('@/views/building/list'),
         name: 'BuildList',
-        meta: { title: '大厦列表', icon: 'list', noCache: true }
+        meta: { title: '建筑列表', icon: 'list', noCache: true }
       },
       {
         path: 'unit',
@@ -285,6 +285,12 @@ export const asyncRouterMap = [
         component: () => import('@/views/report/fund/view.vue'),
         name: 'Fund',
         meta: { title: '基金费用管理', icon: 'list' }
+      },
+      {
+        path: 'unit',
+        component: () => import('@/views/report/unit/view.vue'),
+        name: 'Unit',
+        meta: { title: '单元收费管理', icon: 'list' }
       }
     ]
   },

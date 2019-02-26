@@ -304,7 +304,7 @@
         this.getList()
       },
       handleDelete(row) {
-        this.$confirm('确定删除大厦【' + row.buildingName + '】?', '提示', {
+        this.$confirm('确定删除建筑【' + row.buildingName + '】?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

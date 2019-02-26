@@ -1,7 +1,7 @@
-// 大厦管理
+// 建筑管理
 import request from '@/utils/request'
 
-// 获取大厦列表
+// 获取建筑列表
 export function getBuildingList(query) {
   return request({
     url: '/back/building/list',

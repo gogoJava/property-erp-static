@@ -92,7 +92,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('adv.building')" prop="buildingId">
-              <el-select v-model="temp.buildingId" placeholder="请绑定大厦">
+              <el-select v-model="temp.buildingId" placeholder="请绑定建筑">
                 <el-option v-for="(item, index) in buildingList" :key="index" :value="item.buildingId" :label="item.buildingName" />
               </el-select>
             </el-form-item>
@@ -370,7 +370,7 @@
         const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
         this.communityList = response.data.list
       },
-       // 获取大厦列表
+       // 获取建筑列表
       async queryBuildList() {
         const response = await getBuildingList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
         this.buildingList = response.data.list

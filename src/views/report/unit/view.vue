@@ -10,7 +10,7 @@
           :label="item.buildingName"
           :value="item.buildingId" />
       </el-select>
-      <!-- <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button> -->
+      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
       <el-table-column :label="$t('unit.unitNo')" prop="id" align="center" min-width="100">
@@ -70,71 +70,27 @@
       </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
-          <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-          <!-- <el-button size="mini" @click="handleUpdatePwd(scope.row)">{{ $t('table.updatePwd') }}</el-button> -->
-          <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
-          </el-button>
+          <!-- <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button> -->
+          <span @click="test(scope.row)">关联收费项目</span>
+          <!-- <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }} -->
+          <!-- </el-button> -->
         </template>
       </el-table-column>
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
     <!-- 添加、编辑、详情 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="800px">
+    <el-dialog :visible.sync="dialogShow" width="800px">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="250px" style="width: 700px;">
-        <el-form-item :label="$t('unit.unitNo')" prop="unitNo">
-          <el-input v-model="temp.unitNo" />
-        </el-form-item>
-        <el-form-item :label="$t('unit.unitName')" prop="unitName">
-          <el-input v-model="temp.unitName" />
-        </el-form-item>
-        <el-form-item :label="$t('unit.unitCoveredArea')" prop="unitCoveredArea">
-          <el-input v-model="temp.unitCoveredArea" />
-        </el-form-item>
-        <el-form-item :label="$t('unit.unitFullAddress')" prop="unitFullAddress">
-          <el-input v-model="temp.unitFullAddress" />
-        </el-form-item>
-        <el-form-item :label="$t('unit.buildingId')" prop="buildingId">
-          <el-select v-model="temp.buildingId" placeholder="请绑定建筑">
-            <el-option v-for="(item, index) in buildingList" :key="index" :value="item.buildingId" :label="item.buildingName" />
+        <el-form-item label="收费项目" prop="itemId">
+          <el-select v-model="itemId" placeholder="请绑定收费项目">
+            <el-option v-for="(item, index) in chargeItemList" :key="index" :value="item.itemId" :label="item.itemName" />
           </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('unit.community')" prop="communityId">
-          <el-select v-model="temp.communityId" placeholder="请绑定社区">
-            <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('unit.unitPosition')" prop="unitPosition">
-          <el-input v-model="temp.unitPosition" />
-        </el-form-item>
-        <el-form-item :label="$t('unit.unitPurpose')" prop="unitPurpose">
-          <el-input v-model="temp.unitPurpose" />
-        </el-form-item>
-        <el-form-item :label="$t('unit.unitStatus')" prop="unitStatus">
-          <el-select v-model="temp.unitStatus" placeholder="请选择单位状态">
-            <el-option :key="0" :value="0" label="空置" />
-            <el-option :key="1" :value="1" label="租赁" />
-            <el-option :key="2" :value="2" label="装修中" />
-            <el-option :key="3" :value="3" label="入住" />
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('unit.unitType')" prop="unitType">
-          <el-select v-model="temp.unitType" placeholder="请选择单位类型">
-            <el-option :key="1" :value="1" label="商铺" />
-            <el-option :key="2" :value="2" label="住宅" />
-            <el-option :key="3" :value="3" label="停车场" />
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('unit.unitRelativeProportion')" prop="unitRelativeProportion">
-          <el-input v-model="temp.unitRelativeProportion" />
-        </el-form-item>
-        <el-form-item :label="$t('unit.unitChildRelativeProportion')" prop="unitChildRelativeProportion">
-          <el-input v-model="temp.unitChildRelativeProportion" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">{{ $t('table.cancel') }}</el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">{{ $t('table.confirm') }}</el-button>
+        <el-button @click="dialogShow = false">{{ $t('table.cancel') }}</el-button>
+        <el-button type="primary" @click="testTwo">{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -148,9 +104,13 @@
     delUnit
   } from '@/api/unit'
   import {
+    getChargeItemList,
+    addUnitItem
+  } from '@/api/charge'
+  import {
     getBuildingList
   } from '@/api/building'
-  import { getCommunityList } from '@/api/community'
+  // import { getCommunityList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
@@ -251,7 +211,10 @@
         password: null,
         buildingList: [],
         buildingId: null,
-        communityList: []
+        chargeItemList: [],
+        dialogShow: false,
+        itemId: null,
+        unitId: null
       }
     },
     watch: {
@@ -262,7 +225,7 @@
     async created() {
       await this.queryBuildyList()
       // this.getList()
-      this.queryCommunityList()
+      this.queryChargeItemList()
     },
     methods: {
       async getList() {
@@ -321,6 +284,29 @@
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
+      },
+      test(info) {
+        console.log('info', info)
+        this.unitId = info.unitId
+        this.itemId = null
+        this.dialogShow = true
+      },
+      async testTwo() {
+        const data = {
+          unitWithItemList: [{ itemId: this.itemId, unitId: this.unitId, type: 0 }]
+        }
+        const response = await addUnitItem(data).catch(e => e)
+        if (response.code !== 200) {
+          return this.$notify({ title: '关联失败', message: response.msg, type: 'error', duration: 2000 })
+        }
+        this.dialogFormVisible = false
+        this.$notify({
+          title: '成功',
+          message: '关联成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.getList()
       },
       async createData() {
         const response = await createUnit(this.temp).catch(e => e)
@@ -382,9 +368,9 @@
         this.buildingId = this.buildingList[0].buildingId
       },
       // 获取社区列表
-      async queryCommunityList() {
-        const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
-        this.communityList = response.data.list
+      async queryChargeItemList() {
+        const response = await getChargeItemList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        this.chargeItemList = response.data.list
       }
     }
   }

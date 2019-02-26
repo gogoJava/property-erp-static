@@ -4,7 +4,6 @@
       <el-input :placeholder="$t('asset.assetName')" v-model="listQuery.title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
-
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
       <el-table-column :label="$t('asset.assetDescribe')" prop="assetDescribe" align="center" min-width="120">
         <template slot-scope="scope">
@@ -100,7 +99,7 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item :label="$t('asset.communityId')" prop="communityId">
+            <el-form-item :label="$t('asset.community')" prop="communityId">
               <el-select v-model="temp.communityId" placeholder="请绑定社区">
                 <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
               </el-select>

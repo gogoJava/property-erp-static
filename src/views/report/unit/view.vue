@@ -25,7 +25,7 @@
       </el-table-column>
       <el-table-column :label="$t('unit.buildingId')" min-width="120px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.buildingId }}</span>
+          <span>{{ scope.row.building.buildingName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('unit.unitCoveredArea')" min-width="110px" align="center">
@@ -71,7 +71,7 @@
       <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <!-- <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button> -->
-          <span @click="test(scope.row)">关联收费项目</span>
+          <el-button type="text" size="mini" @click="test(scope.row)">关联收费项目</el-button>
           <!-- <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }} -->
           <!-- </el-button> -->
         </template>
@@ -115,7 +115,7 @@
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
   export default {
-    name: 'Unit',
+    name: 'Unittest',
     components: {
       Pagination
     },
@@ -233,9 +233,9 @@
         const { code, msg, data } = await getUnitList({ ...this.listQuery, buildingId: this.buildingId }).catch(e => e)
         this.listLoading = false
         if (code !== 200) {
-          return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+          return this.$notify({ title: '失败1', message: msg, type: 'error', duration: 2000 })
         }
-        this.list = [... data.list]
+        this.list = data.list
         this.total = data.total
       },
       handleFilter() {
@@ -286,15 +286,12 @@
         })
       },
       test(info) {
-        console.log('info', info)
         this.unitId = info.unitId
         this.itemId = null
         this.dialogShow = true
       },
       async testTwo() {
-        const data = {
-          unitWithItemList: [{ itemId: this.itemId, unitId: this.unitId, type: 0 }]
-        }
+        const data = [{ itemId: this.itemId, unitId: this.unitId }]
         const response = await addUnitItem(data).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '关联失败', message: response.msg, type: 'error', duration: 2000 })

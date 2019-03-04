@@ -21,22 +21,22 @@ for (let i = 0; i < count; i++) {
 }
 
 export default {
-  '/unit/list': config => {
-    const { page = 1, limit = 20, sort } = config.query
+  // '/unit/list': config => {
+  //   const { page = 1, limit = 20, sort } = config.query
 
-    let mockList = List.filter(item => {
-      return true
-    })
+  //   let mockList = List.filter(item => {
+  //     return true
+  //   })
 
-    if (sort === '-id') {
-      mockList = mockList.reverse()
-    }
+  //   if (sort === '-id') {
+  //     mockList = mockList.reverse()
+  //   }
 
-    const pageList = mockList.filter((item, index) => index < limit * page && index >= limit * (page - 1))
+  //   const pageList = mockList.filter((item, index) => index < limit * page && index >= limit * (page - 1))
 
-    return {
-      total: mockList.length,
-      items: pageList
-    }
-  }
+  //   return {
+  //     total: mockList.length,
+  //     items: pageList
+  //   }
+  // }
 }

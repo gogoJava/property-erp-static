@@ -1,7 +1,7 @@
 <template>
   <div class="unit-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('unit.unitName')" v-model="listQuery.title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <!-- <el-input :placeholder="$t('unit.unitName')" v-model="listQuery.title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" /> -->
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.buildingId') }}:</span>
       <el-select v-model="buildingId" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
@@ -10,9 +10,9 @@
           :label="item.buildingName"
           :value="item.buildingId" />
       </el-select>
-      <!-- <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button> -->
+      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
-    <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
+    <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('unit.unitNo')" prop="id" align="center" min-width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.unitNo }}</span>
@@ -25,7 +25,7 @@
       </el-table-column>
       <el-table-column :label="$t('unit.buildingId')" min-width="120px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.buildingId }}</span>
+          <span>{{ scope.row.building.buildingName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('unit.unitCoveredArea')" min-width="110px" align="center">
@@ -74,6 +74,7 @@
           <!-- <el-button size="mini" @click="handleUpdatePwd(scope.row)">{{ $t('table.updatePwd') }}</el-button> -->
           <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
           </el-button>
+          <el-button type="text" size="mini" @click="bindUser(scope.row)">绑定用户</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -95,7 +96,7 @@
           <el-input v-model="temp.unitFullAddress" />
         </el-form-item>
         <el-form-item :label="$t('unit.buildingId')" prop="buildingId">
-          <el-select v-model="temp.buildingId" placeholder="请绑定建筑">
+          <el-select v-model="buildingId" placeholder="请绑定建筑" disabled>
             <el-option v-for="(item, index) in buildingList" :key="index" :value="item.buildingId" :label="item.buildingName" />
           </el-select>
         </el-form-item>
@@ -137,6 +138,19 @@
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
+    <el-dialog :visible.sync="dialogShow" width="800px">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="250px" style="width: 700px;">
+        <el-form-item label="住户">
+          <el-select v-model="userId" placeholder="请绑定住户">
+            <el-option v-for="(item, index) in proprietorList" :key="index" :value="item.userId" :label="item.username" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogShow = false">{{ $t('table.cancel') }}</el-button>
+        <el-button type="primary" @click="testTwo">{{ $t('table.confirm') }}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -145,11 +159,15 @@
     getUnitList,
     createUnit,
     updateUnit,
-    delUnit
+    delUnit,
+    addUser
   } from '@/api/unit'
   import {
     getBuildingList
   } from '@/api/building'
+  import {
+    getProprietorList
+  } from '@/api/proprietor'
   import { getCommunityList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -191,11 +209,7 @@
         listLoading: true,
         listQuery: {
           pageNo: 1,
-          pageSize: 10,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
+          pageSize: 10
         },
         importanceOptions: [1, 2, 3],
         sortOptions: [{
@@ -251,7 +265,10 @@
         password: null,
         buildingList: [],
         buildingId: null,
-        communityList: []
+        communityList: [],
+        proprietorList: [],
+        dialogShow: false,
+        userId: null
       }
     },
     watch: {
@@ -260,8 +277,8 @@
       }
     },
     async created() {
-      await this.queryBuildyList()
-      // this.getList()
+      this.queryBuildyList()
+      this.queryProprietorList()
       this.queryCommunityList()
     },
     methods: {
@@ -270,14 +287,10 @@
         const { code, msg, data } = await getUnitList({ ...this.listQuery, buildingId: this.buildingId }).catch(e => e)
         this.listLoading = false
         if (code !== 200) {
-          return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+          return this.$notify({ title: '失败1', message: msg, type: 'error', duration: 2000 })
         }
-        this.list = [... data.list]
+        this.list = data.list
         this.total = data.total
-      },
-      handleFilter() {
-        this.listQuery.pageNo = 1
-        this.getList()
       },
       handleModifyStatus(row, status) {
         this.$message({
@@ -286,32 +299,20 @@
         })
         row.status = status
       },
-      sortChange(data) {
-        const {
-          prop,
-          order
-        } = data
-        if (prop === 'id') {
-          this.sortByID(order)
-        }
-      },
-      sortByID(order) {
-        if (order === 'ascending') {
-          this.listQuery.sort = '+id'
-        } else {
-          this.listQuery.sort = '-id'
-        }
-        this.handleFilter()
-      },
       resetTemp() {
         this.temp = {
-          id: undefined,
-          importance: 1,
-          remark: '',
-          timestamp: new Date(),
-          title: '',
-          status: 'published',
-          type: ''
+          unitChildRelativeProportion: null, // 分层建筑物之子部分相对比(千分之一)
+          buildingId: this.buildingId, // buildingId
+          unitCoveredArea: null, // 覆盖面积大小(单位平方米)
+          unitName: '', // 单元名字
+          unitFullAddress: '', // 全址
+          unitId: '', // unitId
+          unitNo: null, // 单位编号
+          unitPosition: '', // 位置(地下,一楼,二楼,三楼,户外.)
+          unitPurpose: '', // 用途
+          unitRelativeProportion: null, // 分层建筑物相对比(千分之一)
+          unitStatus: null, // 单位状态0空置1租赁2装修中3入住
+          unitType: null // 单位类型1商铺2住宅3停车场
         }
       },
       handleCreate() {
@@ -364,7 +365,7 @@
         }).then(async() => {
           const { code, msg } = await delUnit({ unitId: row.unitId }).catch(e => e)
           if (code !== 200) {
-            return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+            return this.$notify({ title: '失败2', message: msg, type: 'error', duration: 2000 })
           }
           this.$notify({
             title: '成功',
@@ -385,6 +386,43 @@
       async queryCommunityList() {
         const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
         this.communityList = response.data.list
+      },
+      // 获取用户列表
+      // async queryCommunityList() {
+      //   const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+      //   this.communityList = response.data.list
+      // },
+      async queryProprietorList() {
+        this.listLoading = true
+        const { code, msg, data } = await getProprietorList(this.listQuery).catch(e => e)
+        this.listLoading = false
+        if (code !== 200) {
+          return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+        }
+        this.proprietorList = [... data.list]
+      },
+      bindUser(info) {
+        this.userId = null
+        this.unitId = info.unitId
+        this.dialogShow = true
+      },
+      async testTwo() {
+        const data = { userId: this.userId, unitId: this.unitId, owner: true }
+        // const data = {
+        //   userUnit: [{ userId: this.userId, unitId: this.unitId, owner: true }]
+        // }
+        const response = await addUser(data).catch(e => e)
+        if (response.code !== 200) {
+          return this.$notify({ title: '关联失败', message: response.msg, type: 'error', duration: 2000 })
+        }
+        this.dialogFormVisible = false
+        this.$notify({
+          title: '成功',
+          message: '关联成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.getList()
       }
     }
   }

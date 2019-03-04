@@ -36,3 +36,12 @@ export function delUnit(params) {
     params
   })
 }
+
+// 房间用户添加
+export function addUser(params) {
+  return request({
+    url: '/back/unit/addUser',
+    method: 'post',
+    data: params
+  })
+}

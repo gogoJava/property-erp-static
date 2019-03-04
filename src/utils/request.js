@@ -23,10 +23,12 @@ export const createInstance = (config) => {
 // request
   instance.interceptors.request.use((config) => {
     const { requestMapKeys, data } = config
+    // console.log('config init', config)
     if (requestMapKeys) {
       config.data = data ? requestMapKeys(data) : data
     }
     config.headers.Authorization = localStorage.getItem('Admin-Token') || ''
+    // console.log('config end', config)
     return config
   }, (error) => {
     return Promise.reject(error)

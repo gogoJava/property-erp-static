@@ -150,7 +150,7 @@ export const asyncRouterMap = [
         meta: { title: '建筑列表', icon: 'list', noCache: true }
       },
       {
-        path: 'unit',
+        path: 'unitlist',
         component: () => import('@/views/building/unit'),
         name: 'UnitList',
         meta: { title: '单位列表', icon: 'excel' }
@@ -170,49 +170,62 @@ export const asyncRouterMap = [
       }
     ]
   },
-  // 物业管理
+  // 物业资产
   {
-    path: '/property',
+    path: '/asset',
     component: Layout,
-    redirect: '/property/asset/list',
-    name: 'Property',
-    meta: {
-      title: '物业管理',
-      icon: 'example'
-    },
     children: [
       {
-        path: 'asset/list',
+        path: 'list',
         component: () => import('@/views/property/asset/list'),
-        name: 'Asset',
+        name: 'asset',
         meta: { title: '物业资产', icon: 'money', noCache: true }
-      },
-      {
-        path: 'type',
-        component: () => import('@/views/property/type/view.vue'),
-        name: 'type',
-        meta: { title: '设备类型', icon: 'size' }
-      },
-      {
-        path: 'fault',
-        component: () => import('@/views/property/fault/view.vue'),
-        name: 'fault',
-        meta: { title: '故障记录', icon: 'bug' }
-      },
-      {
-        path: 'outgoing',
-        component: () => import('@/views/property/outgoing/view.vue'),
-        name: 'outgoing',
-        meta: { title: '资产出入库', icon: 'nested' }
-      },
-      {
-        path: 'file',
-        component: () => import('@/views/property/file/view.vue'),
-        name: 'file',
-        meta: { title: '物业档案', icon: 'clipboard' }
       }
     ]
   },
+  // 物业管理
+  // {
+  //   path: '/property',
+  //   component: Layout,
+  //   redirect: '/property/asset/list',
+  //   name: 'Property',
+  //   meta: {
+  //     title: '物业管理',
+  //     icon: 'example'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'asset/list',
+  //       component: () => import('@/views/property/asset/list'),
+  //       name: 'Asset',
+  //       meta: { title: '物业资产', icon: 'money', noCache: true }
+  //     },
+  //     {
+  //       path: 'type',
+  //       component: () => import('@/views/property/type/view.vue'),
+  //       name: 'type',
+  //       meta: { title: '设备类型', icon: 'size' }
+  //     },
+  //     {
+  //       path: 'fault',
+  //       component: () => import('@/views/property/fault/view.vue'),
+  //       name: 'fault',
+  //       meta: { title: '故障记录', icon: 'bug' }
+  //     },
+  //     {
+  //       path: 'outgoing',
+  //       component: () => import('@/views/property/outgoing/view.vue'),
+  //       name: 'outgoing',
+  //       meta: { title: '资产出入库', icon: 'nested' }
+  //     },
+  //     {
+  //       path: 'file',
+  //       component: () => import('@/views/property/file/view.vue'),
+  //       name: 'file',
+  //       meta: { title: '物业档案', icon: 'clipboard' }
+  //     }
+  //   ]
+  // },
   // 物业公告
   {
     path: '/bulletin',
@@ -243,19 +256,19 @@ export const asyncRouterMap = [
   {
     path: '/report',
     component: Layout,
-    redirect: '/report',
+    redirect: '/arrears',
     name: 'report',
     meta: {
       title: '物业报表',
       icon: 'excel'
     },
     children: [
-      {
-        path: 'payment',
-        component: () => import('@/views/report/payment/view.vue'),
-        name: 'Payment',
-        meta: { title: '缴费通知', icon: 'list', noCache: true }
-      },
+      // {
+      //   path: 'payment',
+      //   component: () => import('@/views/report/payment/view.vue'),
+      //   name: 'Payment',
+      //   meta: { title: '缴费通知', icon: 'list', noCache: true }
+      // },
       {
         path: 'arrears',
         component: () => import('@/views/report/arrears/view.vue'),
@@ -268,12 +281,12 @@ export const asyncRouterMap = [
         name: 'Charged',
         meta: { title: '已收款查询', icon: 'list' }
       },
-      // {
-      //   path: 'purchase',
-      //   component: () => import('@/views/report/purchase/view.vue'),
-      //   name: 'Purchase',
-      //   meta: { title: '个人收费明细', icon: 'list' }
-      // },
+      {
+        path: 'prepayment',
+        component: () => import('@/views/report/prepayment/view.vue'),
+        name: 'Prepayment',
+        meta: { title: '预支付查询', icon: 'list' }
+      },
       {
         path: 'summary',
         component: () => import('@/views/report/summary/view.vue'),
@@ -289,7 +302,7 @@ export const asyncRouterMap = [
       {
         path: 'unit',
         component: () => import('@/views/report/unit/view.vue'),
-        name: 'Unit',
+        name: 'Unittext',
         meta: { title: '单元收费管理', icon: 'list' }
       }
     ]

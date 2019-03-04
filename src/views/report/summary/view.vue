@@ -4,63 +4,62 @@
       <el-input :placeholder="$t('charge.unitItemId')" v-model="listQuery.title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <!-- <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button> -->
     </div>
-
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('charge.unitItemId')" prop="id" align="center" min-width="120">
         <template slot-scope="scope">
-          <span>{{ scope.row.unitItemId }}</span>
+          <span>{{ scope.row.chargeItem ? scope.row.chargeItem.itemName : '--' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('charge.userId')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.userId }}</span>
+          <span>{{ scope.row.user ? scope.row.user.name : '--' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('charge.recordTime')" min-width="120px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.recordTime }}</span>
+          <span>{{ scope.row.recordTime ? $moment(scope.row.recordTime).format('YYYY-MM-DD') : '--' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('charge.recordStatus')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.recordStatus }}</span>
+          <span>{{ scope.row.recordStatus | recordStatusFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('charge.recordAmount')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.recordAmount }}</span>
+          <span>{{ scope.row.recordAmount || '--' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('charge.recordActualAmount')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.recordActualAmount }}</span>
+          <span>{{ scope.row.recordActualAmount || '--' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('charge.recordDate')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.recordDate }}</span>
+          <span>{{ scope.row.recordDate || '--' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('charge.recordLateFee')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.recordLateFee }}</span>
+          <span>{{ scope.row.recordLateFee || '--' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('charge.recordLateDate')" min-width="100px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.recordLateDate }}</span>
+          <span>{{ scope.row.recordLateDate || '--' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('charge.recordLateFee')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.recordLateFee }}</span>
+          <span>{{ scope.row.recordLateFee || '--' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-          <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
-          </el-button>
+          <!-- <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
+          </el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -72,12 +71,12 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('charge.unitItemId')" prop="username">
-              <el-input v-model="temp.unitItemId" />
+              <el-input v-model="temp.chargeItem.itemName" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('charge.userId')" prop="name">
-              <el-input v-model="temp.userId" />
+              <el-input v-model="temp.user.name" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -167,6 +166,15 @@
       Pagination
     },
     filters: {
+      recordStatusFilter(status) {
+        // 状态0欠费1已付2预支付
+        const statusMap = {
+          0: '欠费',
+          1: '已付',
+          2: '预支付'
+        }
+        return statusMap[status]
+      }
     },
     data() {
       return {
@@ -191,7 +199,9 @@
           recordStatus: null, // 状态0欠费1已付2预支付
           recordTime: '', // 收费时间
           unitItemId: '', // 单位收费项目
-          userId: '' // 住户
+          userId: '', // 住户
+          chargeItem: {},
+          user: {}
         },
         textMap: {
           update: 'Edit',
@@ -240,7 +250,9 @@
           recordStatus: null, // 状态0欠费1已付2预支付
           recordTime: '', // 收费时间
           unitItemId: '', // 单位收费项目
-          userId: '' // 住户
+          userId: '', // 住户
+          chargeItem: {},
+          user: {}
         }
       },
       handleCreate() {
@@ -251,20 +263,6 @@
           this.$refs['dataForm'].clearValidate()
         })
       },
-      // async createData() {
-      //   const response = await createcharge(this.temp).catch(e => e)
-      //   if (response.code !== 200) {
-      //     return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
-      //   }
-      //   this.dialogFormVisible = false
-      //   this.$notify({
-      //     title: '成功',
-      //     message: '创建成功',
-      //     type: 'success',
-      //     duration: 2000
-      //   })
-      //   this.getList()
-      // },
       handleUpdate(row) {
         this.temp = Object.assign({}, row) // copy obj
         this.dialogStatus = 'update'

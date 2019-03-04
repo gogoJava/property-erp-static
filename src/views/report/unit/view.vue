@@ -1,7 +1,7 @@
 <template>
   <div class="unit-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('unit.unitName')" v-model="listQuery.title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input :placeholder="$t('unit.unitName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.buildingId') }}:</span>
       <el-select v-model="buildingId" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
@@ -152,10 +152,7 @@
         listQuery: {
           pageNo: 1,
           pageSize: 10,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
+          keyword: ''
         },
         importanceOptions: [1, 2, 3],
         sortOptions: [{
@@ -220,6 +217,9 @@
     watch: {
       buildingId() {
         this.getList()
+      },
+      'listQuery.keyword'() {
+        this.getList()
       }
     },
     async created() {
@@ -238,33 +238,12 @@
         this.list = data.list
         this.total = data.total
       },
-      handleFilter() {
-        this.listQuery.pageNo = 1
-        this.getList()
-      },
       handleModifyStatus(row, status) {
         this.$message({
           message: '操作成功',
           type: 'success'
         })
         row.status = status
-      },
-      sortChange(data) {
-        const {
-          prop,
-          order
-        } = data
-        if (prop === 'id') {
-          this.sortByID(order)
-        }
-      },
-      sortByID(order) {
-        if (order === 'ascending') {
-          this.listQuery.sort = '+id'
-        } else {
-          this.listQuery.sort = '-id'
-        }
-        this.handleFilter()
       },
       resetTemp() {
         this.temp = {

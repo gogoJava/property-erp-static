@@ -1,7 +1,7 @@
 <template>
   <div class="chargeItem-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('chargeItem.itemName')" v-model="listQuery.title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input :placeholder="$t('chargeItem.itemName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
 
@@ -193,6 +193,7 @@
         listQuery: {
           pageNo: 1,
           pageSize: 10,
+          keyword: '',
           recordStatus: 0 // 状态0欠费1已付2预支付
         },
         communityList: [],
@@ -218,6 +219,11 @@
         dialogStatus: '',
         dialogFormVisible: false,
         rules: {}
+      }
+    },
+    watch: {
+      'listQuery.keyword'() {
+        this.getList()
       }
     },
     created() {

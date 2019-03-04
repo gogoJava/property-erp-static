@@ -1,7 +1,7 @@
 <template>
   <div class="visitor-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('visitor.visitorName')" v-model="listQuery.title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input :placeholder="$t('visitor.visitorName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <!-- <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button> -->
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
@@ -164,9 +164,7 @@
         listQuery: {
           pageNo: 1,
           pageSize: 10,
-          importance: undefined,
-          title: undefined,
-          type: undefined
+          keyword: ''
         },
         communityList: [],
         buildingList: [],
@@ -190,10 +188,13 @@
         rules: {}
       }
     },
+    watch: {
+      'listQuery.keyword'() {
+        this.getList()
+      }
+    },
     created() {
       this.getList()
-      // this.queryCommunityList()
-      // this.queryBuildingList()
     },
     methods: {
       async getList() {
@@ -216,80 +217,6 @@
         const response = await getBuildingList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
         this.buildingList = response.data.list
       }
-      // resetTemp() {
-      //   this.temp = {
-      //      buildingId: '', // 楼宇id
-      //     communityId: '', // communityId
-      //     createTime: null, // createTime
-      //     updateTime: null, // updateTime
-      //     visitorCause: '', // visitorCause
-      //     visitorId: '', // visitorId
-      //     visitorName: '', // visitorName
-      //     visitorSex: null, // 性别0女1男
-      //     visitorPhone: null // visitorPhone
-      //   }
-      // },
-      // handleCreate() {
-      //   this.resetTemp()
-      //   this.dialogStatus = 'create'
-      //   this.dialogFormVisible = true
-      //   this.$nextTick(() => {
-      //     this.$refs['dataForm'].clearValidate()
-      //   })
-      // },
-      // async createData() {
-      //   const response = await createvisitor(this.temp).catch(e => e)
-      //   if (response.code !== 200) {
-      //     return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
-      //   }
-      //   this.dialogFormVisible = false
-      //   this.$notify({
-      //     title: '成功',
-      //     message: '创建成功',
-      //     type: 'success',
-      //     duration: 2000
-      //   })
-      //   this.getList()
-      // },
-      // handleUpdate(row) {
-      //   this.temp = Object.assign({}, row) // copy obj
-      //   this.dialogStatus = 'update'
-      //   this.dialogFormVisible = true
-      //   this.$nextTick(() => {
-      //     this.$refs['dataForm'].clearValidate()
-      //   })
-      // },
-      // async updateData() {
-      //   this.listLoading = true
-      //   const response = await updatevisitor(this.temp).catch(e => e)
-      //   this.listLoading = false
-      //   if (response.code !== 200) {
-      //     return this.$notify({ title: '修改失败', message: response.msg, type: 'error', duration: 2000 })
-      //   }
-      //   this.$notify({ title: '成功', message: '修改成功', type: 'success', duration: 2000 })
-      //   this.dialogFormVisible = false
-      //   this.dialogUpdateVisible = false
-      //   this.getList()
-      // },
-      // async handleDelete(row) {
-      //   this.$confirm('确定删除公告【' + row.visitorTitle + '】?', '提示', {
-      //     confirmButtonText: '确定',
-      //     cancelButtonText: '取消',
-      //     type: 'warning'
-      //   }).then(async() => {
-      //     const { code, msg } = await delvisitor({ visitorId: row.visitorId }).catch(e => e)
-      //     if (code !== 200) {
-      //       return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
-      //     }
-      //     this.$notify({
-      //       title: '成功',
-      //       message: '删除成功',
-      //       type: 'success',
-      //       duration: 2000
-      //     })
-      //     this.getList()
-      //   }).catch(() => {})
-      // }
     }
   }
 

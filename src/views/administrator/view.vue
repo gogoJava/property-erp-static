@@ -1,7 +1,7 @@
 <template>
   <div class="administrator-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('administrator.name')" v-model="listQuery.title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input :placeholder="$t('administrator.name')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
 
@@ -158,10 +158,7 @@
         listQuery: {
           pageNo: 1,
           pageSize: 10,
-          importance: undefined,
-          title: undefined,
-          type: undefined
-          // sort: '+id'
+          keyword: ''
         },
         importanceOptions: [1, 2, 3],
         sortOptions: [{
@@ -216,6 +213,11 @@
         password: ''
       }
     },
+    watch: {
+      'listQuery.keyword'() {
+        this.getList()
+      }
+    },
     created() {
       this.getList()
       this.queryCommunityList()
@@ -241,10 +243,6 @@
         const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
         this.communityList = response.data.list
     },
-      handleFilter() {
-        this.listQuery.pageNo = 1
-        this.getList()
-      },
       handleModifyStatus(row, status) {
         this.$message({
           message: '操作成功',
@@ -260,14 +258,6 @@
         if (prop === 'id') {
           this.sortByID(order)
         }
-      },
-      sortByID(order) {
-        if (order === 'ascending') {
-          this.listQuery.sort = '+id'
-        } else {
-          this.listQuery.sort = '-id'
-        }
-        this.handleFilter()
       },
       resetTemp() {
         this.temp = {

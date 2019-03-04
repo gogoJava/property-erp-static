@@ -1,9 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('community.communityNo')" v-model="listQuery.title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"/>
+      <el-input :placeholder="$t('community.communityName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item"/>
     </div>
-
     <el-table
       v-loading="listLoading"
       :key="tableKey"
@@ -141,10 +140,7 @@ export default {
       listQuery: {
         pageNo: 1,
         pageSize: 10,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
-        sort: '+id'
+        keyword: ''
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
@@ -179,6 +175,11 @@ export default {
       downloadLoading: false
     }
   },
+  watch: {
+    'listQuery.keyword'() {
+      this.getList()
+    }
+  },
   created() {
     this.getList()
   },
@@ -186,7 +187,6 @@ export default {
     async getList() {
       this.listLoading = true
       const response = await getCommunityList(this.listQuery).catch(e => e)
-      console.log('response', response)
       if (response.code !== 200) {
           return this.$notify({
           title: '查询失败',
@@ -198,10 +198,6 @@ export default {
       this.list = response.data.list
       this.total = response.data.total
       this.listLoading = false
-    },
-    handleFilter() {
-      this.listQuery.pageNo = 1
-      this.getList()
     },
     handleModifyStatus(row, status) {
       this.$message({
@@ -215,14 +211,6 @@ export default {
       if (prop === 'id') {
         this.sortByID(order)
       }
-    },
-    sortByID(order) {
-      if (order === 'ascending') {
-        this.listQuery.sort = '+id'
-      } else {
-        this.listQuery.sort = '-id'
-      }
-      this.handleFilter()
     },
     resetTemp() {
       this.temp = {

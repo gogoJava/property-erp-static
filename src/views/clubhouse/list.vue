@@ -112,19 +112,18 @@
             <el-form-item :label="$t('clubhouse.placeEndTime')" prop="placeEndTime">
               <el-input v-model="temp.placeEndTime" />
             </el-form-item>
-            <el-form-item :label="$t('clubhouse.placeNeedOrder')" prop="placeNeedOrder">
-              <el-select v-model="temp.placeNeedOrder" placeholder="请选择">
-                <el-option :key="0" value="0" label="否" />
-                <el-option :key="1" value="1" label="是" />
+            <el-form-item :label="$t('clubhouse.community')" prop="communityId">
+              <el-select v-model="temp.communityId" placeholder="请绑定社区">
+                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
               </el-select>
             </el-form-item>
+            <!-- <el-form-item :label="$t('clubhouse.images')" prop="images">
+              <single-image :value.sync="temp.images" />
+            </el-form-item> -->
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('clubhouse.placeFarthestOrderDay')" prop="placeFarthestOrderDay">
               <el-input v-model="temp.placeFarthestOrderDay" />
-            </el-form-item>
-            <el-form-item :label="$t('clubhouse.images')" prop="images">
-              <!-- <el-input v-model="temp.images" /> -->
             </el-form-item>
             <el-form-item :label="$t('clubhouse.createTime')" prop="createTime">
               <el-input v-model="temp.createTime" />
@@ -144,13 +143,24 @@
                 <el-option :key="1" value="1" label="开放" />
               </el-select>
             </el-form-item>
+            <el-form-item :label="$t('clubhouse.placeNeedOrder')" prop="placeNeedOrder">
+              <el-select v-model="temp.placeNeedOrder" placeholder="请选择">
+                <el-option :key="0" value="0" label="否" />
+                <el-option :key="1" value="1" label="是" />
+              </el-select>
+            </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <!-- <el-row>
           <el-form-item :label="$t('clubhouse.community')" prop="communityId">
             <el-select v-model="temp.communityId" placeholder="请绑定社区">
               <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
             </el-select>
+          </el-form-item>
+        </el-row> -->
+        <el-row>
+          <el-form-item :label="$t('clubhouse.images')" prop="images">
+            <single-image :value.sync="temp.images" />
           </el-form-item>
         </el-row>
       </el-form>
@@ -175,11 +185,13 @@
     parseTime
   } from '@/utils'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+  import SingleImage from './singleImage'
 
   export default {
     name: 'Clubhouse',
     components: {
-      Pagination
+      Pagination,
+      SingleImage
     },
     directives: {
       waves
@@ -336,6 +348,7 @@
         }
       },
       resetTemp() {
+        this.temp = null
         this.temp = {
           createTime: null, // createTime
           updateTime: null, // updateTime
@@ -364,6 +377,13 @@
         })
       },
       async createData() {
+        // const images = this.temp.images.map(item => {
+        //   return { imageThumbnail: item, imageUrl: item }
+        // })
+        // const data = {
+        //   ...this.temp,
+        //   images
+        // }
         const response = await addClubhouse(this.temp).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
@@ -378,6 +398,7 @@
         this.getList()
       },
       handleUpdate(row) {
+        this.temp = null
         this.temp = Object.assign({}, row) // copy obj
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
@@ -386,6 +407,13 @@
         })
       },
       async updateData() {
+        // const images = this.temp.images.map(item => {
+        //   return { imageThumbnail: item, imageUrl: item }
+        // })
+        // const data = {
+        //   ...this.temp,
+        //   images
+        // }
         this.listLoading = true
         const response = await updateClubhouse(this.temp).catch(e => e)
         this.listLoading = false

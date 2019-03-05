@@ -7,7 +7,7 @@
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
       <el-table-column :label="$t('adv.community')" prop="id" align="center" min-width="120">
         <template slot-scope="scope">
-          <span>{{ scope.row.community.communityName }}</span>
+          <span>{{ scope.row.community.communityName || '全部' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('adv.describe')" min-width="180px" align="center">
@@ -221,8 +221,10 @@
         },
         downloadLoading: false,
         password: null,
-        communityList: [],
-        buildingList: [],
+        // communityList: [],
+        // buildingList: [],
+        communityList: [{ communityId: '', communityName: '全部' }],
+        buildingList: [{ buildingId: '', buildingName: '全部' }],
         imgPrefix: 'http://songsong.fun:8080/file' // 图片前缀
       }
     },
@@ -357,12 +359,12 @@
       // 获取社区列表
       async queryCommunityList() {
         const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
-        this.communityList = response.data.list
+        this.communityList = [...this.communityList, ...response.data.list]
       },
        // 获取建筑列表
       async queryBuildList() {
         const response = await getBuildingList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
-        this.buildingList = response.data.list
+        this.buildingList = [...this.buildingList, ...response.data.list]
       },
       // 上传图片成功
       handleAvatarSuccess(res, file) {

@@ -259,6 +259,7 @@ export default {
   notice: {
     buildingId: '建筑', // 建筑id
     communityId: '社区ID', // 社区ID
+    community: '社区', // 社区ID
     createTime: '创建时间', // 创建时间
     noticeDetails: '详情', // 详情
     noticeEnglishDetails: '详情（英文）', // 详情英文

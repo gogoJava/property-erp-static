@@ -40,27 +40,21 @@
           <span>{{ scope.row.createTime }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('notice.communityId')" min-width="80px" align="center">
+      <el-table-column :label="$t('notice.community')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.community.communityName }}</span>
+          <span>{{ scope.row.community.communityName || '全部' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('notice.buildingId')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.buildingName }}</span>
+          <span>{{ scope.row.buildingName || '全部' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('notice.noticeType')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.noticeType }}</span>
+          <span>{{ scope.row.noticeType | typeFilter }}</span>
         </template>
       </el-table-column>
-
-      <!-- <el-table-column :label="$t('notice.updateTime')" min-width="180px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.updateTime }}</span>
-        </template>
-      </el-table-column> -->
       <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
@@ -94,22 +88,26 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('notice.noticeType')" prop="englishName">
-              <el-input v-model="temp.noticeType" />
+              <!-- <el-input v-model="temp.noticeType" /> -->
+              <el-select v-model="temp.noticeType" placeholder="请选择">
+                <el-option :value="0" label="触摸屏" />
+                <el-option :value="1" label="APP" />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('notice.buildingId')" prop="sex">
-              <el-select v-model="temp.buildingId" placeholder="请选择">
-                <el-option v-for="(item, index) in buildingList" :key="index" :value="item.buildingId" :label="item.buildingName" />
+            <el-form-item :label="$t('notice.community')" prop="communityId">
+              <el-select v-model="temp.communityId" placeholder="请绑定社区">
+                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('notice.communityId')" prop="communityId">
-              <el-select v-model="temp.communityId" placeholder="请绑定社区">
-                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
+            <el-form-item :label="$t('notice.buildingId')" prop="sex">
+              <el-select v-model="temp.buildingId" placeholder="请选择">
+                <el-option v-for="(item, index) in buildingList" :key="index" :value="item.buildingId" :label="item.buildingName" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -170,6 +168,13 @@
       Pagination
     },
     filters: {
+      typeFilter(value) {
+        const typeMap = {
+          0: '触摸屏',
+          1: 'APP'
+        }
+        return typeMap[value]
+      }
     },
     data() {
       return {
@@ -182,8 +187,8 @@
           pageSize: 10,
           keyword: ''
         },
-        communityList: [],
-        buildingList: [],
+        communityList: [{ communityId: '', communityName: '全部' }],
+        buildingList: [{ buildingId: '', buildingName: '全部' }],
         temp: {
           buildingId: '', // 建筑id
           communityId: '', // 社区ID
@@ -232,12 +237,12 @@
       // 获取社区列表
       async queryCommunityList() {
         const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
-        this.communityList = response.data.list
+        this.communityList = [...this.communityList, ...response.data.list]
       },
       // 获取建筑列表
       async queryBuildingList() {
         const response = await getBuildingList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
-        this.buildingList = response.data.list
+        this.buildingList = [...this.buildingList, ...response.data.list]
       },
       resetTemp() {
         this.temp = {

@@ -27,7 +27,7 @@
       </el-table-column>
       <el-table-column :label="$t('charge.recordAmount')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.recordAmount || '--' }}</span>
+          <span>{{ scope.row.recordAmount }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('charge.recordActualAmount')" min-width="180px" align="center">
@@ -37,7 +37,7 @@
       </el-table-column>
       <el-table-column :label="$t('charge.recordDate')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.recordDate || '--' }}</span>
+          <span>{{ scope.row.recordDate }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('charge.recordLateFee')" min-width="80px" align="center">
@@ -83,7 +83,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('charge.recordDate')" prop="idCard">
-              <el-input v-model="temp.recordDate" />
+              <el-date-picker v-model="recordDate" type="date" format="yyyy/MM" placeholder="选择日期" disabled />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -103,7 +103,21 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <!-- <el-col :span="12">
+            <el-form-item :label="$t('charge.communityId')" prop="communityId">
+              <el-select v-model="temp.communityId" placeholder="请绑定社区">
+                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
+              </el-select>
+            </el-form-item>
+          </el-col> -->
         </el-row>
+        <!-- <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('charge.chargeType')" prop="countryCode">
+              <el-input v-model="temp.chargeType" />
+            </el-form-item>
+          </el-col>
+        </el-row> -->
         <el-row>
           <el-col :span="24">
             <el-form-item :label="$t('charge.recordLateFee')" prop="recordLateFee">
@@ -121,7 +135,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item :label="$t('charge.recordTime')" prop="recordTime">
-              <el-input v-model="temp.recordTime" />
+              <el-date-picker v-model="recordTime" type="datetime" format="yyyy-MM-DD HH:mm" placeholder="选择日期"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -176,6 +190,8 @@
         },
         communityList: [],
         buildingList: [],
+        recordTime: '',
+        recordDate: '',
         temp: {
           recordActualAmount: '', // 实际收取金额
           recordAmount: '', // 收费金额
@@ -232,6 +248,8 @@
         this.buildingList = response.data.list
       },
       resetTemp() {
+        this.recordDate = ''
+        this.recordTime = ''
         this.temp = {
           recordActualAmount: '', // 实际收取金额
           recordAmount: '', // 收费金额
@@ -258,6 +276,8 @@
       },
       handleUpdate(row) {
         this.temp = Object.assign({}, row) // copy obj
+        this.recordDate = this.temp.recordDate ? this.$moment(this.temp.recordDate) : ''
+        this.recordTime = this.temp.recordTime ? this.$moment(this.temp.recordTime) : ''
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -265,6 +285,8 @@
         })
       },
       async updateData() {
+        this.temp.recordDate = this.recordDate ? this.$moment(this.recordDate).format('YYYY/MM') : ''
+        this.temp.recordTime = this.recordTime ? this.$moment(this.recordTime).format('YYYY-MM-DD HH:mm') : ''
         this.listLoading = true
         const response = await updateChargeItemRecord(this.temp).catch(e => e)
         this.listLoading = false

@@ -40,7 +40,7 @@
           <span>{{ scope.row.eventRemark }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('event.eventSolve')" min-width="80px" align="center">
+      <el-table-column :label="$t('event.eventSolve')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.eventSolve }}</span>
         </template>
@@ -78,12 +78,12 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('event.eventDate')" prop="idCard">
-              <el-input v-model="temp.eventDate" />
+              <el-date-picker v-model="eventDate" type="date" format="yyyy-MM-dd" placeholder="选择日期"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('event.eventFinishDate')" prop="englishName">
-              <el-input v-model="temp.eventFinishDate" />
+              <el-date-picker v-model="eventFinishDate" type="date" format="yyyy-MM-dd" placeholder="选择日期"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -191,6 +191,8 @@
         },
         communityList: [],
         buildingList: [],
+        eventDate: '',
+        eventFinishDate: '',
         temp: {
           communityId: '', // 社区ID
           eventCause: '', // 事件起因
@@ -238,6 +240,8 @@
         this.communityList = response.data.list
       },
       resetTemp() {
+        this.eventDate = ''
+        this.eventFinishDate = ''
         this.temp = {
           communityId: '', // 社区ID
           eventCause: '', // 事件起因
@@ -260,6 +264,8 @@
         })
       },
       async createData() {
+        this.temp.eventDate = this.eventDate ? this.$moment(this.eventDate).format('YYYY-MM-DD') : ''
+        this.temp.eventFinishDate = this.eventFinishDate ? this.$moment(this.eventFinishDate).format('YYYY-MM-DD') : ''
         const response = await createEvent(this.temp).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
@@ -275,6 +281,8 @@
       },
       handleUpdate(row) {
         this.temp = Object.assign({}, row) // copy obj
+        this.eventDate = this.temp.eventDate ? this.$moment(this.temp.eventDate) : ''
+        this.eventFinishDate = this.temp.eventFinishDate ? this.$moment(this.temp.eventFinishDate) : ''
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -282,6 +290,8 @@
         })
       },
       async updateData() {
+        this.temp.eventDate = this.eventDate ? this.$moment(this.eventDate).format('YYYY-MM-DD') : ''
+        this.temp.eventFinishDate = this.eventFinishDate ? this.$moment(this.eventFinishDate).format('YYYY-MM-DD') : ''
         this.listLoading = true
         const response = await updateEvent(this.temp).catch(e => e)
         this.listLoading = false

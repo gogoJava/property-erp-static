@@ -10,9 +10,9 @@
           :label="item.buildingName"
           :value="item.buildingId" />
       </el-select>
-      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
+      <!-- <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button> -->
     </div>
-    <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
+    <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('unit.unitNo')" prop="id" align="center" min-width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.unitNo }}</span>
@@ -260,9 +260,9 @@
         this.resetTemp()
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate()
-        })
+        // this.$nextTick(() => {
+        //   this.$refs['dataForm'].clearValidate()
+        // })
       },
       test(info) {
         this.unitId = info.unitId

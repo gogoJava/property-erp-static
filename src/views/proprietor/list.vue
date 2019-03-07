@@ -147,7 +147,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('proprietor.birthday')" prop="birthday">
-              <el-input v-model="temp.birthday" />
+              <el-date-picker v-model="birthday" type="date" format="yyyy-MM-dd" placeholder="选择日期"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -238,6 +238,7 @@
         }],
         statusOptions: ['published', 'draft', 'deleted'],
         showReviewer: false,
+        birthday: '',
         temp: {
           birthday: '出生日期', // 出生日期
           communityId: '社区', // 社区ID
@@ -327,6 +328,7 @@
         }
       },
       resetTemp() {
+        this.birthday = ''
         this.temp = {
           id: undefined,
           importance: 1,
@@ -347,6 +349,7 @@
         })
       },
       async createData() {
+        this.temp.birthday = this.birthday ? this.$moment(this.birthday).format('YYYY-MM-DD') : ''
         const response = await createProprietor(this.temp).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
@@ -363,6 +366,7 @@
       handleUpdate(row) {
         this.temp = Object.assign({}, row) // copy obj
         this.temp.password = ''
+        this.birthday = this.temp.birthday ? this.$moment(this.temp.birthday) : ''
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -371,6 +375,7 @@
       },
       async updateData() {
         this.listLoading = true
+        this.temp.birthday = this.birthday ? this.$moment(this.birthday).format('YYYY-MM-DD') : ''
         const response = await updateProprietor(this.temp).catch(e => e)
         this.listLoading = false
         if (response.code !== 200) {

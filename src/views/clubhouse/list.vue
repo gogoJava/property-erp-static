@@ -10,6 +10,11 @@
           <span>{{ scope.row.placeTraditionalName }}</span>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('clubhouse.placeName')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.placeName || '' }}</span>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('clubhouse.placeEnglishName')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.placeEnglishName }}</span>
@@ -52,7 +57,7 @@
       </el-table-column>
       <el-table-column :label="$t('clubhouse.placeEndTime')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.placeEndTime }}</span>
+          <span>{{ scope.row.placeEndTime ? $moment(scope.row.placeEndTime).format('YYYY-MM-DD HH:ss') : '--' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('clubhouse.placeFarthestOrderDay')" min-width="80px" align="center">
@@ -72,7 +77,7 @@
       </el-table-column>
       <el-table-column :label="$t('clubhouse.placeStartTime')" min-width="150px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.placeStartTime ? $moment(scope.row.placeStartTime).format('YYYY-MM-DD') : '--' }}</span>
+          <span>{{ scope.row.placeStartTime ? $moment(scope.row.placeStartTime).format('YYYY-MM-DD HH:ss') : '--' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('clubhouse.placeUpperLimit')" min-width="160px" align="center">
@@ -100,21 +105,24 @@
             <el-form-item :label="$t('clubhouse.placeEnglishName')" prop="placeEnglishName">
               <el-input v-model="temp.placeEnglishName" />
             </el-form-item>
-            <el-form-item :label="$t('clubhouse.placeTraditionalIntroduction')" prop="placeTraditionalIntroduction">
-              <el-input v-model="temp.placeTraditionalIntroduction" />
-            </el-form-item>
             <el-form-item :label="$t('clubhouse.placeEnglishIntroduction')" prop="placeEnglishIntroduction">
               <el-input v-model="temp.placeEnglishIntroduction" />
             </el-form-item>
             <el-form-item :label="$t('clubhouse.placeAdvanceOrderDay')" prop="placeAdvanceOrderDay">
               <el-input v-model="temp.placeAdvanceOrderDay" />
             </el-form-item>
-            <el-form-item :label="$t('clubhouse.placeEndTime')" prop="placeEndTime">
-              <el-input v-model="temp.placeEndTime" />
+            <el-form-item :label="$t('clubhouse.placeStartTime')" prop="placeStartTime">
+              <el-date-picker v-model="placeStartTime" type="datetime" format="yyyy-MM-DD HH:mm:ss" placeholder="选择日期"/>
             </el-form-item>
             <el-form-item :label="$t('clubhouse.community')" prop="communityId">
               <el-select v-model="temp.communityId" placeholder="请绑定社区">
                 <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
+              </el-select>
+            </el-form-item>
+            <el-form-item :label="$t('clubhouse.placeNeedOrder')" prop="placeNeedOrder">
+              <el-select v-model="temp.placeNeedOrder" placeholder="请选择">
+                <el-option :key="0" value="0" label="否" />
+                <el-option :key="1" value="1" label="是" />
               </el-select>
             </el-form-item>
             <!-- <el-form-item :label="$t('clubhouse.images')" prop="images">
@@ -125,17 +133,23 @@
             <el-form-item :label="$t('clubhouse.placeFarthestOrderDay')" prop="placeFarthestOrderDay">
               <el-input v-model="temp.placeFarthestOrderDay" />
             </el-form-item>
-            <el-form-item :label="$t('clubhouse.createTime')" prop="createTime">
+            <el-form-item :label="$t('clubhouse.placeName')" prop="placeName">
+              <el-input v-model="temp.placeName" />
+            </el-form-item>
+            <el-form-item :label="$t('clubhouse.placeTraditionalIntroduction')" prop="placeTraditionalIntroduction">
+              <el-input v-model="temp.placeTraditionalIntroduction" />
+            </el-form-item>
+            <!-- <el-form-item :label="$t('clubhouse.createTime')" prop="createTime">
               <el-input v-model="temp.createTime" />
             </el-form-item>
             <el-form-item :label="$t('clubhouse.updateTime')" prop="updateTime">
               <el-input v-model="temp.updateTime" />
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item :label="$t('clubhouse.placeIntroduction')" prop="placeIntroduction">
               <el-input v-model="temp.placeIntroduction" />
             </el-form-item>
-            <el-form-item :label="$t('clubhouse.placeStartTime')" prop="placeStartTime">
-              <el-input v-model="temp.placeStartTime" />
+            <el-form-item :label="$t('clubhouse.placeEndTime')" prop="placeEndTime">
+              <el-date-picker v-model="placeEndTime" type="datetime" format="yyyy-MM-DD HH:mm:ss" placeholder="选择日期"/>
             </el-form-item>
             <el-form-item :label="$t('clubhouse.placeStatus')" prop="placeStatus">
               <el-select v-model="temp.placeStatus" placeholder="请选择">
@@ -143,11 +157,8 @@
                 <el-option :key="1" value="1" label="开放" />
               </el-select>
             </el-form-item>
-            <el-form-item :label="$t('clubhouse.placeNeedOrder')" prop="placeNeedOrder">
-              <el-select v-model="temp.placeNeedOrder" placeholder="请选择">
-                <el-option :key="0" value="0" label="否" />
-                <el-option :key="1" value="1" label="是" />
-              </el-select>
+            <el-form-item :label="$t('clubhouse.images')" prop="images">
+              <single-image :value.sync="temp.images" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -158,11 +169,11 @@
             </el-select>
           </el-form-item>
         </el-row> -->
-        <el-row>
+        <!-- <el-row>
           <el-form-item :label="$t('clubhouse.images')" prop="images">
             <single-image :value.sync="temp.images" />
           </el-form-item>
-        </el-row>
+        </el-row> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{ $t('table.cancel') }}</el-button>
@@ -250,23 +261,26 @@
         }],
         statusOptions: ['published', 'draft', 'deleted'],
         showReviewer: false,
+        placeStartTime: '',
+        placeEndTime: '',
         temp: {
           createTime: null, // createTime
           updateTime: null, // updateTime
           images: [], // images 【】
           placeAdvanceOrderDay: null, // 提前天数
-          placeEndTime: null, // placeEndTime
+          placeEndTime: '', // placeEndTime
           placeEnglishIntroduction: '', // 简介(英文)
           placeEnglishName: '', // 场所名字(英文)
           placeFarthestOrderDay: null, // 最大天数
           placeId: '', // placeId
           placeIntroduction: '',
           placeNeedOrder: null, // 需要预定(0否1是)
-          placeStartTime: null, // 起始时间
+          placeStartTime: '', // 起始时间
           placeStatus: null, // 场所状态(0未开放1开放)
           placeTraditionalIntroduction: '', // 简介(简体)
           placeTraditionalName: '', // 场所名字(繁体)
-          placeUpperLimit: null
+          placeUpperLimit: null,
+          placeName: null
         },
         dialogFormVisible: false,
         dialogUpdateVisible: false,
@@ -349,23 +363,26 @@
       },
       resetTemp() {
         this.temp = null
+        this.placeStartTime = ''
+        this.placeEndTime = ''
         this.temp = {
           createTime: null, // createTime
           updateTime: null, // updateTime
           images: [], // images 【】
           placeAdvanceOrderDay: null, // 提前天数
-          placeEndTime: null, // placeEndTime
+          placeEndTime: '', // placeEndTime
           placeEnglishIntroduction: '', // 简介(英文)
           placeEnglishName: '', // 场所名字(英文)
           placeFarthestOrderDay: null, // 最大天数
           placeId: '', // placeId
           placeIntroduction: '',
           placeNeedOrder: null, // 需要预定(0否1是)
-          placeStartTime: null, // 起始时间
+          placeStartTime: '', // 起始时间
           placeStatus: null, // 场所状态(0未开放1开放)
           placeTraditionalIntroduction: '', // 简介(简体)
           placeTraditionalName: '', // 场所名字(繁体)
-          placeUpperLimit: null
+          placeUpperLimit: null,
+          placeName: null
         }
       },
       handleCreate() {
@@ -377,13 +394,8 @@
         })
       },
       async createData() {
-        // const images = this.temp.images.map(item => {
-        //   return { imageThumbnail: item, imageUrl: item }
-        // })
-        // const data = {
-        //   ...this.temp,
-        //   images
-        // }
+        this.temp.placeStartTime = this.placeStartTime ? this.$moment(this.placeStartTime).format('YYYY-MM-DD HH:mm:ss') : ''
+        this.temp.placeEndTime = this.placeEndTime ? this.$moment(this.placeEndTime).format('YYYY-MM-DD HH:mm:ss') : ''
         const response = await addClubhouse(this.temp).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
@@ -398,6 +410,8 @@
         this.getList()
       },
       handleUpdate(row) {
+        this.placeStartTime = this.temp.placeStartTime ? this.$moment(this.temp.placeStartTime) : ''
+        this.placeEndTime = this.temp.placeEndTime ? this.$moment(this.temp.placeEndTime) : ''
         this.temp = null
         this.temp = Object.assign({}, row) // copy obj
         this.dialogStatus = 'update'
@@ -407,13 +421,8 @@
         })
       },
       async updateData() {
-        // const images = this.temp.images.map(item => {
-        //   return { imageThumbnail: item, imageUrl: item }
-        // })
-        // const data = {
-        //   ...this.temp,
-        //   images
-        // }
+        this.temp.placeStartTime = this.placeStartTime ? this.$moment(this.placeStartTime).format('YYYY-MM-DD HH:mm:ss') : ''
+        this.temp.placeEndTime = this.placeEndTime ? this.$moment(this.placeEndTime).format('YYYY-MM-DD HH:mm:ss') : ''
         this.listLoading = true
         const response = await updateClubhouse(this.temp).catch(e => e)
         this.listLoading = false

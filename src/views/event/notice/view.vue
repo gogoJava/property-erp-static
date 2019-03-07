@@ -35,9 +35,9 @@
           <span>{{ scope.row.noticeTraditionalDetails }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('notice.createTime')" min-width="80px" align="center">
+      <el-table-column :label="$t('notice.createTime')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.createTime }}</span>
+          <span>{{ $moment(scope.row.createTime).format('YYYY-MM-DD HH:mm') }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('notice.community')" min-width="80px" align="center">

@@ -85,6 +85,11 @@
           <span>{{ scope.row.placeUpperLimit ? $moment(scope.row.placeUpperLimit).format('YYYY-MM-DD') : '--' }}</span>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('clubhouse.placeIconType')" min-width="120px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.placeIconType | placeIconTypeFilter }}</span>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="160" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <span class="btn-text" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</span>
@@ -125,6 +130,9 @@
                 <el-option :key="1" value="1" label="是" />
               </el-select>
             </el-form-item>
+            <el-form-item :label="$t('clubhouse.images')" prop="images">
+              <single-image :value.sync="temp.images" />
+            </el-form-item>
             <!-- <el-form-item :label="$t('clubhouse.images')" prop="images">
               <single-image :value.sync="temp.images" />
             </el-form-item> -->
@@ -157,23 +165,20 @@
                 <el-option :key="1" value="1" label="开放" />
               </el-select>
             </el-form-item>
-            <el-form-item :label="$t('clubhouse.images')" prop="images">
+            <!-- <el-form-item :label="$t('clubhouse.images')" prop="images">
               <single-image :value.sync="temp.images" />
+            </el-form-item> -->
+            <el-form-item :label="$t('clubhouse.placeIconType')" prop="placeIconType">
+              <el-select v-model="temp.placeIconType" placeholder="请选择">
+                <el-option :key="0" :value="0" label="篮球场" />
+                <el-option :key="1" :value="1" label="羽毛球馆" />
+                <el-option :key="2" :value="2" label="KTV" />
+                <el-option :key="3" :value="3" label="足球馆" />
+                <el-option :key="4" :value="4" label="高尔夫馆" />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
-        <!-- <el-row>
-          <el-form-item :label="$t('clubhouse.community')" prop="communityId">
-            <el-select v-model="temp.communityId" placeholder="请绑定社区">
-              <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
-            </el-select>
-          </el-form-item>
-        </el-row> -->
-        <!-- <el-row>
-          <el-form-item :label="$t('clubhouse.images')" prop="images">
-            <single-image :value.sync="temp.images" />
-          </el-form-item>
-        </el-row> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{ $t('table.cancel') }}</el-button>
@@ -238,6 +243,17 @@
           3: '处理完成'
         }
         return statusMap[status]
+      },
+      placeIconTypeFilter(type) {
+        // 0篮球场1羽毛球馆2KTV3足球馆4高尔夫馆
+        const typeMap = {
+          0: '篮球场',
+          1: '羽毛球馆',
+          2: 'KTV',
+          3: '足球馆',
+          4: '高尔夫馆'
+        }
+        return typeMap[type]
       }
     },
     data() {
@@ -280,7 +296,8 @@
           placeTraditionalIntroduction: '', // 简介(简体)
           placeTraditionalName: '', // 场所名字(繁体)
           placeUpperLimit: null,
-          placeName: null
+          placeName: null,
+          placeIconType: null
         },
         dialogFormVisible: false,
         dialogUpdateVisible: false,
@@ -382,7 +399,8 @@
           placeTraditionalIntroduction: '', // 简介(简体)
           placeTraditionalName: '', // 场所名字(繁体)
           placeUpperLimit: null,
-          placeName: null
+          placeName: null,
+          placeIconTypeL: null
         }
       },
       handleCreate() {

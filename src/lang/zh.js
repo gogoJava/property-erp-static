@@ -62,7 +62,29 @@ export default {
     theme: '换肤',
     clipboardDemo: 'Clipboard',
     i18n: '国际化',
-    externalLink: '外链'
+    externalLink: '外链',
+    community: '社区管理',
+    communityList: '社区列表',
+    communityCreate: '创建社区',
+    administrator: '社区物业管理员',
+    building: '建筑管理',
+    buildingList: '建筑列表',
+    unitList: '单位列表',
+    proprietor: '业主管理',
+    propertyAssets: '物业资产',
+    bulletin: '公告',
+    propertyEvent: '物业事件',
+    propertyReport: '物业报表',
+    arrears: '欠费查询',
+    receivedInquiry: '已收款查询',
+    prepaidInquiry: '预支付查询',
+    costSummary: '费用汇总',
+    fundFee: '基金费用管理',
+    unitCharge: '单元收费管理',
+    propertyComplaint: '物业投诉',
+    visitor: '访客登记',
+    clubhouse: '会所管理',
+    advertisement: '广告管理'
   },
   navbar: {
     logOut: '退出登录',
@@ -351,7 +373,8 @@ export default {
     placeStatus: '场所状态', // 场所状态(0未开放1开放)
     placeTraditionalIntroduction: '简介(简体)', // 简介(简体)
     placeTraditionalName: '场所名字(繁体)', // 场所名字(繁体)
-    placeUpperLimit: '预约时间上限'
+    placeUpperLimit: '预约时间上限',
+    placeIconType: '图标类型'
   },
   charge: {
     recordActualAmount: '实际收取金额', // 实际收取金额

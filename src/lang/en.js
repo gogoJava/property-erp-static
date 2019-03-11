@@ -62,7 +62,29 @@ export default {
     theme: 'Theme',
     clipboardDemo: 'Clipboard',
     i18n: 'I18n',
-    externalLink: 'External Link'
+    externalLink: 'External Link',
+    community: 'Community',
+    communityList: 'Community List',
+    communityCreate: 'Create Community',
+    administrator: 'Administrator',
+    building: 'Building',
+    buildingList: 'Building List',
+    unitList: 'Unit List',
+    proprietor: 'Proprietor',
+    propertyAssets: 'Property Assets',
+    bulletin: 'Bulletin',
+    propertyEvent: 'Property Event',
+    propertyReport: 'Property Report',
+    arrears: 'Arrears',
+    receivedInquiry: 'Received Inquiry',
+    prepaidInquiry: 'Prepaid Inquiry',
+    costSummary: 'Cost Summary',
+    fundFee: 'Fund Fee',
+    unitCharge: 'Unit Charge',
+    propertyComplaint: 'Property Complaint',
+    visitor: 'Visitor',
+    clubhouse: 'Clubhouse',
+    advertisement: 'Advertisement'
   },
   navbar: {
     logOut: 'Log Out',
@@ -342,7 +364,7 @@ export default {
     placeEndTime: 'End Time', // placeEndTime
     placeEnglishIntroduction: 'Introduction', // 简介(英文)
     placeEnglishName: 'Place Name(English)', // 场所名字(英文)
-    placeFarthestOrderDay: '最大天数', // 最大天数
+    placeFarthestOrderDay: 'Maximum Number Of Days', // 最大天数
     placeId: 'id', // placeId
     placeIntroduction: 'Introduction(中文)',
     placeName: 'Place Name(Simplified)', // 场所名字(简体)
@@ -351,7 +373,8 @@ export default {
     placeStatus: 'Location Status', // 场所状态(0未开放1开放)
     placeTraditionalIntroduction: 'Introduction(Simplified)', // 简介(简体)
     placeTraditionalName: 'Place Name(Traditional Chinese)', // 场所名字(繁体)
-    placeUpperLimit: 'Appointment Time Limit'
+    placeUpperLimit: 'Appointment Time Limit',
+    placeIconType: 'Icon Type'
   },
   charge: {
     recordActualAmount: 'Actual Amount Charged', // 实际收取金额

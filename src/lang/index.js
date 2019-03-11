@@ -6,6 +6,7 @@ import elementZhLocale from 'element-ui/lib/locale/lang/zh-CN'// element-ui lang
 // import elementEsLocale from 'element-ui/lib/locale/lang/es'// element-ui lang
 import enLocale from './en'
 import zhLocale from './zh'
+import tcLocale from './tc'
 // import esLocale from './es'
 
 Vue.use(VueI18n)
@@ -17,6 +18,10 @@ const messages = {
   },
   zh: {
     ...zhLocale,
+    ...elementZhLocale
+  },
+  tc: {
+    ...tcLocale,
     ...elementZhLocale
   }
   // es: {

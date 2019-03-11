@@ -87,7 +87,7 @@ export const asyncRouterMap = [
     redirect: '/community/list',
     name: 'Community',
     meta: {
-      title: '社区管理',
+      title: 'community',
       icon: 'table'
     },
     children: [
@@ -95,13 +95,13 @@ export const asyncRouterMap = [
         path: 'list',
         component: () => import('@/views/community/view'),
         name: 'List',
-        meta: { title: '社区列表', icon: 'list', noCache: true }
+        meta: { title: 'communityList', icon: 'list', noCache: true }
       },
       {
         path: 'create',
         component: () => import('@/views/community/create'),
         name: 'CreateCommunity',
-        meta: { title: '创建社区', icon: 'edit' }
+        meta: { title: 'communityCreate', icon: 'edit' }
       },
       {
         path: 'edit/:id',
@@ -128,7 +128,7 @@ export const asyncRouterMap = [
         path: 'index',
         component: () => import('@/views/administrator/view'),
         name: 'administrator',
-        meta: { title: '社区物业管理员', icon: 'user', noCache: true }
+        meta: { title: 'administrator', icon: 'user', noCache: true }
       }
     ]
   },
@@ -139,7 +139,7 @@ export const asyncRouterMap = [
     redirect: '/building/list',
     name: 'building',
     meta: {
-      title: '建筑管理',
+      title: 'building',
       icon: 'chart'
     },
     children: [
@@ -147,13 +147,13 @@ export const asyncRouterMap = [
         path: 'list',
         component: () => import('@/views/building/list'),
         name: 'BuildList',
-        meta: { title: '建筑列表', icon: 'list', noCache: true }
+        meta: { title: 'buildingList', icon: 'list', noCache: true }
       },
       {
         path: 'unitlist',
         component: () => import('@/views/building/unit'),
         name: 'UnitList',
-        meta: { title: '单位列表', icon: 'excel' }
+        meta: { title: 'unitList', icon: 'excel' }
       }
     ]
   },
@@ -166,7 +166,7 @@ export const asyncRouterMap = [
         path: 'list',
         component: () => import('@/views/proprietor/list'),
         name: 'proprietor',
-        meta: { title: '业主管理', icon: 'peoples', noCache: true }
+        meta: { title: 'proprietor', icon: 'peoples', noCache: true }
       }
     ]
   },
@@ -179,53 +179,10 @@ export const asyncRouterMap = [
         path: 'list',
         component: () => import('@/views/property/asset/list'),
         name: 'asset',
-        meta: { title: '物业资产', icon: 'money', noCache: true }
+        meta: { title: 'propertyAssets', icon: 'money', noCache: true }
       }
     ]
   },
-  // 物业管理
-  // {
-  //   path: '/property',
-  //   component: Layout,
-  //   redirect: '/property/asset/list',
-  //   name: 'Property',
-  //   meta: {
-  //     title: '物业管理',
-  //     icon: 'example'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'asset/list',
-  //       component: () => import('@/views/property/asset/list'),
-  //       name: 'Asset',
-  //       meta: { title: '物业资产', icon: 'money', noCache: true }
-  //     },
-  //     {
-  //       path: 'type',
-  //       component: () => import('@/views/property/type/view.vue'),
-  //       name: 'type',
-  //       meta: { title: '设备类型', icon: 'size' }
-  //     },
-  //     {
-  //       path: 'fault',
-  //       component: () => import('@/views/property/fault/view.vue'),
-  //       name: 'fault',
-  //       meta: { title: '故障记录', icon: 'bug' }
-  //     },
-  //     {
-  //       path: 'outgoing',
-  //       component: () => import('@/views/property/outgoing/view.vue'),
-  //       name: 'outgoing',
-  //       meta: { title: '资产出入库', icon: 'nested' }
-  //     },
-  //     {
-  //       path: 'file',
-  //       component: () => import('@/views/property/file/view.vue'),
-  //       name: 'file',
-  //       meta: { title: '物业档案', icon: 'clipboard' }
-  //     }
-  //   ]
-  // },
   // 物业公告
   {
     path: '/bulletin',
@@ -235,7 +192,7 @@ export const asyncRouterMap = [
         path: 'list',
         component: () => import('@/views/event/notice/view.vue'),
         name: 'Bulletin',
-        meta: { title: '公告', icon: 'wechat', noCache: true }
+        meta: { title: 'bulletin', icon: 'wechat', noCache: true }
       }
     ]
   },
@@ -248,7 +205,7 @@ export const asyncRouterMap = [
         path: 'list',
         component: () => import('@/views/event/purchase/view.vue'),
         name: 'event',
-        meta: { title: '物业事件', icon: 'form' }
+        meta: { title: 'propertyEvent', icon: 'form' }
       }
     ]
   },
@@ -259,51 +216,45 @@ export const asyncRouterMap = [
     redirect: '/arrears',
     name: 'report',
     meta: {
-      title: '物业报表',
+      title: 'propertyReport',
       icon: 'excel'
     },
     children: [
-      // {
-      //   path: 'payment',
-      //   component: () => import('@/views/report/payment/view.vue'),
-      //   name: 'Payment',
-      //   meta: { title: '缴费通知', icon: 'list', noCache: true }
-      // },
       {
         path: 'arrears',
         component: () => import('@/views/report/arrears/view.vue'),
         name: 'Arrears',
-        meta: { title: '欠费查询', icon: 'list' }
+        meta: { title: 'arrears', icon: 'list' }
       },
       {
         path: 'charged',
         component: () => import('@/views/report/charged/view.vue'),
         name: 'Charged',
-        meta: { title: '已收款查询', icon: 'list' }
+        meta: { title: 'receivedInquiry', icon: 'list' }
       },
       {
         path: 'prepayment',
         component: () => import('@/views/report/prepayment/view.vue'),
         name: 'Prepayment',
-        meta: { title: '预支付查询', icon: 'list' }
+        meta: { title: 'prepaidInquiry', icon: 'list' }
       },
       {
         path: 'summary',
         component: () => import('@/views/report/summary/view.vue'),
         name: 'Summary',
-        meta: { title: '费用汇总', icon: 'list' }
+        meta: { title: 'costSummary', icon: 'list' }
       },
       {
         path: 'fund',
         component: () => import('@/views/report/fund/view.vue'),
         name: 'Fund',
-        meta: { title: '基金费用管理', icon: 'list' }
+        meta: { title: 'fundFee', icon: 'list' }
       },
       {
         path: 'unit',
         component: () => import('@/views/report/unit/view.vue'),
         name: 'Unittext',
-        meta: { title: '单元收费管理', icon: 'list' }
+        meta: { title: 'unitCharge', icon: 'list' }
       }
     ]
   },
@@ -316,7 +267,7 @@ export const asyncRouterMap = [
         path: 'list',
         component: () => import('@/views/complaint/list'),
         name: 'Complaint',
-        meta: { title: '物业投诉', icon: 'email', noCache: true }
+        meta: { title: 'propertyComplaint', icon: 'email', noCache: true }
       }
     ]
   },
@@ -329,7 +280,7 @@ export const asyncRouterMap = [
         path: 'list',
         component: () => import('@/views/visitor/list'),
         name: 'Visitor',
-        meta: { title: '访客登记', icon: 'edit', noCache: true }
+        meta: { title: 'visitor', icon: 'edit', noCache: true }
       }
     ]
   },
@@ -342,7 +293,7 @@ export const asyncRouterMap = [
         path: 'list',
         component: () => import('@/views/clubhouse/list'),
         name: 'Clubhouse',
-        meta: { title: '会所管理', icon: 'drag', noCache: true }
+        meta: { title: 'clubhouse', icon: 'drag', noCache: true }
       }
     ]
   },
@@ -355,7 +306,7 @@ export const asyncRouterMap = [
         path: 'list',
         component: () => import('@/views/adv/list'),
         name: 'Clubhouse',
-        meta: { title: '广告管理', icon: 'bug', noCache: true }
+        meta: { title: 'advertisement', icon: 'bug', noCache: true }
       }
     ]
   },

@@ -15,7 +15,7 @@
           <span>{{ scope.row.noticeEnglishTitle }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('notice.noticeTraditionalTitle')" min-width="120px" align="center">
+      <el-table-column :label="$t('notice.noticeTraditionalTitle')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.noticeTraditionalTitle }}</span>
         </template>
@@ -33,6 +33,12 @@
       <el-table-column :label="$t('notice.noticeTraditionalDetails')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.noticeTraditionalDetails }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('notice.noticeImage')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <img v-for="(item, index) of scope.row.noticeImage" :key="index" :src="(imgPrefix + item.imageUrl)" class="clubhouse-img">
+          <span v-if="!scope.row.noticeImage.length">无</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('notice.createTime')" min-width="180px" align="center">
@@ -88,7 +94,6 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('notice.noticeType')" prop="englishName">
-              <!-- <el-input v-model="temp.noticeType" /> -->
               <el-select v-model="temp.noticeType" placeholder="请选择">
                 <el-option :value="0" label="触摸屏" />
                 <el-option :value="1" label="APP" />
@@ -112,13 +117,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <!-- <el-row>
-          <el-col :span="12">
-            <el-form-item :label="$t('notice.noticeType')" prop="countryCode">
-              <el-input v-model="temp.noticeType" />
-            </el-form-item>
-          </el-col>
-        </el-row> -->
         <el-row>
           <el-col :span="24">
             <el-form-item :label="$t('notice.noticeDetails')" prop="noticeDetails">
@@ -137,6 +135,13 @@
           <el-col :span="24">
             <el-form-item :label="$t('notice.noticeTraditionalDetails')" prop="noticeTraditionalDetails">
               <el-input v-model="temp.noticeTraditionalDetails" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item :label="$t('notice.noticeImage')" prop="noticeImage">
+              <single-image :value.sync="temp.noticeImage"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -161,11 +166,13 @@
   } from '@/api/building'
   import { getCommunityList } from '@/api/community'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+  import SingleImage from './singleImage'
 
   export default {
     name: 'Notice',
     components: {
-      Pagination
+      Pagination,
+      SingleImage
     },
     filters: {
       typeFilter(value) {
@@ -210,7 +217,8 @@
         },
         dialogStatus: '',
         dialogFormVisible: false,
-        rules: {}
+        rules: {},
+        imgPrefix: 'http://songsong.fun:8080/file' // 图片前缀
       }
     },
     watch: {
@@ -245,6 +253,7 @@
         this.buildingList = [...this.buildingList, ...response.data.list]
       },
       resetTemp() {
+        this.temp = null
         this.temp = {
           buildingId: '', // 建筑id
           communityId: '', // 社区ID
@@ -284,6 +293,7 @@
         this.getList()
       },
       handleUpdate(row) {
+        this.temp = null
         this.temp = Object.assign({}, row) // copy obj
         this.dialogStatus = 'update'
         this.dialogFormVisible = true

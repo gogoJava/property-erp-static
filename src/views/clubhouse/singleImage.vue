@@ -1,8 +1,7 @@
 <template>
   <div class="upload-container">
-    <el-upload :data="dataObj" :multiple="false" :http-request="httpRequest" :file-list="fileList" class="image-uploader" list-type="picture" drag action="http://songsong.fun:8080/backstage/back/file/upload?type=3">
-      <!-- <img v-if="imageUrl" :src="imageUrl" class="avatar"> -->
-      <i class="el-icon-plus avatar-uploader-icon"/>
+    <el-upload :file-list="fileList" :http-request="httpRequest" :on-remove="handleRemove" list-type="picture-card" action="http://songsong.fun:8080/backstage/back/file/upload?type=3">
+      <i class="el-icon-plus"/>
     </el-upload>
   </div>
 </template>
@@ -32,29 +31,30 @@
         },
         imageUrl: null,
         fileList: [],
+        dataFileList: [],
         list: [],
         imgPrefix: 'http://songsong.fun:8080/file' // 图片前缀
       }
     },
     watch: {
       value() {
-        // console.log('value', this.value)
-        this.fileList = []
-        this.list = []
-        // const add = !this.fileList.length
-        this.value.forEach(element => {
-          // if (add) {
-          //   this.fileList.push({ name: '图片', url: (this.imgPrefix + element.imageUrl) })
-          // }
-          this.fileList.push({ name: '图片', url: (this.imgPrefix + element.imageUrl) })
-          this.list.push(element)
-        })
+        this.setData()
       }
     },
     created() {
+      this.setData()
       this.dataObj.token = localStorage.getItem('Admin-Token')
     },
     methods: {
+      setData() {
+        this.fileList = []
+        this.list = []
+        this.value.forEach(element => {
+          this.fileList.push({ name: '图片', url: (this.imgPrefix + element.imageUrl) })
+          this.dataFileList.push(element)
+          this.list.push(element)
+        })
+      },
       rmImage() {
         this.emitInput('')
       },
@@ -87,20 +87,19 @@
           if (res.data.code !== 200 || !res.data.data.originalUrl) {
             return this.$notify({ title: '失败', message: '上传文件失败', type: 'error', duration: 2000 })
           }
-          // console.log('res', res)
-          // this.list.push(res.data.data.originalUrl)
-          // this.imageUrl = this.imgPrefix + res.data.data.originalUrl
           this.fileList.push({ name: '图片', url: (this.imgPrefix + res.data.data.originalUrl) })
-          // const list = this.value
+          this.dataFileList({ imageThumbnail: res.data.data.imageThumbnail, imageUrl: res.data.data.originalUrl })
           this.list.push({ imageThumbnail: res.data.data.thumbnailUrl, imageUrl: res.data.data.originalUrl })
-          // console.log('list', this.list)
           this.$emit('update:value', this.list)
         })
         return null
+      },
+      handleRemove(file, fileList) {
+        const list = this.dataFileList.filter((item) => {
+          if (fileList.some((value) => value.url.search(item.imageUrl) !== -1)) return true
+        })
+        this.$emit('update:value', list)
       }
-      // handleRemove(file, fileList) {
-      //   this.fileList = [...fileList]
-      // }
     }
   }
 
@@ -117,6 +116,11 @@
     .image-uploader {
       // width: 60%;
       // float: left;
+    }
+
+    .el-upload {
+      width: 146px;
+      height: 146px;
     }
 
     .image-preview {
@@ -167,13 +171,13 @@
       }
     }
   }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
+  // .avatar-uploader-icon {
+  //   font-size: 28px;
+  //   color: #8c939d;
+  //   width: 178px;
+  //   height: 178px;
+  //   line-height: 178px;
+  //   text-align: center;
+  // }
 
 </style>

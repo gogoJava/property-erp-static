@@ -121,6 +121,19 @@ export const asyncRouterMap = [
   },
   // 物业管理员
   {
+    path: '/community/manage',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/community/tree'),
+        name: 'communityTest',
+        meta: { title: 'communityTest', icon: 'table', noCache: true }
+      }
+    ]
+  },
+  // 物业管理员
+  {
     path: '/administrator',
     component: Layout,
     children: [

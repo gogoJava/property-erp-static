@@ -20,14 +20,19 @@
           <span>{{ scope.row.placeEnglishName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('clubhouse.placeTraditionalIntroduction')" min-width="200px" align="center">
+      <el-table-column :label="$t('clubhouse.placeIntroduction')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.placeTraditionalIntroduction }}</span>
+          <span>{{ scope.row.placeIntroduction }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('clubhouse.placeEnglishIntroduction')" min-width="200px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.placeEnglishIntroduction }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('clubhouse.placeTraditionalIntroduction')" min-width="200px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.placeTraditionalIntroduction }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('clubhouse.placeStatus')" min-width="100px" align="center">
@@ -63,11 +68,6 @@
       <el-table-column :label="$t('clubhouse.placeFarthestOrderDay')" min-width="80px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.placeFarthestOrderDay }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('clubhouse.placeIntroduction')" min-width="180px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.placeIntroduction }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('clubhouse.placeNeedOrder')" min-width="80px" align="center">
@@ -110,9 +110,6 @@
             <el-form-item :label="$t('clubhouse.placeEnglishName')" prop="placeEnglishName">
               <el-input v-model="temp.placeEnglishName" />
             </el-form-item>
-            <el-form-item :label="$t('clubhouse.placeEnglishIntroduction')" prop="placeEnglishIntroduction">
-              <el-input v-model="temp.placeEnglishIntroduction" />
-            </el-form-item>
             <el-form-item :label="$t('clubhouse.placeAdvanceOrderDay')" prop="placeAdvanceOrderDay">
               <el-input v-model="temp.placeAdvanceOrderDay" />
             </el-form-item>
@@ -130,31 +127,16 @@
                 <el-option :key="1" value="1" label="是" />
               </el-select>
             </el-form-item>
-            <el-form-item :label="$t('clubhouse.images')" prop="images">
-              <single-image :value.sync="temp.images" />
-            </el-form-item>
-            <!-- <el-form-item :label="$t('clubhouse.images')" prop="images">
-              <single-image :value.sync="temp.images" />
-            </el-form-item> -->
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('clubhouse.placeFarthestOrderDay')" prop="placeFarthestOrderDay">
               <el-input v-model="temp.placeFarthestOrderDay" />
             </el-form-item>
+            <el-form-item :label="$t('clubhouse.placeUpperLimit')" prop="placeUpperLimit">
+              <el-input v-model="temp.placeUpperLimit" />
+            </el-form-item>
             <el-form-item :label="$t('clubhouse.placeName')" prop="placeName">
               <el-input v-model="temp.placeName" />
-            </el-form-item>
-            <el-form-item :label="$t('clubhouse.placeTraditionalIntroduction')" prop="placeTraditionalIntroduction">
-              <el-input v-model="temp.placeTraditionalIntroduction" />
-            </el-form-item>
-            <!-- <el-form-item :label="$t('clubhouse.createTime')" prop="createTime">
-              <el-input v-model="temp.createTime" />
-            </el-form-item>
-            <el-form-item :label="$t('clubhouse.updateTime')" prop="updateTime">
-              <el-input v-model="temp.updateTime" />
-            </el-form-item> -->
-            <el-form-item :label="$t('clubhouse.placeIntroduction')" prop="placeIntroduction">
-              <el-input v-model="temp.placeIntroduction" />
             </el-form-item>
             <el-form-item :label="$t('clubhouse.placeEndTime')" prop="placeEndTime">
               <el-date-picker v-model="placeEndTime" type="datetime" format="yyyy-MM-DD HH:mm:ss" placeholder="选择日期"/>
@@ -165,9 +147,6 @@
                 <el-option :key="1" value="1" label="开放" />
               </el-select>
             </el-form-item>
-            <!-- <el-form-item :label="$t('clubhouse.images')" prop="images">
-              <single-image :value.sync="temp.images" />
-            </el-form-item> -->
             <el-form-item :label="$t('clubhouse.placeIconType')" prop="placeIconType">
               <el-select v-model="temp.placeIconType" placeholder="请选择">
                 <el-option :key="0" :value="0" label="篮球场" />
@@ -176,6 +155,34 @@
                 <el-option :key="3" :value="3" label="足球馆" />
                 <el-option :key="4" :value="4" label="高尔夫馆" />
               </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+            <el-form-item :label="$t('clubhouse.placeIntroduction')" prop="placeIntroduction">
+              <el-input v-model="temp.placeIntroduction" :rows="2" type="textarea"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+            <el-form-item :label="$t('clubhouse.placeEnglishIntroduction')" prop="placeEnglishIntroduction">
+              <el-input v-model="temp.placeEnglishIntroduction" :rows="2" type="textarea"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+            <el-form-item :label="$t('clubhouse.placeTraditionalIntroduction')" prop="placeTraditionalIntroduction">
+              <el-input v-model="temp.placeTraditionalIntroduction" :rows="2" type="textarea"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+            <el-form-item :label="$t('clubhouse.images')" prop="images">
+              <single-image :value.sync="temp.images" />
             </el-form-item>
           </el-col>
         </el-row>

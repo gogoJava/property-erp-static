@@ -1,8 +1,7 @@
 <template>
   <div class="upload-container">
-    <el-upload :multiple="false" :show-file-list="false" :http-request="httpRequest" class="image-uploader" list-type="picture-card" action="http://songsong.fun:8080/backstage/back/file/upload?type=3">
-      <img v-if="imageUrl" :src="imageUrl" class="avatar">
-      <i v-else class="el-icon-plus avatar-uploader-icon"/>
+    <el-upload :file-list="fileList" :http-request="httpRequest" :on-remove="handleRemove" list-type="picture-card" action="http://songsong.fun:8080/backstage/back/file/upload?type=2">
+      <i class="el-icon-plus"/>
     </el-upload>
   </div>
 </template>
@@ -15,8 +14,8 @@
     name: 'SingleImageUpload',
     props: {
       value: {
-        type: String,
-        default: ''
+        type: Array,
+        default: () => ([])
       }
     },
     data() {
@@ -27,6 +26,9 @@
           key: ''
         },
         imageUrl: null,
+        fileList: [],
+        dataFileList: [],
+        list: [],
         imgPrefix: 'http://songsong.fun:8080/file' // 图片前缀
       }
     },
@@ -41,7 +43,14 @@
     },
     methods: {
       setData() {
-        this.imageUrl = this.value ? (this.imgPrefix + this.value) : null
+        this.fileList = []
+        this.dataFileList = []
+        this.list = []
+        this.value.forEach(element => {
+          this.fileList.push({ name: '图片', url: (this.imgPrefix + element.imageUrl) })
+          this.dataFileList.push(element)
+          this.list.push(element)
+        })
       },
       rmImage() {
         this.emitInput('')
@@ -72,14 +81,21 @@
         }
         axios(options).then((res) => {
           loadingInstance.close()
-          if (res.data.code !== 200) {
+          if (res.data.code !== 200 || !res.data.data.originalUrl) {
             return this.$notify({ title: '失败', message: '上传文件失败', type: 'error', duration: 2000 })
           }
-          this.imageUrl = this.imgPrefix + res.data.data.originalUrl
-          this.$emit('update:value', res.data.data.originalUrl)
+          this.fileList.push({ name: '图片', url: (this.imgPrefix + res.data.data.originalUrl) })
+          this.dataFileList({ imageThumbnail: res.data.data.imageThumbnail, imageUrl: res.data.data.originalUrl })
+          this.list.push({ imageThumbnail: res.data.data.thumbnailUrl, imageUrl: res.data.data.originalUrl })
+          this.$emit('update:value', this.list)
         })
-
         return null
+      },
+      handleRemove(file, fileList) {
+        const list = this.dataFileList.filter((item) => {
+          if (fileList.some((value) => value.url.search(item.imageUrl) !== -1)) return true
+        })
+        this.$emit('update:value', list)
       }
     }
   }
@@ -90,7 +106,7 @@
   @import "~@/styles/mixin.scss";
 
   .upload-container {
-    width: 100%;
+    // width: 100%;
     position: relative;
     @include clearfix;
 
@@ -155,15 +171,10 @@
   .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 146px;
-    height: 146px;
-    line-height: 146px;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
     text-align: center;
-  }
-
-  .avatar {
-    width: 146px;
-    height: 146px;
   }
 
 </style>

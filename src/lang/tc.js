@@ -285,12 +285,12 @@ export default {
     createTime: '創建時間', // 創建時間
     noticeDetails: '詳情', // 詳情
     noticeEnglishDetails: '詳情（英文）', // 詳情英文
-    noticeEnglishTitle: '場所標題（英文）', // 場所標題
+    noticeEnglishTitle: '公告標題（英文）', // 公告標題
     noticeId: 'ID', // ID
     noticeImage: '圖片', // 圖片
-    noticeTitle: '場所標題', // 場所標題
+    noticeTitle: '公告標題', // 公告標題
     noticeTraditionalDetails: '詳情（繁体）', // 詳情（繁体）
-    noticeTraditionalTitle: '標題（繁体）', // 標題
+    noticeTraditionalTitle: '公告標題（繁体）', // 標題
     noticeType: '通知類型', // 通知類型
     updateTime: '更新時間' // 更新時間
   },
@@ -362,16 +362,16 @@ export default {
     images: '圖片', // images 【】
     placeAdvanceOrderDay: '提前天數', // 提前天數
     placeEndTime: '結束時間', // placeEndTime
-    placeEnglishIntroduction: '簡介', // 簡介(英文)
+    placeEnglishIntroduction: '簡介(英文)', // 簡介(英文)
     placeEnglishName: '場所名字(英文)', // 場所名字(英文)
     placeFarthestOrderDay: '最大天數', // 最大天數
     placeId: 'id', // placeId
-    placeIntroduction: '簡介(中文)',
+    placeIntroduction: '簡介(简体)',
     placeName: '場所名字(简体)', // 場所名字(简体)
     placeNeedOrder: '是否預定', // 需要预定(0否1是)
     placeStartTime: '起始時間', // 起始時間
     placeStatus: '場所狀態', // 場所狀態(0未开放1开放)
-    placeTraditionalIntroduction: '簡介(简体)', // 簡介(简体)
+    placeTraditionalIntroduction: '簡介(繁体)', // 簡介(繁体)
     placeTraditionalName: '場所名字(繁体)', // 場所名字(繁体)
     placeUpperLimit: '預約時間上限',
     placeIconType: '圖標類型'

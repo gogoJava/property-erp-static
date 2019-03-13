@@ -2,7 +2,7 @@
   <div class="charge-container">
     <div class="filter-container">
       <el-input :placeholder="$t('charge.unitItemId')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
-      <!-- <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button> -->
+      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleExport()">{{ $t('table.export') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('charge.unitItemId')" prop="id" align="center" min-width="120">
@@ -103,21 +103,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="12">
-            <el-form-item :label="$t('charge.communityId')" prop="communityId">
-              <el-select v-model="temp.communityId" placeholder="请绑定社区">
-                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
-              </el-select>
-            </el-form-item>
-          </el-col> -->
         </el-row>
-        <!-- <el-row>
-          <el-col :span="12">
-            <el-form-item :label="$t('charge.chargeType')" prop="countryCode">
-              <el-input v-model="temp.chargeType" />
-            </el-form-item>
-          </el-col>
-        </el-row> -->
         <el-row>
           <el-col :span="24">
             <el-form-item :label="$t('charge.recordLateFee')" prop="recordLateFee">
@@ -158,6 +144,7 @@
     getBuildingList
   } from '@/api/building'
   import { getCommunityList } from '@/api/community'
+  import { chargeExport } from '@/api/file'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
   export default {
@@ -316,6 +303,11 @@
           })
           this.getList()
         }).catch(() => {})
+      },
+      // 导出
+      async handleExport() {
+        const res = await chargeExport(this.listQuery).catch(e => e)
+        console.log('re', res)
       }
     }
   }

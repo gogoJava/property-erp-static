@@ -285,12 +285,12 @@ export default {
     createTime: 'Create Time', // 创建时间
     noticeDetails: 'Detail', // 详情
     noticeEnglishDetails: 'Detail（English）', // 详情英文
-    noticeEnglishTitle: 'Place Title（English）', // 场所标题
+    noticeEnglishTitle: 'Bulletin Title（English）', // 公告标题
     noticeId: 'ID', // ID
     noticeImage: 'Image', // 图片
-    noticeTitle: 'Place Title', // 场所标题
+    noticeTitle: 'Bulletin Title', // 公告标题
     noticeTraditionalDetails: 'Detail（Traditional Chinese）', // 详情（繁体）
-    noticeTraditionalTitle: 'Title（Traditional Chinese）', // 标题
+    noticeTraditionalTitle: 'Bulletin Title（Traditional Chinese）', // 标题
     noticeType: 'Notification Type', // 通知类型
     updateTime: 'Update Time' // 更新时间
   },
@@ -362,16 +362,16 @@ export default {
     images: 'Image', // images 【】
     placeAdvanceOrderDay: 'Days In Advance', // 提前天数
     placeEndTime: 'End Time', // placeEndTime
-    placeEnglishIntroduction: 'Introduction', // 简介(英文)
+    placeEnglishIntroduction: 'Introduction(English)', // 简介(英文)
     placeEnglishName: 'Place Name(English)', // 场所名字(英文)
     placeFarthestOrderDay: 'Maximum Number Of Days', // 最大天数
     placeId: 'id', // placeId
-    placeIntroduction: 'Introduction(中文)',
+    placeIntroduction: 'Introduction(Simplified)',
     placeName: 'Place Name(Simplified)', // 场所名字(简体)
     placeNeedOrder: 'Book', // 需要预定(0否1是)
     placeStartTime: 'Start Time', // 起始时间
     placeStatus: 'Location Status', // 场所状态(0未开放1开放)
-    placeTraditionalIntroduction: 'Introduction(Simplified)', // 简介(简体)
+    placeTraditionalIntroduction: 'Introduction(Traditional Chinese)', // 简介(简体)
     placeTraditionalName: 'Place Name(Traditional Chinese)', // 场所名字(繁体)
     placeUpperLimit: 'Appointment Time Limit',
     placeIconType: 'Icon Type'

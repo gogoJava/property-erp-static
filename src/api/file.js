@@ -1,7 +1,6 @@
 import request from '@/utils/request'
 
 export function uploadFile(params) {
-  console.log('ssss', params)
   return request({
     url: '/back/file/upload',
     method: 'post',
@@ -9,5 +8,14 @@ export function uploadFile(params) {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
+  })
+}
+
+// 费用导出
+export function chargeExport(query) {
+  return request({
+    url: '/back/excel/chargeExport',
+    method: 'get',
+    params: query
   })
 }

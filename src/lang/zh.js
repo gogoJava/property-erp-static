@@ -64,6 +64,7 @@ export default {
     i18n: '国际化',
     externalLink: '外链',
     community: '社区管理',
+    communityTest: '社区Test',
     communityList: '社区列表',
     communityCreate: '创建社区',
     administrator: '社区物业管理员',
@@ -285,12 +286,12 @@ export default {
     createTime: '创建时间', // 创建时间
     noticeDetails: '详情', // 详情
     noticeEnglishDetails: '详情（英文）', // 详情英文
-    noticeEnglishTitle: '场所标题（英文）', // 场所标题
+    noticeEnglishTitle: '公告标题（英文）', // 公告标题
     noticeId: 'ID', // ID
     noticeImage: '图片', // 图片
-    noticeTitle: '场所标题', // 场所标题
+    noticeTitle: '公告标题', // 公告标题
     noticeTraditionalDetails: '详情（繁体）', // 详情（繁体）
-    noticeTraditionalTitle: '标题（繁体）', // 标题
+    noticeTraditionalTitle: '公告标题（繁体）', // 标题
     noticeType: '通知类型', // 通知类型
     updateTime: '更新时间' // 更新时间
   },
@@ -318,7 +319,7 @@ export default {
     residenceTime: '播放时间',
     title: '标题', // title
     type: '广告类型', // 广告类型 0普通图片1视频
-    url: '资源url', // url
+    url: '资源', // url
     used: '是否使用' // 是否使用0否1是
   },
   complain: {
@@ -362,16 +363,16 @@ export default {
     images: '图片', // images 【】
     placeAdvanceOrderDay: '提前天数', // 提前天数
     placeEndTime: '结束时间', // placeEndTime
-    placeEnglishIntroduction: '简介', // 简介(英文)
+    placeEnglishIntroduction: '简介(英文)', // 简介(英文)
     placeEnglishName: '场所名字(英文)', // 场所名字(英文)
     placeFarthestOrderDay: '最大天数', // 最大天数
     placeId: 'id', // placeId
-    placeIntroduction: '简介(中文)',
+    placeIntroduction: '简介(简体)',
     placeName: '场所名字(简体)', // 场所名字(简体)
     placeNeedOrder: '是否预定', // 需要预定(0否1是)
     placeStartTime: '起始时间', // 起始时间
     placeStatus: '场所状态', // 场所状态(0未开放1开放)
-    placeTraditionalIntroduction: '简介(简体)', // 简介(简体)
+    placeTraditionalIntroduction: '简介(繁体)', // 简介(简体)
     placeTraditionalName: '场所名字(繁体)', // 场所名字(繁体)
     placeUpperLimit: '预约时间上限',
     placeIconType: '图标类型'

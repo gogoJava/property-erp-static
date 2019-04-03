@@ -112,7 +112,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col v-if="$store.getters.isSuper" :span="12">
             <el-form-item :label="$t('proprietor.communityId')" prop="communityId">
               <el-select v-model="temp.communityId" placeholder="请绑定社区">
                 <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
@@ -349,6 +349,7 @@
         })
       },
       async createData() {
+        this.temp.communityId = this.$store.getters.communityId
         this.temp.birthday = this.birthday ? this.$moment(this.birthday).format('YYYY-MM-DD') : ''
         const response = await createProprietor(this.temp).catch(e => e)
         if (response.code !== 200) {
@@ -375,6 +376,7 @@
       },
       async updateData() {
         this.listLoading = true
+        this.temp.communityId = this.$store.getters.communityId
         this.temp.birthday = this.birthday ? this.$moment(this.birthday).format('YYYY-MM-DD') : ''
         const response = await updateProprietor(this.temp).catch(e => e)
         this.listLoading = false
@@ -407,6 +409,7 @@
       },
       // 获取社区列表
       async queryCommunityList() {
+        if (!this.$store.getters.isSuper) return
         const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
         this.communityList = response.data.list
       },

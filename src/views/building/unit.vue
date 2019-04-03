@@ -100,7 +100,7 @@
             <el-option v-for="(item, index) in buildingList" :key="index" :value="item.buildingId" :label="item.buildingName" />
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('unit.community')" prop="communityId">
+        <el-form-item v-if="$store.getters.isSuper" :label="$t('unit.community')" prop="communityId">
           <el-select v-model="temp.communityId" placeholder="请绑定社区">
             <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
           </el-select>
@@ -324,6 +324,7 @@
         })
       },
       async createData() {
+        this.temp.communityId = this.$store.getters.communityId
         const response = await createUnit(this.temp).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
@@ -347,6 +348,7 @@
       },
       async updateData() {
         this.listLoading = true
+        this.temp.communityId = this.$store.getters.communityId
         const response = await updateUnit(this.temp).catch(e => e)
         this.listLoading = false
         if (response.code !== 200) {
@@ -384,6 +386,7 @@
       },
       // 获取社区列表
       async queryCommunityList() {
+        if (!this.$store.getters.isSuper) return
         const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
         this.communityList = response.data.list
       },

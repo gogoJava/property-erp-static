@@ -305,7 +305,7 @@
     },
     created() {
       this.getList()
-      this.queryCommunityList()
+      // this.queryCommunityList()
     },
     methods: {
       async getList() {

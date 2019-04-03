@@ -3,6 +3,13 @@
     <div class="filter-container">
       <el-input :placeholder="$t('event.eventContent')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
+      <span style="padding-left: 15px;">{{ $t('event.eventType') }}:</span>
+      <el-select v-model="listQuery.eventType" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option :value="0" label="全部" />
+        <el-option :value="1" label="采购" />
+        <el-option :value="2" label="保养" />
+        <el-option :value="3" label="其他" />
+      </el-select>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('event.community')" prop="communityId" align="center" min-width="120">
@@ -33,6 +40,11 @@
       <el-table-column :label="$t('event.eventFinishDate')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.eventFinishDate ? $moment(scope.row.eventFinishDate).format('YYYY-MM-DD') : '--' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('event.eventRemindCycle')" min-width="80px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.eventRemindCycle }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('event.eventRemark')" min-width="180px" align="center">
@@ -87,17 +99,15 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item :label="$t('event.communityId')" prop="communityId">
+        <el-row v-if="$store.getters.isSuper">
+          <el-col :span="12">
+            <el-form-item :label="$t('event.community')" prop="communityId">
               <el-select v-model="temp.communityId" placeholder="请绑定社区">
                 <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item :label="$t('event.eventStatus')" prop="eventStatus">
               <!-- <el-input v-model="temp.eventStatus" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" /> -->
               <el-select v-model="temp.eventStatus" placeholder="请选择">
@@ -108,15 +118,30 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <!-- <el-row>
           <el-col :span="24">
+            <el-form-item :label="$t('event.eventStatus')" prop="eventStatus">
+              <el-select v-model="temp.eventStatus" placeholder="请选择">
+                <el-option :value="0" label="开始" />
+                <el-option :value="1" label="待定" />
+                <el-option :value="2" label="完成" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row> -->
+        <el-row>
+          <el-col :span="12">
             <el-form-item :label="$t('event.eventType')" prop="eventType">
-              <!-- <el-input v-model="temp.eventType" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" /> -->
               <el-select v-model="temp.eventType" placeholder="请选择">
                 <el-option :value="1" label="采购" />
                 <el-option :value="2" label="保养" />
                 <el-option :value="3" label="其他" />
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col v-if="temp.eventType === 2" :span="12">
+            <el-form-item :label="$t('event.eventRemindCycle')" prop="eventRemindCycle">
+              <el-input v-model="temp.eventRemindCycle" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -187,7 +212,8 @@
         listQuery: {
           pageNo: 1,
           pageSize: 10,
-          keyword: ''
+          keyword: '',
+          eventType: 0
         },
         communityList: [],
         buildingList: [],
@@ -203,7 +229,8 @@
           eventRemark: '', // 备注
           eventSolve: '', // 解决方案
           eventStatus: 0, // 事件进度0开始1待定2完成
-          eventType: 1 // 事件类型1采购2保养3其他
+          eventType: 1, // 事件类型1采购2保养3其他
+          eventRemindCycle: null
         },
         textMap: {
           update: 'Edit',
@@ -217,6 +244,9 @@
     watch: {
       'listQuery.keyword'() {
         this.getList()
+      },
+      'listQuery.eventType'() {
+        this.getList()
       }
     },
     created() {
@@ -226,7 +256,11 @@
     methods: {
       async getList() {
         this.listLoading = true
-        const { code, msg, data } = await getEventList(this.listQuery).catch(e => e)
+        const param = { ...this.listQuery }
+        if (this.listQuery.eventType === 0) {
+          delete param.eventType
+        }
+        const { code, msg, data } = await getEventList(param).catch(e => e)
         this.listLoading = false
         if (code !== 200) {
           return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
@@ -236,6 +270,7 @@
       },
       // 获取社区列表
       async queryCommunityList() {
+        if (!this.$store.getters.isSuper) return
         const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
         this.communityList = response.data.list
       },
@@ -252,7 +287,8 @@
           eventRemark: '', // 备注
           eventSolve: '', // 解决方案
           eventStatus: 0, // 事件进度0开始1待定2完成
-          eventType: 1 // 事件类型1采购2保养3其他
+          eventType: 1, // 事件类型1采购2保养3其他
+          eventRemindCycle: null
         }
       },
       handleCreate() {
@@ -264,6 +300,7 @@
         })
       },
       async createData() {
+        this.temp.communityId = this.$store.getters.communityId
         this.temp.eventDate = this.eventDate ? this.$moment(this.eventDate).format('YYYY-MM-DD') : ''
         this.temp.eventFinishDate = this.eventFinishDate ? this.$moment(this.eventFinishDate).format('YYYY-MM-DD') : ''
         const response = await createEvent(this.temp).catch(e => e)
@@ -290,6 +327,7 @@
         })
       },
       async updateData() {
+        this.temp.communityId = this.$store.getters.communityId
         this.temp.eventDate = this.eventDate ? this.$moment(this.eventDate).format('YYYY-MM-DD') : ''
         this.temp.eventFinishDate = this.eventFinishDate ? this.$moment(this.eventFinishDate).format('YYYY-MM-DD') : ''
         this.listLoading = true

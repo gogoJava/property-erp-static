@@ -4,7 +4,6 @@
       <el-input :placeholder="$t('building.buildingName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
-
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
       <el-table-column :label="$t('building.buildingNo')" prop="id" align="center" min-width="100">
         <template slot-scope="scope">
@@ -72,7 +71,7 @@
         <el-form-item :label="$t('building.buildingStruct')" prop="buildingStruct">
           <el-input v-model="temp.buildingStruct" />
         </el-form-item>
-        <el-form-item :label="$t('building.communityId')" prop="communityId">
+        <el-form-item v-if="$store.getters.isSuper" :label="$t('building.communityId')" prop="communityId">
           <el-select v-model="temp.communityId" placeholder="请绑定社区">
             <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
           </el-select>
@@ -260,6 +259,7 @@
         })
       },
       async createData() {
+        this.temp.communityId = this.$store.getters.communityId
         const response = await createBuilding(this.temp).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
@@ -283,6 +283,7 @@
       },
       async updateData() {
         this.listLoading = true
+        this.temp.communityId = this.$store.getters.communityId
         const response = await updateBuilding(this.temp).catch(e => e)
         this.listLoading = false
         if (response.code !== 200) {
@@ -314,6 +315,7 @@
       },
       // 获取社区列表
       async queryCommunityList() {
+        if (!this.$store.getters.isSuper) return
         const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
         this.communityList = response.data.list
       }

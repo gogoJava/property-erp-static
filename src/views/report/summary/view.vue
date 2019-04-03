@@ -223,8 +223,8 @@
     },
     created() {
       this.getList()
-      this.queryCommunityList()
-      this.queryBuildingList()
+      // this.queryCommunityList()
+      // this.queryBuildingList()
     },
     methods: {
       async getList() {
@@ -239,6 +239,7 @@
       },
       // 获取社区列表
       async queryCommunityList() {
+        if (!this.$store.getters.isSuper) return
         const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
         this.communityList = response.data.list
       },

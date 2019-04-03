@@ -116,9 +116,13 @@
             <el-form-item :label="$t('clubhouse.placeStartTime')" prop="placeStartTime">
               <el-date-picker v-model="placeStartTime" type="datetime" format="yyyy-MM-DD HH:mm:ss" placeholder="选择日期"/>
             </el-form-item>
-            <el-form-item :label="$t('clubhouse.community')" prop="communityId">
-              <el-select v-model="temp.communityId" placeholder="请绑定社区">
-                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
+            <el-form-item :label="$t('clubhouse.placeIconType')" prop="placeIconType">
+              <el-select v-model="temp.placeIconType" placeholder="请选择">
+                <el-option :key="0" :value="0" label="篮球场" />
+                <el-option :key="1" :value="1" label="羽毛球馆" />
+                <el-option :key="2" :value="2" label="KTV" />
+                <el-option :key="3" :value="3" label="足球馆" />
+                <el-option :key="4" :value="4" label="高尔夫馆" />
               </el-select>
             </el-form-item>
             <el-form-item :label="$t('clubhouse.placeNeedOrder')" prop="placeNeedOrder">
@@ -147,13 +151,9 @@
                 <el-option :key="1" value="1" label="开放" />
               </el-select>
             </el-form-item>
-            <el-form-item :label="$t('clubhouse.placeIconType')" prop="placeIconType">
-              <el-select v-model="temp.placeIconType" placeholder="请选择">
-                <el-option :key="0" :value="0" label="篮球场" />
-                <el-option :key="1" :value="1" label="羽毛球馆" />
-                <el-option :key="2" :value="2" label="KTV" />
-                <el-option :key="3" :value="3" label="足球馆" />
-                <el-option :key="4" :value="4" label="高尔夫馆" />
+            <el-form-item v-if="$store.getters.isSuper" :label="$t('clubhouse.community')" prop="communityId">
+              <el-select v-model="temp.communityId" placeholder="请绑定社区">
+                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -366,6 +366,7 @@
       },
       // 获取社区列表
       async queryCommunityList() {
+        if (!this.$store.getters.isSuper) return
         const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
         this.communityList = response.data.list
     },
@@ -419,6 +420,7 @@
         })
       },
       async createData() {
+        this.temp.communityId = this.$store.getters.communityId
         this.temp.placeStartTime = this.placeStartTime ? this.$moment(this.placeStartTime).format('YYYY-MM-DD HH:mm:ss') : ''
         this.temp.placeEndTime = this.placeEndTime ? this.$moment(this.placeEndTime).format('YYYY-MM-DD HH:mm:ss') : ''
         const response = await addClubhouse(this.temp).catch(e => e)
@@ -446,6 +448,7 @@
         })
       },
       async updateData() {
+        this.temp.communityId = this.$store.getters.communityId
         this.temp.placeStartTime = this.placeStartTime ? this.$moment(this.placeStartTime).format('YYYY-MM-DD HH:mm:ss') : ''
         this.temp.placeEndTime = this.placeEndTime ? this.$moment(this.placeEndTime).format('YYYY-MM-DD HH:mm:ss') : ''
         this.listLoading = true

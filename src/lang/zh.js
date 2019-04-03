@@ -306,7 +306,8 @@ export default {
     eventRemark: '备注', // 备注
     eventSolve: '解决方案', // 解决方案
     eventStatus: '事件进度', // 事件进度
-    eventType: '事件类型' // 事件类型1采购2保养3其他
+    eventType: '事件类型', // 事件类型1采购2保养3其他
+    eventRemindCycle: '提醒周期'
   },
   adv: {
     adv: '广告',

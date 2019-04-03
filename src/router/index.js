@@ -135,6 +135,7 @@ export const asyncRouterMap = [
   // 物业管理员
   {
     path: '/administrator',
+    name: 'administrator',
     component: Layout,
     children: [
       {

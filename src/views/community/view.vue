@@ -12,7 +12,7 @@
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange">
-      <el-table-column :label="$t('community.communityNo')" prop="communityNo" align="center">
+      <el-table-column :label="$t('community.communityNo')" prop="communityNo" align="center" min-width="120px">
         <template slot-scope="scope">
           <span>{{ scope.row.communityNo }}</span>
         </template>
@@ -22,9 +22,13 @@
           <span>{{ scope.row.communityName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('community.communityAddress')" prop="communityAddress" align="center" min-width="150px">
+      <el-table-column :label="$t('community.communityAddress')" prop="communityAddress" align="center" min-width="180px">
         <template slot-scope="scope">
           <span>{{ scope.row.communityAddress }}</span>
+          <span>{{ scope.row.communityAddressDirectionFirstValue }}</span>
+          <span>{{ scope.row.communityAddressDirectionSecondValue }}</span>
+          <span>{{ scope.row.communityAddressDirectionThirdValue }}</span>
+          <span>{{ scope.row.communityAddressDirectionFourthValue }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('community.communityArea')" prop="communityArea" align="center">
@@ -32,9 +36,24 @@
           <span>{{ scope.row.communityArea }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('community.communityBuildingArea')" prop="communityBuildingArea" align="center">
+      <el-table-column :label="$t('community.communityArea')" prop="communityArea" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.communityBuildingArea }}</span>
+          <span>{{ scope.row.communityArea }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('community.communityCoverArea')" prop="communityCoverArea" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.communityCoverArea }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('community.communityNoCoverArea')" prop="communityNoCoverArea" align="center" min-width="100px">
+        <template slot-scope="scope">
+          <span>{{ scope.row.communityNoCoverArea }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('community.communityVerticalArea')" prop="communityVerticalArea" align="center" min-width="100px">
+        <template slot-scope="scope">
+          <span>{{ scope.row.communityVerticalArea }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('community.communityCommonArea')" prop="communityCommonArea" align="center">
@@ -42,7 +61,42 @@
           <span>{{ scope.row.communityCommonArea }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('community.communityContacts')" prop="communityContacts" align="center">
+      <el-table-column :label="$t('community.communityGarageArea')" prop="communityGarageArea" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.communityGarageArea }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('community.communityShopsArea')" prop="communityShopsArea" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.communityShopsArea }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('community.communityHouseArea')" prop="communityHouseArea" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.communityHouseArea }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('community.communityGreenarea')" prop="communityGreenarea" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.communityGreenarea }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('community.communityRoadArea')" prop="communityRoadArea" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.communityRoadArea }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('community.communityManagementType')" prop="communityManagementType" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.communityManagementType === 0 ? '简单管理' : '综合管理' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('community.commonPdf')" prop="commonPdf" align="center">
+        <template slot-scope="scope">
+          <img v-for="(item, index) of scope.row.commonPdf" :key="index" :src="item" class="common-img">
+        </template>
+      </el-table-column>
+      <!-- <el-table-column :label="$t('community.communityContacts')" prop="communityContacts" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.communityContacts }}</span>
         </template>
@@ -52,19 +106,9 @@
           <span>{{ scope.row.communityContactsPhone }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('community.communityGarageArea')" prop="communityGarageArea" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.communityGarageArea }}</span>
-        </template>
-      </el-table-column>
       <el-table-column :label="$t('community.communityGarageCount')" prop="communityGarageCount" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.communityGarageCount }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('community.communityGreenarea')" prop="communityGreenarea" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.communityGreenarea }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('community.communityLocX')" prop="communityLocX" align="center">
@@ -77,26 +121,16 @@
           <span>{{ scope.row.communityLocY }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('community.communityManagementType')" prop="communityManagementType" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.communityManagementType }}</span>
-        </template>
-      </el-table-column>
       <el-table-column :label="$t('community.communityRemark')" prop="communityRemark" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.communityRemark }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('community.communityRoadArea')" prop="communityRoadArea" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.communityRoadArea }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('community.communityRoomCount')" prop="communityRoomCount" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.communityRoomCount }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column :label="$t('table.actions')" align="center" width="230" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleDetail(scope.row)">{{ $t('table.detail') }}</el-button>
@@ -106,9 +140,7 @@
         </template>
       </el-table-column>
     </el-table>
-
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
-
   </div>
 </template>
 
@@ -251,3 +283,11 @@ export default {
   }
 }
 </script>
+
+<style lang="postcss" scoped>
+  .common-img {
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+  }
+</style>

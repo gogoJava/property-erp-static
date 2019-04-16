@@ -184,10 +184,23 @@ export default {
   },
   // 社区
   community: {
-    communityNo: 'Community Number',
+    communityNo: 'Property Identification Number',
     communityName: 'Community Name',
     communityAddress: 'Community Address', // 社区全址
     communityArea: 'Total Area', // 总面积(平方米)
+    communityCoverArea: 'Coverage Area', // 覆蓋面積(平方米)
+    communityNoCoverArea: 'No Coverage Area', // 無覆蓋面積(平方米)
+    communityVerticalArea: 'Vertical Footprint', // 垂直佔用空間面積(平方米)
+    communityShopsArea: 'Shop Area', // 商舖面積(平方米)
+    communityHouseArea: 'Residential Area', // 住宅面積(平方米)
+    communityAddressDirectionFirstValue: 'Address Direction 1', // 地址方向1
+    communityAddressDirectionSecondValue: 'Address Direction 2', // 地址方向2
+    communityAddressDirectionThirdValue: 'Address Direction 3', // 地址方向3
+    communityAddressDirectionFourthValue: 'Address Direction 4', // 地址方向4
+    communityAddressDirectionFirstTips: 'Address Direction 1 Prompt', // 地址方向1提示
+    communityAddressDirectionSecondTips: 'Address Direction 2 Prompt', // 地址方向2提示
+    communityAddressDirectionThirdTips: 'Address Direction 3 Prompt', // 地址方向3提示
+    communityAddressDirectionFourthTips: 'Address Direction 4 Prompt', // 地址方向4提示
     communityBuildingArea: 'Construction Area', // 建筑面积
     communityCommonArea: 'Common Area', // 公用面积
     communityContacts: 'Contact', // 联系人
@@ -200,7 +213,8 @@ export default {
     communityManagementType: 'Management Type', // 管理类型(0普通管理1综合管理)
     communityRemark: 'Remarks', // 备注
     communityRoadArea: 'Road Area', // 道路面积
-    communityRoomCount: 'Rooms Number' // 房间总数
+    communityRoomCount: 'Rooms Number', // 房间总数
+    commonPdf: 'Public Part Of The Community' // 社区之公共部分
   },
   // 管理员
   administrator: {

@@ -307,8 +307,19 @@
       },
       // 导出
       async handleExport() {
-        const res = await chargeExport(this.listQuery).catch(e => e)
-        console.log('re', res)
+        const content = await chargeExport(this.listQuery).catch(e => e)
+        const link = document.createElement('a')
+        const blob = new Blob([content], { type: 'application/vnd.ms-excel' })
+        link.style.display = 'none'
+        link.href = URL.createObjectURL(blob)
+        let num = ''
+        for (let i = 0; i < 10; i++) {
+          num += Math.ceil(Math.random() * 10)
+        }
+        link.setAttribute('download', 'excel_' + num + '.xlsx')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
       }
     }
   }

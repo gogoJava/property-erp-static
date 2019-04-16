@@ -184,10 +184,23 @@ export default {
   },
   // 社區
   community: {
-    communityNo: '社區編號',
+    communityNo: '物業標示編號',
     communityName: '社區名字',
     communityAddress: '社區全址', // 社區全址
     communityArea: '總面積', // 總面積(平方米)
+    communityCoverArea: '覆蓋面積', // 覆蓋面積(平方米)
+    communityNoCoverArea: '無覆蓋面積', // 無覆蓋面積(平方米)
+    communityVerticalArea: '垂直佔用空間面積', // 垂直佔用空間面積(平方米)
+    communityShopsArea: '商舖面積', // 商舖面積(平方米)
+    communityHouseArea: '住宅面積', // 住宅面積(平方米)
+    communityAddressDirectionFirstValue: '地址方向1', // 地址方向1
+    communityAddressDirectionSecondValue: '地址方向2', // 地址方向2
+    communityAddressDirectionThirdValue: '地址方向3', // 地址方向3
+    communityAddressDirectionFourthValue: '地址方向4', // 地址方向4
+    communityAddressDirectionFirstTips: '地址方向1提示', // 地址方向1提示
+    communityAddressDirectionSecondTips: '地址方向2提示', // 地址方向2提示
+    communityAddressDirectionThirdTips: '地址方向3提示', // 地址方向3提示
+    communityAddressDirectionFourthTips: '地址方向4提示', // 地址方向4提示
     communityBuildingArea: '建築面積', // 建築面积
     communityCommonArea: '公用面積', // 公用面积
     communityContacts: '聯繫人', // 聯繫人
@@ -200,7 +213,8 @@ export default {
     communityManagementType: '管理類型', // 管理類型(0普通管理1综合管理)
     communityRemark: '備註', // 備註
     communityRoadArea: '道路面積', // 道路面積
-    communityRoomCount: '房間總數' // 房间总数
+    communityRoomCount: '房間總數', // 房间总数
+    commonPdf: '社區之公共部分' // 社區之公共部分
   },
   // 管理员
   administrator: {
@@ -217,7 +231,7 @@ export default {
   building: {
     buildingDirection: '樓宇方向', // 樓宇方向
     buildingId: 'ID', // buildingId
-    buildingName: '樓宇名字', // 樓宇名字
+    buildingName: '樓宇名稱', // 樓宇名稱
     buildingNo: '樓宇編號', // 樓宇編號
     buildingStruct: '樓宇結構', // 樓宇結構
     communityId: '社區', // 社區ID

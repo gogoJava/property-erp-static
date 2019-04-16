@@ -16,6 +16,7 @@ export function chargeExport(query) {
   return request({
     url: '/back/excel/chargeExport',
     method: 'get',
-    params: query
+    params: query,
+    responseType: 'blob'
   })
 }

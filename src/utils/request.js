@@ -37,11 +37,13 @@ export const createInstance = (config) => {
 // response
   instance.interceptors.response.use((response) => {
     const { config: { responseMapKeys }} = response
-    console.log('response --> ', response)
+    // console.log('response --> ', response)
     let { data } = response
 
     if (data && data.code === 100) {
+      Promise.reject(data)
       alert(data.msg)
+      location.reload()
       return
     }
     if (responseMapKeys && data) {

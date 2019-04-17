@@ -153,7 +153,8 @@ export default {
     draft: '草稿',
     delete: '删除',
     cancel: '取消',
-    confirm: '确定'
+    confirm: '确定',
+    preCharge: '预收费'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',

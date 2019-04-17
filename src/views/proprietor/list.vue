@@ -66,11 +66,11 @@
           <span>{{ scope.row.mateName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
+      <el-table-column :label="$t('table.actions')" align="center" width="190" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-          <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
-          </el-button>
+          <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}</el-button>
+          <el-button type="text" size="mini" @click="handleCharge(scope.row)">{{ $t('table.preCharge') }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -169,6 +169,22 @@
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
+    <!-- 预收费 -->
+    <el-dialog :title="$t('table.preCharge')" :visible.sync="dialogFormVisible2">
+      <el-form ref="dataForm2" label-position="right" label-width="100px" style="margin:0 50px;">
+        <el-row>
+          <el-col>
+            <el-form-item :label="$t('table.preCharge')">
+              <el-input v-model="advanceAmount" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible2 = false">{{ $t('table.cancel') }}</el-button>
+        <el-button type="primary" @click="preCharge()">{{ $t('table.confirm') }}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -179,6 +195,9 @@
     updateProprietor,
     delProprietor
   } from '@/api/proprietor'
+  import {
+    addAdvance
+  } from '@/api/advance'
   import { getCommunityList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -266,6 +285,7 @@
           create: 'Create'
         },
         dialogPvVisible: false,
+        dialogFormVisible2: false,
         pvData: [],
         rules: {
           type: [{
@@ -288,6 +308,8 @@
         downloadLoading: false,
         password: null,
         communityList: [],
+        advanceAmount: null, // 预收费
+        userId: null, // 预收费用户id
         imgPrefix: 'http://songsong.fun:8080/file' // 图片前缀
       }
     },
@@ -373,6 +395,26 @@
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
+      },
+      handleCharge(row) {
+        this.advanceAmount = null
+        this.userId = row.userId
+        this.dialogFormVisible2 = true
+      },
+      async preCharge() {
+        if (!this.advanceAmount) {
+          return this.$notify({ title: '', message: '请填写预收费数', type: 'warn', duration: 2000 })
+        }
+        const param = {
+          advanceAmount: this.advanceAmount,
+          userId: this.userId
+        }
+        const response = await addAdvance(param).catch(e => e)
+        if (response.code !== 200) {
+          return this.$notify({ title: '预收费失败', message: response.msg, type: 'error', duration: 2000 })
+        }
+        this.$notify({ title: '成功', message: '预收费成功', type: 'success', duration: 2000 })
+        this.dialogFormVisible2 = false
       },
       async updateData() {
         this.listLoading = true

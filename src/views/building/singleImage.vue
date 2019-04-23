@@ -1,10 +1,11 @@
 <template>
   <div class="upload-container">
-    <!-- <el-upload :file-list="fileList" :http-request="httpRequest" :on-remove="handleRemove" list-type="picture-card" action="http://songsong.fun:8080/backstage/back/file/upload?type=7">
+    <!-- <el-upload :action="action" :file-list="fileList" :http-request="httpRequest" :on-remove="handleRemove" list-type="picture-card">
       <i class="el-icon-plus"/>
     </el-upload> -->
     <el-upload :action="action" :on-remove="handleRemove" :file-list="fileList" :http-request="httpRequest" multiple>
       <el-button size="small" type="primary">点击上传</el-button>
+      <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
     </el-upload>
   </div>
 </template>
@@ -76,7 +77,7 @@
       async httpRequest(option) {
         const loadingInstance = Loading.service({
           fullscreen: true,
-          text: '上传图片中...'
+          text: '上传文件中...'
         })
         // formData
         const formData = new FormData()
@@ -92,6 +93,7 @@
          }
         }
         axios(options).then((res) => {
+          console.log('res', res)
           loadingInstance.close()
           if (res.data.code !== 200 || !res.data.data) {
             return this.$notify({ title: '失败', message: '上传文件失败', type: 'error', duration: 2000 })

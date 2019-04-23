@@ -187,7 +187,7 @@
       <el-row :gutter="20">
         <el-col :span="24">
           <el-form-item :label="$t('community.commonPdf')">
-            <single-image :value.sync="communityInfo.commonPdf"/>
+            <single-image :value.sync="communityInfo.commonPdf" :type="0"/>
           </el-form-item>
         </el-col>
       </el-row>

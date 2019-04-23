@@ -154,7 +154,9 @@ export default {
     delete: '删除',
     cancel: '取消',
     confirm: '确定',
-    preCharge: '预收费'
+    preCharge: '预收费',
+    paymentNotice: '付款通知书',
+    print: '打印'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',
@@ -240,7 +242,12 @@ export default {
     deleted: '是否注销', // 是否注销
     floorLowNum: '楼下几层', // 楼下几层
     floorUpNum: '楼上几层', // 楼上几层
-    fullAddress: '楼宇全址' // 楼宇全址
+    fullAddress: '楼宇全址', // 楼宇全址
+    floorList: '楼宇楼层',
+    commonPdf: '楼宇之公共部分', // 楼宇之公共部分
+    buildingChildList: '楼宇子部分', // 楼宇子部分
+    rosterPdf: '业主花名册文件',
+    managementType: '管理类型' // 管理类型(0简单管理1综合管理)
   },
   // 单位
   unit: {

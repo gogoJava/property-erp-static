@@ -30,6 +30,11 @@
           <span>{{ scope.row.community.communityName }}</span>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('building.managementType')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.managementType === 0 ? '简单管理' : '综合管理' }}</span>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('building.floorLowNum')" min-width="80px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.floorLowNum }}</span>
@@ -57,33 +62,86 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
     <!-- 添加、编辑、详情 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="90px" style="margin:0 50px;">
-        <el-form-item :label="$t('building.buildingNo')" prop="buildingNo">
-          <el-input v-model="temp.buildingNo" />
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="70%">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="120px" style="margin:0 50px;">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('building.buildingNo')" prop="buildingNo">
+              <el-input v-model="temp.buildingNo" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('building.buildingName')" prop="buildingName">
+              <el-input v-model="temp.buildingName" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('building.buildingDirection')" prop="buildingDirection">
+              <el-input v-model="temp.buildingDirection" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('building.buildingStruct')" prop="buildingStruct">
+              <el-input v-model="temp.buildingStruct" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item v-if="$store.getters.isSuper" :label="$t('building.communityId')" prop="communityId">
+              <el-select v-model="temp.communityId" placeholder="请绑定社区">
+                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('building.managementType')" prop="managementType">
+              <el-select v-model="temp.managementType" placeholder="请绑定类型">
+                <el-option v-for="(item, index) in typeList" :key="index" :value="item.value" :label="item.label" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('building.floorLowNum')" prop="floorLowNum">
+              <el-input v-model="temp.floorLowNum" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('building.floorUpNum')" prop="floorUpNum">
+              <el-input v-model="temp.floorUpNum" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="16">
+            <el-form-item :label="$t('building.fullAddress')" prop="fullAddress">
+              <el-input v-model="temp.fullAddress" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item :label="$t('building.buildingChildList')" prop="buildingChildList">
+          <el-row>
+            <el-col :span="8"><div>排序</div></el-col>
+            <el-col :span="8"><div>子部分之提示</div></el-col>
+            <el-col :span="8"><div>子部分之值</div></el-col>
+          </el-row>
+          <el-row v-for="(item, index) in temp.buildingChildList" :key="index">
+            <el-col :span="8"><el-input v-model="item.sort" /></el-col>
+            <el-col :span="8"><el-input v-model="item.tips" /></el-col>
+            <el-col :span="8"><el-input v-model="item.value"><el-button slot="append" icon="el-icon-minus" @click.native="cutChildList(index)"/></el-input></el-col>
+          </el-row>
+          <el-row style="text-align: center;"><span style="cursor: pointer;font-size: 30px;" @click="addChildList">+</span></el-row>
+          <!-- <el-button icon="el-icon-circle-plus-outline" /> -->
         </el-form-item>
-        <el-form-item :label="$t('building.buildingName')" prop="buildingName">
-          <el-input v-model="temp.buildingName" />
+        <el-form-item :label="$t('building.commonPdf')">
+          <single-image :value.sync="temp.commonPdf" :type="2"/>
         </el-form-item>
-        <el-form-item :label="$t('building.buildingDirection')" prop="buildingDirection">
-          <el-input v-model="temp.buildingDirection" />
-        </el-form-item>
-        <el-form-item :label="$t('building.buildingStruct')" prop="buildingStruct">
-          <el-input v-model="temp.buildingStruct" />
-        </el-form-item>
-        <el-form-item v-if="$store.getters.isSuper" :label="$t('building.communityId')" prop="communityId">
-          <el-select v-model="temp.communityId" placeholder="请绑定社区">
-            <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('building.floorLowNum')" prop="floorLowNum">
-          <el-input v-model="temp.floorLowNum" />
-        </el-form-item>
-        <el-form-item :label="$t('building.floorUpNum')" prop="floorUpNum">
-          <el-input v-model="temp.floorUpNum" />
-        </el-form-item>
-        <el-form-item :label="$t('building.fullAddress')" prop="fullAddress">
-          <el-input v-model="temp.fullAddress" />
+        <el-form-item :label="$t('building.rosterPdf')">
+          <single-image :value.sync="temp.rosterPdf" :type="3"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -104,11 +162,13 @@
   import { getCommunityList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+  import SingleImage from './singleImage'
 
   export default {
     name: 'Building',
     components: {
-      Pagination
+      Pagination,
+      SingleImage
     },
     directives: {
       waves
@@ -167,7 +227,11 @@
           communityId: '', // 社区ID
           floorLowNum: null, // 楼下几层
           floorUpNum: null, // 楼上几层
-          fullAddress: '' // 楼宇全址
+          fullAddress: '', // 楼宇全址
+          commonPdf: [],
+          buildingChildList: [],
+          rosterPdf: [],
+          managementType: null
         },
         dialogFormVisible: false,
         dialogStatus: '',
@@ -197,7 +261,11 @@
         },
         downloadLoading: false,
         password: null,
-        communityList: []
+        communityList: [],
+        typeList: [
+          { label: '简单管理', value: 0 },
+          { label: '综合管理', value: 1 }
+        ]
       }
     },
     watch: {
@@ -244,7 +312,11 @@
           timestamp: new Date(),
           title: '',
           status: 'published',
-          type: ''
+          type: '',
+          commonPdf: [],
+          buildingChildList: [],
+          rosterPdf: [],
+          managementType: null
         }
       },
       handleCreate() {
@@ -275,6 +347,15 @@
       },
       handleUpdate(row) {
         this.temp = Object.assign({}, row) // copy obj
+        if (!this.temp.commonPdf) {
+          this.temp.commonPdf = []
+        }
+        if (!this.temp.buildingChildList) {
+          this.temp.buildingChildList = []
+        }
+        if (!this.temp.rosterPdf) {
+          this.temp.rosterPdf = []
+        }
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -318,6 +399,18 @@
         if (!this.$store.getters.isSuper) return
         const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
         this.communityList = response.data.list
+      },
+      addChildList() {
+        this.temp.buildingChildList.push({
+          buildingId: '',
+          childId: '',
+          sort: null,
+          tips: null,
+          value: null
+        })
+      },
+      cutChildList(index) {
+        this.temp.buildingChildList.splice(index, 1)
       }
     }
   }

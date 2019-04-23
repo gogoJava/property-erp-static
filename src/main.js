@@ -17,6 +17,7 @@ import i18n from './lang' // Internationalization
 import './icons' // icon
 import './errorLog' // error log
 import './permission' // permission control
+import Print from 'vue-print-nb'
 
 // moment
 import moment from 'moment'
@@ -34,6 +35,8 @@ Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size
   i18n: (key, value) => i18n.t(key, value)
 })
+
+Vue.use(Print)
 
 // register global utility filters.
 Object.keys(filters).forEach(key => {

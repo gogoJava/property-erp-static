@@ -5,6 +5,11 @@
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
+      <el-table-column :label="$t('asset.assetNo')" prop="assetNo" align="center" min-width="80">
+        <template slot-scope="scope">
+          <span>{{ scope.row.assetNo }}</span>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('asset.assetDescribe')" prop="assetDescribe" align="center" min-width="120">
         <template slot-scope="scope">
           <span>{{ scope.row.assetDescribe }}</span>
@@ -15,19 +20,14 @@
           <span>{{ scope.row.assetEnglishDescribe }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('asset.assetEnglishName')" min-width="180px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.assetEnglishName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('asset.assetEnglishPosition')" min-width="180px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.assetEnglishPosition }}</span>
-        </template>
-      </el-table-column>
       <el-table-column :label="$t('asset.assetName')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.assetName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('asset.assetEnglishName')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.assetEnglishName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('asset.assetPosition')" min-width="180px" align="center">
@@ -35,19 +35,24 @@
           <span>{{ scope.row.assetPosition }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('asset.assetTraditionalDescribe')" min-width="180px" align="center">
+      <el-table-column :label="$t('asset.assetEnglishPosition')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.assetTraditionalDescribe }}</span>
+          <span>{{ scope.row.assetEnglishPosition }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('asset.assetTraditionalName')" min-width="180px" align="center">
+      <el-table-column :label="$t('asset.assetMaintain')" min-width="60px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.assetTraditionalName }}</span>
+          <span>{{ scope.row.assetMaintain }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('asset.assetTraditionalPosition')" min-width="180px" align="center">
+      <el-table-column :label="$t('asset.assetMaintainRemindCycle')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.assetTraditionalPosition }}</span>
+          <span>{{ scope.row.assetMaintainRemindCycle }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('asset.assetBuyDate')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.assetBuyDate }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('asset.assetType')" min-width="180px" align="center">
@@ -58,6 +63,11 @@
       <el-table-column :label="$t('asset.community')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.community.communityName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('asset.assetStatus')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.assetStatus | assetStatusFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
@@ -75,6 +85,13 @@
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="140px" style="margin:0 30px;">
         <el-row>
           <el-col :span="12">
+            <el-form-item :label="$t('asset.assetNo')" prop="assetNo">
+              <el-input v-model="temp.assetNo" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
             <el-form-item :label="$t('asset.assetDescribe')" prop="assetDescribe">
               <el-input v-model="temp.assetDescribe" />
             </el-form-item>
@@ -87,8 +104,34 @@
         </el-row>
         <el-row>
           <el-col :span="12">
+            <el-form-item :label="$t('asset.assetName')" prop="assetName">
+              <el-input v-model="temp.assetName" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item :label="$t('asset.assetEnglishName')" prop="assetEnglishName">
               <el-input v-model="temp.assetEnglishName" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col v-if="$store.getters.isSuper" :span="12">
+            <el-form-item :label="$t('asset.community')" prop="communityId">
+              <el-select v-model="temp.communityId" placeholder="请绑定社区">
+                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('asset.assetType')" prop="assetType">
+              <el-input v-model="temp.assetType" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('asset.assetPosition')" prop="assetPosition">
+              <el-input v-model="temp.assetPosition" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -97,48 +140,42 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="$store.getters.isSuper">
-          <el-col :span="24">
-            <el-form-item :label="$t('asset.community')" prop="communityId">
-              <el-select v-model="temp.communityId" placeholder="请绑定社区">
-                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('asset.assetMaintain')" prop="assetMaintain">
+              <el-select v-model="temp.assetMaintain" placeholder="是否保养">
+                <el-option :value="true" label="是" />
+                <el-option :value="false" label="否" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('asset.assetMaintainRemindCycle')" prop="assetMaintainRemindCycle">
+              <el-input v-model="temp.assetMaintainRemindCycle" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('asset.assetBuyDate')" prop="assetBuyDate">
+              <el-input v-model="temp.assetBuyDate" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('asset.assetStatus')" prop="assetStatus">
+              <el-select v-model="temp.assetStatus" placeholder="请选择状态">
+                <el-option :key="1" :value="0" label="使用中" />
+                <el-option :key="2" :value="1" label="货存" />
+                <el-option :key="3" :value="2" label="损坏" />
+                <el-option :key="4" :value="3" label="弃置" />
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('asset.assetName')" prop="assetName">
-              <el-input v-model="temp.assetName" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('asset.assetPosition')" prop="assetPosition">
-              <el-input v-model="temp.assetPosition" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item :label="$t('asset.assetTraditionalDescribe')" prop="assetTraditionalDescribe">
-              <el-input v-model="temp.assetTraditionalDescribe" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('asset.assetTraditionalName')" prop="assetTraditionalName">
-              <el-input v-model="temp.assetTraditionalName" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item :label="$t('asset.assetTraditionalPosition')" prop="assetTraditionalPosition">
-              <el-input v-model="temp.assetTraditionalPosition" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('asset.assetType')" prop="assetType">
-              <el-input v-model="temp.assetType" />
+            <el-form-item :label="$t('asset.assetImage')" prop="assetImage">
+              <single-image :value.sync="temp.assetImage" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -161,11 +198,13 @@
   import { getCommunityList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+  import SingleImage from './singleImage'
 
   export default {
     name: 'Asset',
     components: {
-      Pagination
+      Pagination,
+      SingleImage
     },
     directives: {
       waves
@@ -190,6 +229,16 @@
         const typeMap = {
           0: '普通管理员',
           1: '超级管理员'
+        }
+        return typeMap[type]
+      },
+      assetStatusFilter(type) {
+        // 状态0使用中1货存2损坏3弃置
+        const typeMap = {
+          0: '使用中',
+          1: '货存',
+          2: '损坏',
+          3: '弃置'
         }
         return typeMap[type]
       }
@@ -227,7 +276,13 @@
           assetTraditionalName: '', // 资产名字（繁体）
           assetTraditionalPosition: '', // 位置信息（繁体）
           assetType: '', // 资产类型：电器、公共设备
-          communityId: '' // 社区ID
+          communityId: '', // 社区ID
+          assetMaintain: true,
+          assetMaintainRemindCycle: null,
+          assetBuyDate: null,
+          assetStatus: null,
+          assetNo: '',
+          assetImage: []
         },
         dialogFormVisible: false,
         dialogStatus: '',
@@ -304,7 +359,13 @@
           timestamp: new Date(),
           title: '',
           status: 'published',
-          type: ''
+          type: '',
+          assetMaintain: true,
+          assetMaintainRemindCycle: null,
+          assetBuyDate: null,
+          assetStatus: null,
+          assetNo: '',
+          assetImage: []
         }
       },
       handleCreate() {

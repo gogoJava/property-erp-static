@@ -263,7 +263,8 @@ export default {
     unitPurpose: '用途', // 用途
     unitRelativeProportion: '分层建筑物相对比(千分之一)', // 分层建筑物相对比(千分之一)
     unitStatus: '单位状态', // 单位状态0空置1租赁2装修中3入住
-    unitType: '单位类型' // 单位类型1商铺2住宅3停车场
+    unitType: '单位类型', // 单位类型1商铺2住宅3停车场
+    unitTitle: '单位业权'
   },
   // 业主
   proprietor: {
@@ -299,7 +300,13 @@ export default {
     assetTraditionalPosition: '位置信息（繁体）', // 位置信息（繁体）
     assetType: '资产类型', // 资产类型：电器、公共设备
     community: '社区',
-    communityId: '社区ID' // 社区ID
+    communityId: '社区ID', // 社区ID
+    assetMaintain: '保养',
+    assetMaintainRemindCycle: '保养周期',
+    assetBuyDate: '购入日期',
+    assetStatus: '状态',
+    assetNo: '资产编号',
+    assetImage: '资产相片'
   },
   notice: {
     buildingId: '建筑', // 建筑id

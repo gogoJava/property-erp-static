@@ -15,7 +15,8 @@ const user = {
     roles: [],
     setting: {
       articlePlatform: []
-    }
+    },
+    managementType: 0
   },
 
   mutations: {
@@ -38,6 +39,7 @@ const user = {
       state.name = data.name
       state.communityId = data.communityId
       state.isSuper = data.type === 1
+      state.managementType = data.managementType
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
@@ -56,7 +58,7 @@ const user = {
       commit('SET_TOKEN', data.token)
       setToken(data.token)
       commit('SET_ROLES', [data.manager])
-      commit('SET_NAME', { name: data.manager.username, communityId: data.manager.communityId, type: data.manager.type })
+      commit('SET_NAME', { name: data.manager.username, communityId: data.manager.communityId, type: data.manager.type, managementType: data.manager.managementType })
       // type 类型0普通管理员1超级管理员
       const role = { roles: [data.manager.type === 1 ? 'super' : 'admin'] }
       dispatch('GenerateRoutes', role) // 动态修改权限后 重绘侧边菜单
@@ -67,7 +69,7 @@ const user = {
       const { code, data } = await getUserInfo().catch(e => e)
       if (!data || code !== 200) return
       commit('SET_ROLES', [data])
-      commit('SET_NAME', { name: data.username, communityId: data.communityId, type: data.type })
+      commit('SET_NAME', { name: data.username, communityId: data.communityId, type: data.type, managementType: data.managementType })
       const role = { roles: [data.type === 1 ? 'super' : 'admin'] }
       dispatch('GenerateRoutes', role) // 动态修改权限后 重绘侧边菜单
       return data
@@ -104,7 +106,7 @@ const user = {
         getUserInfo(role).then(response => {
           const data = response.data
           commit('SET_ROLES', data.roles)
-          commit('SET_NAME', { name: data.username, communityId: data.communityId, type: data.type })
+          commit('SET_NAME', { name: data.username, communityId: data.communityId, type: data.type, managementType: data.managementType })
           commit('SET_AVATAR', data.avatar)
           commit('SET_INTRODUCTION', data.introduction)
           dispatch('GenerateRoutes', data) // 动态修改权限后 重绘侧边菜单

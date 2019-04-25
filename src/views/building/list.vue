@@ -15,6 +15,11 @@
           <span>{{ scope.row.buildingName }}</span>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('building.managementType')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.managementType === 0 ? '简单管理' : '综合管理' }}</span>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('building.buildingDirection')" min-width="120px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.buildingDirection }}</span>
@@ -28,11 +33,6 @@
       <el-table-column :label="$t('building.communityId')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.community.communityName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('building.managementType')" min-width="180px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.managementType === 0 ? '简单管理' : '综合管理' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('building.floorLowNum')" min-width="80px" align="center">
@@ -59,7 +59,6 @@
         </template>
       </el-table-column>
     </el-table>
-
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
     <!-- 添加、编辑、详情 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="70%">
@@ -98,7 +97,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('building.managementType')" prop="managementType">
-              <el-select v-model="temp.managementType" placeholder="请绑定类型">
+              <el-select v-model="temp.managementType" placeholder="请绑定类型" disabled>
                 <el-option v-for="(item, index) in typeList" :key="index" :value="item.value" :label="item.label" />
               </el-select>
             </el-form-item>
@@ -137,6 +136,18 @@
           <el-row style="text-align: center;"><span style="cursor: pointer;font-size: 30px;" @click="addChildList">+</span></el-row>
           <!-- <el-button icon="el-icon-circle-plus-outline" /> -->
         </el-form-item>
+        <!-- <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('building.commonPdf')" prop="commonPdf">
+              <single-image :value.sync="temp.commonPdf" :type="2"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('building.rosterPdf')" prop="rosterPdf">
+              <single-image :value.sync="temp.rosterPdf" :type="3"/>
+            </el-form-item>
+          </el-col>
+        </el-row> -->
         <el-form-item :label="$t('building.commonPdf')">
           <single-image :value.sync="temp.commonPdf" :type="2"/>
         </el-form-item>
@@ -157,7 +168,8 @@
     getBuildingList,
     createBuilding,
     updateBuilding,
-    delBuilding
+    delBuilding,
+    getBuildingDetail
   } from '@/api/building'
   import { getCommunityList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
@@ -271,6 +283,11 @@
     watch: {
       'listQuery.keyword'() {
         this.getList()
+      },
+      dialogFormVisible() {
+        if (!this.dialogFormVisible) {
+          this.resetTemp()
+        }
       }
     },
     created() {
@@ -316,7 +333,7 @@
           commonPdf: [],
           buildingChildList: [],
           rosterPdf: [],
-          managementType: null
+          managementType: this.$store.getters.managementType
         }
       },
       handleCreate() {
@@ -345,8 +362,9 @@
         })
         this.getList()
       },
-      handleUpdate(row) {
-        this.temp = Object.assign({}, row) // copy obj
+      async handleUpdate(row) {
+        const temp = await this.querBuildingDetail(row.buildingId)
+        this.temp = Object.assign({}, temp) // copy obj
         if (!this.temp.commonPdf) {
           this.temp.commonPdf = []
         }
@@ -411,6 +429,10 @@
       },
       cutChildList(index) {
         this.temp.buildingChildList.splice(index, 1)
+      },
+      async querBuildingDetail(buildingId) {
+        const res = await getBuildingDetail({ buildingId }).catch(e => e)
+        return res.data
       }
     }
   }

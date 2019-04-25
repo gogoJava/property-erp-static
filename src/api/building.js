@@ -10,6 +10,15 @@ export function getBuildingList(query) {
   })
 }
 
+// 获取建筑详情
+export function getBuildingDetail(query) {
+  return request({
+    url: '/back/building/detail',
+    method: 'get',
+    params: query
+  })
+}
+
 // 创建建筑
 export function createBuilding(params) {
   return request({

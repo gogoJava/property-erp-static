@@ -1,7 +1,6 @@
 <template>
   <div class="unit-container">
     <div class="filter-container">
-      <!-- <el-input :placeholder="$t('unit.unitName')" v-model="listQuery.title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" /> -->
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.buildingId') }}:</span>
       <el-select v-model="buildingId" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
@@ -13,6 +12,11 @@
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
+      <el-table-column :label="$t('unit.unitPurpose')" min-width="80px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.unitPurpose }}</span>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('unit.unitNo')" prop="id" align="center" min-width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.unitNo }}</span>
@@ -43,19 +47,14 @@
           <span>{{ scope.row.unitPosition }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('unit.unitPurpose')" min-width="80px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.unitPurpose }}</span>
-        </template>
-      </el-table-column>
       <el-table-column :label="$t('unit.unitStatus')" min-width="100px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.unitStatus | unitStatusFilter }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('unit.unitType')" min-width="100px" align="center">
+      <el-table-column :label="$t('unit.unitTitle')" min-width="100px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.unitType | unitTypefilter }}</span>
+          <span>{{ scope.row.unitTitle }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('unit.unitRelativeProportion')" width="140px" align="center">
@@ -83,6 +82,14 @@
     <!-- 添加、编辑、详情 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="800px">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="250px" style="width: 700px;">
+        <el-form-item :label="$t('unit.unitPurpose')" prop="unitPurpose">
+          <el-select v-model="temp.unitPurpose" placeholder="请选择用途">
+            <el-option :key="1" value="商业" label="商业" />
+            <el-option :key="2" value="轻型汽车" label="轻型汽车" />
+            <el-option :key="3" value="电单车" label="电单车" />
+            <el-option :key="4" value="住宅" label="住宅" />
+          </el-select>
+        </el-form-item>
         <el-form-item :label="$t('unit.unitNo')" prop="unitNo">
           <el-input v-model="temp.unitNo" />
         </el-form-item>
@@ -108,9 +115,6 @@
         <el-form-item :label="$t('unit.unitPosition')" prop="unitPosition">
           <el-input v-model="temp.unitPosition" />
         </el-form-item>
-        <el-form-item :label="$t('unit.unitPurpose')" prop="unitPurpose">
-          <el-input v-model="temp.unitPurpose" />
-        </el-form-item>
         <el-form-item :label="$t('unit.unitStatus')" prop="unitStatus">
           <el-select v-model="temp.unitStatus" placeholder="请选择单位状态">
             <el-option :key="0" :value="0" label="空置" />
@@ -119,18 +123,21 @@
             <el-option :key="3" :value="3" label="入住" />
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('unit.unitType')" prop="unitType">
+        <!-- <el-form-item :label="$t('unit.unitType')" prop="unitType">
           <el-select v-model="temp.unitType" placeholder="请选择单位类型">
             <el-option :key="1" :value="1" label="商铺" />
             <el-option :key="2" :value="2" label="住宅" />
             <el-option :key="3" :value="3" label="停车场" />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item :label="$t('unit.unitRelativeProportion')" prop="unitRelativeProportion">
           <el-input v-model="temp.unitRelativeProportion" />
         </el-form-item>
         <el-form-item :label="$t('unit.unitChildRelativeProportion')" prop="unitChildRelativeProportion">
           <el-input v-model="temp.unitChildRelativeProportion" />
+        </el-form-item>
+        <el-form-item :label="$t('unit.unitTitle')" prop="unitTitle">
+          <el-input v-model="temp.unitTitle" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -233,7 +240,8 @@
           unitPurpose: '', // 用途
           unitRelativeProportion: null, // 分层建筑物相对比(千分之一)
           unitStatus: null, // 单位状态0空置1租赁2装修中3入住
-          unitType: null // 单位类型1商铺2住宅3停车场
+          unitType: null, // 单位类型1商铺2住宅3停车场
+          unitTitle: null // 单位业权
         },
         dialogFormVisible: false,
         dialogStatus: '',
@@ -312,7 +320,8 @@
           unitPurpose: '', // 用途
           unitRelativeProportion: null, // 分层建筑物相对比(千分之一)
           unitStatus: null, // 单位状态0空置1租赁2装修中3入住
-          unitType: null // 单位类型1商铺2住宅3停车场
+          unitType: null, // 单位类型1商铺2住宅3停车场
+          unitTitle: null
         }
       },
       handleCreate() {

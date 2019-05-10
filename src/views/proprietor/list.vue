@@ -4,7 +4,7 @@
       <el-input :placeholder="$t('proprietor.name')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
-    <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
+    <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('proprietor.username')" prop="id" align="center" min-width="120">
         <template slot-scope="scope">
           <span>{{ scope.row.username }}</span>
@@ -17,7 +17,7 @@
       </el-table-column>
       <el-table-column :label="$t('proprietor.portrait')" min-width="120px" align="center">
         <template slot-scope="scope">
-          <img :src="(imgPrefix + scope.row.portrait)" class="proprietor-portrait">
+          <img v-if="scope.row.portrait" :src="(imgPrefix + scope.row.portrait)" class="proprietor-portrait">
         </template>
       </el-table-column>
       <el-table-column :label="$t('proprietor.englishName')" min-width="110px" align="center">
@@ -66,16 +66,28 @@
           <span>{{ scope.row.mateName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="190" class-name="small-padding fixed-width" fixed="right">
+      <el-table-column :label="$t('proprietor.email')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.email }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('proprietor.advanceAmount')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.advanceAmount }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('table.actions')" align="center" width="260" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
           <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}</el-button>
           <el-button type="text" size="mini" @click="handleCharge(scope.row)">{{ $t('table.preCharge') }}</el-button>
+          <el-button type="text" size="mini" @click="linkedUnit(scope.row)">{{ $t('proprietor.userWithCommunities') }}</el-button>
+          <!-- <el-button type="text" size="mini" @click="linkedUnit(scope.row)">{{ $t('proprietor.bindCommunities') }}</el-button> -->
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
     <!-- 添加、编辑、详情 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px" style="margin:0 50px;">
@@ -86,15 +98,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('proprietor.name')" prop="name">
-              <el-input v-model="temp.name" />
+            <el-form-item :label="$t('proprietor.password')" prop="password">
+              <el-input v-model="temp.password" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('proprietor.idCard')" prop="idCard">
-              <el-input v-model="temp.idCard" />
+            <el-form-item :label="$t('proprietor.name')" prop="name">
+              <el-input v-model="temp.name" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -114,9 +126,21 @@
           </el-col>
           <el-col v-if="$store.getters.isSuper" :span="12">
             <el-form-item :label="$t('proprietor.communityId')" prop="communityId">
-              <el-select v-model="temp.communityId" placeholder="请绑定社区">
+              <el-select v-model="temp.communities" multiple collapse-tags placeholder="请绑定社区">
                 <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
               </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('proprietor.idCard')" prop="idCard">
+              <el-input v-model="temp.idCard" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('proprietor.birthday')" prop="birthday">
+              <el-date-picker v-model="birthday" type="date" format="yyyy-MM-dd" placeholder="选择日期"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -135,7 +159,9 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('proprietor.marriageSystem')" prop="marriageSystem">
-              <el-input v-model="temp.marriageSystem" />
+              <el-select v-model="temp.marriageSystem" placeholder="请选择婚姻制度">
+                <el-option v-for="(item, index) in marriageSystemList" :key="index" :value="item.value" :label="item.label" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -146,13 +172,8 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('proprietor.birthday')" prop="birthday">
-              <el-date-picker v-model="birthday" type="date" format="yyyy-MM-dd" placeholder="选择日期"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('proprietor.password')" prop="password">
-              <el-input v-model="temp.password" />
+            <el-form-item :label="$t('proprietor.email')" prop="email">
+              <el-input v-model="temp.email" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -185,6 +206,24 @@
         <el-button type="primary" @click="preCharge()">{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
+    <!-- 关联单元 -->
+    <el-dialog :title="$t('proprietor.userWithCommunities')" :visible.sync="unitShow" width="80%">
+      <linked-unit v-if="unitShow" :user-id="userId" :all-units="allUnits" @refresh-data="unitShow = false"/>
+    </el-dialog>
+    <!-- 绑定社区 -->
+    <!-- <el-dialog :visible.sync="dialogBindShow" width="800px">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="250px" style="width: 700px;">
+        <el-form-item label="住户">
+          <el-select v-model="communitys" multiple collapse-tags placeholder="请绑定社区">
+            <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogBindShow = false">{{ $t('table.cancel') }}</el-button>
+        <el-button type="primary" @click="testTwo">{{ $t('table.confirm') }}</el-button>
+      </div>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -198,16 +237,21 @@
   import {
     addAdvance
   } from '@/api/advance'
+  import {
+    getUnitList
+  } from '@/api/unit'
   import { getCommunityList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import SingleImage from './singleImage'
+  import LinkedUnit from './LinkedUnit'
 
   export default {
     name: 'Proprietor',
     components: {
       Pagination,
-      SingleImage
+      SingleImage,
+      LinkedUnit
     },
     directives: {
       waves
@@ -243,8 +287,8 @@
         total: 0,
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 10,
+          pageNo: 1,
+          pageSize: 10,
           keyword: ''
         },
         importanceOptions: [1, 2, 3],
@@ -276,9 +320,23 @@
           updateTime: '更新日期', // 更新时间
           userId: '用户ID', // 用户id
           username: '用户登录账号', // 用户登录账号
-          password: '密码'
+          password: '密码',
+          communities: []
         },
+        marriageSystemList: [
+          { label: '未婚', value: '未婚' },
+          { label: '离婚', value: '离婚' },
+          { label: '已婚A', value: '已婚A' },
+          { label: '已婚G', value: '已婚G' },
+          { label: '已婚C', value: '已婚C' },
+          { label: '已婚S', value: '已婚S' },
+          { label: '已婚M', value: '已婚M' },
+          { label: '已婚I', value: '已婚I' },
+          { label: '已婚P', value: '已婚P' },
+          { label: '已婚J', value: '已婚J' }
+        ],
         dialogFormVisible: false,
+        dialogBindShow: false,
         dialogStatus: '',
         textMap: {
           update: 'Edit',
@@ -310,7 +368,11 @@
         communityList: [],
         advanceAmount: null, // 预收费
         userId: null, // 预收费用户id
-        imgPrefix: 'http://songsong.fun:8080/file' // 图片前缀
+        imgPrefix: 'http://songsong.fun:8080/file', // 图片前缀
+        unitShow: false,
+        communitys: [],
+        userIds: '',
+        allUnits: []
       }
     },
     watch: {
@@ -321,6 +383,7 @@
     created() {
       this.getList()
       this.queryCommunityList()
+      this.getAllList()
     },
     methods: {
       async getList() {
@@ -340,15 +403,6 @@
         })
         row.status = status
       },
-      sortChange(data) {
-        const {
-          prop,
-          order
-        } = data
-        if (prop === 'id') {
-          this.sortByID(order)
-        }
-      },
       resetTemp() {
         this.birthday = ''
         this.temp = {
@@ -359,7 +413,9 @@
           title: '',
           status: 'published',
           type: '',
-          password: ''
+          password: '',
+          email: '',
+          communities: []
         }
       },
       handleCreate() {
@@ -371,7 +427,20 @@
         })
       },
       async createData() {
-        this.temp.communityId = this.$store.getters.communityId
+        // this.temp.communityId = this.$store.getters.communityId
+        const userWithCommunities = []
+        this.temp.communities.forEach(communityId => {
+          const item = this.communityList.find(element => element.communityId === communityId)
+          if (item) {
+            userWithCommunities.push({
+              communityId: item.communityId,
+              communityName: item.communityName,
+              userId: this.userId
+            })
+          }
+        })
+        // this.temp.communityId = userWithCommunities[0] && userWithCommunities[0].communityId
+        this.temp.userWithCommunities = [...userWithCommunities]
         this.temp.birthday = this.birthday ? this.$moment(this.birthday).format('YYYY-MM-DD') : ''
         const response = await createProprietor(this.temp).catch(e => e)
         if (response.code !== 200) {
@@ -387,8 +456,17 @@
         this.getList()
       },
       handleUpdate(row) {
+        this.userId = row.userId
         this.temp = Object.assign({}, row) // copy obj
         this.temp.password = ''
+        const communities = []
+        this.temp.userWithCommunities && this.temp.userWithCommunities.forEach(element => {
+          communities.push(element.communityId)
+        })
+        this.temp = {
+          ...this.temp,
+          communities
+        }
         this.birthday = this.temp.birthday ? this.$moment(this.temp.birthday) : ''
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
@@ -417,9 +495,22 @@
         this.dialogFormVisible2 = false
       },
       async updateData() {
+        const userWithCommunities = []
+        this.temp.communities.forEach(communityId => {
+          const item = this.communityList.find(element => element.communityId === communityId)
+          if (item) {
+            userWithCommunities.push({
+              communityId: item.communityId,
+              communityName: item.communityName,
+              userId: this.userId
+            })
+          }
+        })
         this.listLoading = true
-        this.temp.communityId = this.$store.getters.communityId
+        // this.temp.communityId = this.$store.getters.communityId
         this.temp.birthday = this.birthday ? this.$moment(this.birthday).format('YYYY-MM-DD') : ''
+        this.temp.userWithCommunities = [...userWithCommunities]
+        delete this.temp.communityId
         const response = await updateProprietor(this.temp).catch(e => e)
         this.listLoading = false
         if (response.code !== 200) {
@@ -457,7 +548,6 @@
       },
       // 上传图片成功
       handleAvatarSuccess(res, file) {
-        console.log('handleAvatarSuccess')
         this.temp.portrait = URL.createObjectURL(file.raw)
       },
       beforeAvatarUpload(file) {
@@ -471,6 +561,32 @@
           this.$message.error('上传头像图片大小不能超过 2MB!')
         }
         return isJPG && isLt2M
+      },
+      linkedUnit(info) {
+        this.userId = info.userId
+        this.unitShow = true
+      },
+      async getAllList() {
+        const { code, msg, data } = await getUnitList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
+        if (code !== 200) {
+          return this.$notify({ title: '失败1', message: msg, type: 'error', duration: 2000 })
+        }
+        this.allUnits = data.list
+      },
+      async getAllListByUserId(userId) {
+        const { code, msg, data } = await getUnitList({ pageNo: 1, pageSize: 99999, userId }).catch(e => e)
+        if (code !== 200) {
+          return this.$notify({ title: '失败1', message: msg, type: 'error', duration: 2000 })
+        }
+        this.allUnits = data.list
+        const communities = []
+        this.temp.userWithCommunities && this.temp.userWithCommunities.forEach(element => {
+          communities.push(element.communityId)
+        })
+        this.temp = {
+          ...this.temp,
+          communities
+        }
       }
     }
   }

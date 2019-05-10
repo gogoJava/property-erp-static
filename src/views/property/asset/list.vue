@@ -52,14 +52,19 @@
       </el-table-column>
       <el-table-column :label="$t('asset.assetBuyDate')" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.assetBuyDate }}</span>
+          <span>{{ scope.row.assetBuyDate ? $moment(scope.row.assetBuyDate).format('YYYY-MM-DD HH:mm') : '--' }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('asset.assetType')" min-width="180px" align="center">
+      <el-table-column :label="$t('asset.assetOverdueDate')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.assetOverdueDate ? $moment(scope.row.assetOverdueDate).format('YYYY-MM-DD HH:mm') : '--' }}</span>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column :label="$t('asset.assetType')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.assetType }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column :label="$t('asset.community')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.community.communityName }}</span>
@@ -81,10 +86,10 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
     <!-- 添加、编辑、详情 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="70%">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="140px" style="margin:0 30px;">
         <el-row>
-          <el-col :span="12">
+          <el-col :span="16">
             <el-form-item :label="$t('asset.assetNo')" prop="assetNo">
               <el-input v-model="temp.assetNo" />
             </el-form-item>
@@ -115,20 +120,6 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col v-if="$store.getters.isSuper" :span="12">
-            <el-form-item :label="$t('asset.community')" prop="communityId">
-              <el-select v-model="temp.communityId" placeholder="请绑定社区">
-                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('asset.assetType')" prop="assetType">
-              <el-input v-model="temp.assetType" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('asset.assetPosition')" prop="assetPosition">
               <el-input v-model="temp.assetPosition" />
@@ -141,6 +132,11 @@
           </el-col>
         </el-row>
         <el-row>
+          <!-- <el-col :span="12">
+            <el-form-item :label="$t('asset.assetType')" prop="assetType">
+              <el-input v-model="temp.assetType" />
+            </el-form-item>
+          </el-col> -->
           <el-col :span="12">
             <el-form-item :label="$t('asset.assetMaintain')" prop="assetMaintain">
               <el-select v-model="temp.assetMaintain" placeholder="是否保养">
@@ -157,11 +153,6 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('asset.assetBuyDate')" prop="assetBuyDate">
-              <el-input v-model="temp.assetBuyDate" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
             <el-form-item :label="$t('asset.assetStatus')" prop="assetStatus">
               <el-select v-model="temp.assetStatus" placeholder="请选择状态">
                 <el-option :key="1" :value="0" label="使用中" />
@@ -171,9 +162,28 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col v-if="$store.getters.isSuper" :span="12">
+            <el-form-item :label="$t('asset.community')" prop="communityId">
+              <el-select v-model="temp.communityId" placeholder="请绑定社区">
+                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
+              </el-select>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
+            <el-form-item :label="$t('asset.assetBuyDate')" prop="assetBuyDate">
+              <el-date-picker v-model="assetBuyDate" type="date" format="yyyy-MM-dd" placeholder="选择日期"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('asset.assetOverdueDate')" prop="assetOverdueDate">
+              <el-date-picker v-model="assetOverdueDate" type="date" format="yyyy-MM-dd" placeholder="选择日期"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
             <el-form-item :label="$t('asset.assetImage')" prop="assetImage">
               <single-image :value.sync="temp.assetImage" />
             </el-form-item>
@@ -280,10 +290,13 @@
           assetMaintain: true,
           assetMaintainRemindCycle: null,
           assetBuyDate: null,
+          assetOverdueDate: null,
           assetStatus: null,
           assetNo: '',
           assetImage: []
         },
+        assetBuyDate: '',
+        assetOverdueDate: '',
         dialogFormVisible: false,
         dialogStatus: '',
         textMap: {
@@ -352,6 +365,8 @@
         }
       },
       resetTemp() {
+        this.assetBuyDate = ''
+        this.assetOverdueDate = ''
         this.temp = {
           id: undefined,
           importance: 1,
@@ -363,6 +378,7 @@
           assetMaintain: true,
           assetMaintainRemindCycle: null,
           assetBuyDate: null,
+          assetOverdueDate: null,
           assetStatus: null,
           assetNo: '',
           assetImage: []
@@ -377,7 +393,9 @@
         })
       },
       async createData() {
-        this.temp.communityId = this.$store.getters.communityId
+        this.temp.assetBuyDate = this.assetBuyDate ? this.$moment(this.assetBuyDate).format('YYYY-MM-DD') : ''
+        this.temp.assetOverdueDate = this.assetOverdueDate ? this.$moment(this.assetOverdueDate).format('YYYY-MM-DD') : ''
+        // this.temp.communityId = this.$store.getters.communityId
         const response = await createAsset(this.temp).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
@@ -393,6 +411,8 @@
       },
       handleUpdate(row) {
         this.temp = Object.assign({}, row) // copy obj
+        this.assetBuyDate = this.temp.assetBuyDate ? this.$moment(this.temp.assetBuyDate) : ''
+        this.assetOverdueDate = this.temp.assetOverdueDate ? this.$moment(this.temp.assetOverdueDate) : ''
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -401,7 +421,9 @@
       },
       async updateData() {
         this.listLoading = true
-        this.temp.communityId = this.$store.getters.communityId
+        // this.temp.communityId = this.$store.getters.communityId
+        this.temp.assetBuyDate = this.assetBuyDate ? this.$moment(this.assetBuyDate).format('YYYY-MM-DD') : ''
+        this.temp.assetOverdueDate = this.assetOverdueDate ? this.$moment(this.assetOverdueDate).format('YYYY-MM-DD') : ''
         const response = await updateAsset(this.temp).catch(e => e)
         this.listLoading = false
         if (response.code !== 200) {

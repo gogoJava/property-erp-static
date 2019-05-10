@@ -82,9 +82,11 @@ export default {
     costSummary: '费用汇总',
     fundFee: '基金费用管理',
     unitCharge: '单元收费管理',
+    unitChargeList: '单元收费项目',
     propertyComplaint: '物业投诉',
     visitor: '访客登记',
     clubhouse: '会所管理',
+    placeRecord: '场所记录管理',
     advertisement: '广告管理'
   },
   navbar: {
@@ -156,7 +158,10 @@ export default {
     confirm: '确定',
     preCharge: '预收费',
     paymentNotice: '付款通知书',
-    print: '打印'
+    print: '打印',
+    confirmPay: '确认收款',
+    linked: '关联',
+    bindUser: '绑定业主'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',
@@ -218,7 +223,8 @@ export default {
     communityRemark: '备注', // 备注
     communityRoadArea: '道路面积', // 道路面积
     communityRoomCount: '房间总数', // 房间总数
-    commonPdf: '社区之公共部分' // 社区之公共部分
+    commonPdf: '社区之公共部分', // 社区之公共部分
+    communityShopsCount: '商铺数量'
   },
   // 管理员
   administrator: {
@@ -229,7 +235,8 @@ export default {
     sex: '性别', // 性别0女1男
     type: '类型', // 类型0普通管理员1超级管理员
     username: '用户名', // 用户名
-    password: '密码' // 密码
+    password: '密码', // 密码
+    portrait: '头像'
   },
   // 建筑
   building: {
@@ -251,20 +258,30 @@ export default {
   },
   // 单位
   unit: {
-    unitChildRelativeProportion: '分层建筑物之子部分相对比(千分之一)', // 分层建筑物之子部分相对比(千分之一)
+    unitChildRelativeProportion: '分层建筑物之子部分相对比(百分之一)', // 分层建筑物之子部分相对比(千分之一)
     buildingId: '建筑', // buildingId
     community: '社区',
     unitCoveredArea: '覆盖面积大小(单位平方米)', // 覆盖面积大小(单位平方米)
     unitName: '单位名字', // 单元名字
     unitFullAddress: '全址', // 全址
-    unitId: 'ID', // unitId
+    unitId: '单位', // unitId
     unitNo: '单位编号', // 单位编号
     unitPosition: '位置', // 位置(地下,一楼,二楼,三楼,户外.)
     unitPurpose: '用途', // 用途
-    unitRelativeProportion: '分层建筑物相对比(千分之一)', // 分层建筑物相对比(千分之一)
+    unitRelativeProportion: '分层建筑物相对比(百分之一)', // 分层建筑物相对比(千分之一)
     unitStatus: '单位状态', // 单位状态0空置1租赁2装修中3入住
     unitType: '单位类型', // 单位类型1商铺2住宅3停车场
-    unitTitle: '单位业权'
+    unitTitle: '单位业权',
+    additionalCost: '额外费用',
+    alculationMethod: '计算方式',
+    billingMode: '收费模式',
+    describe: '金额',
+    formula: '计算公式',
+    itemName: '收费项目名字',
+    itemNo: '收费项目编号',
+    lateDate: '滞纳开始天数',
+    lateFee: '滞纳金率',
+    unitPrice: '计算单价'
   },
   // 业主
   proprietor: {
@@ -285,7 +302,10 @@ export default {
     updateTime: '更新日期', // 更新时间
     userId: '用户ID', // 用户id
     username: '用户登录账号', // 用户登录账号
-    password: '密码' // 密码
+    password: '密码', // 密码
+    userWithCommunities: '关联单位',
+    bindCommunities: '绑定社区',
+    advanceAmount: '预收金额'
   },
   asset: {
     assetDescribe: '描述', // 描述
@@ -306,7 +326,8 @@ export default {
     assetBuyDate: '购入日期',
     assetStatus: '状态',
     assetNo: '资产编号',
-    assetImage: '资产相片'
+    assetImage: '资产相片',
+    assetOverdueDate: '保固日期'
   },
   notice: {
     buildingId: '建筑', // 建筑id
@@ -321,8 +342,12 @@ export default {
     noticeTitle: '公告标题', // 公告标题
     noticeTraditionalDetails: '详情（繁体）', // 详情（繁体）
     noticeTraditionalTitle: '公告标题（繁体）', // 标题
-    noticeType: '通知类型', // 通知类型
-    updateTime: '更新时间' // 更新时间
+    noticeType: '公告类型', // 通知类型
+    updateTime: '更新时间', // 更新时间
+    startTime: '开始日期',
+    endTime: '结束日期',
+    announcementDate: '公布日期'
+
   },
   event: {
     community: '社区',
@@ -336,7 +361,16 @@ export default {
     eventSolve: '解决方案', // 解决方案
     eventStatus: '事件进度', // 事件进度
     eventType: '事件类型', // 事件类型1采购2保养3其他
-    eventRemindCycle: '提醒周期'
+    eventRemindCycle: '提醒周期',
+    eventChannel: '接收渠道',
+    reportPdf: '事件图片',
+    reports: '报告PDF',
+    complainClassType: '投诉标题',
+    complainPosition: '投诉位置',
+    complainReply: '投诉进度回复',
+    complainSpecificPosition: '具体位置',
+    complainType: '投诉类型',
+    assetNo: '资产编号'
   },
   adv: {
     adv: '广告',
@@ -350,7 +384,9 @@ export default {
     title: '标题', // title
     type: '广告类型', // 广告类型 0普通图片1视频
     url: '资源', // url
-    used: '是否使用' // 是否使用0否1是
+    used: '是否使用', // 是否使用0否1是
+    purpose: '公告类型',
+    announcementDate: '公布日期'
   },
   complain: {
     complain: '投诉/保修',
@@ -384,7 +420,8 @@ export default {
     visitorId: 'id', // visitorId
     visitorName: '访问者名字', // visitorName
     visitorSex: '性别', // 性别0女1男
-    visitorPhone: '联系号码' // visitorPhone
+    visitorPhone: '联系号码', // visitorPhone
+    visitorImage: '图片'
   },
   clubhouse: {
     community: '社区',
@@ -405,7 +442,9 @@ export default {
     placeTraditionalIntroduction: '简介(繁体)', // 简介(简体)
     placeTraditionalName: '场所名字(繁体)', // 场所名字(繁体)
     placeUpperLimit: '预约时间上限',
-    placeIconType: '图标类型'
+    placeIconType: '图标类型',
+    placeCharge: '收费',
+    placeAttachCharge: '清洁费用'
   },
   charge: {
     recordActualAmount: '实际收取金额', // 实际收取金额
@@ -434,5 +473,20 @@ export default {
     lateFee: '滞纳金率', // 滞纳金率(单位:百分之一)
     unitPrice: '计算单价', // 计算单价
     lateDate: '滞纳开始天数' // 滞纳开始天数
+  },
+  placeRecord: {
+    attachCharge: '附加费用',
+    averageCharge: '每小时费用',
+    communityId: '社区',
+    createTime: '创建时间',
+    orderDate: '预定时间',
+    orderEndTime: '结束时间',
+    orderStartTime: '开始时间',
+    place: '场所',
+    recordStatus: '预定状态',
+    totalCharge: '总费用',
+    totalHour: '总时间',
+    updateTime: '更新时间',
+    userId: '用户ID'
   }
 }

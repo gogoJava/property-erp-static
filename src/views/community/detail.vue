@@ -30,6 +30,54 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
+          <el-form-item :label="$t('community.communityAddressDirectionFirstValue')">
+            <div>：{{ communityInfo.communityAddressDirectionFirstValue || '--' }}</div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item :label="$t('community.communityAddressDirectionFirstTips')">
+            <div>：{{ communityInfo.communityAddressDirectionFirstTips || '--' }}</div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item :label="$t('community.communityAddressDirectionSecondValue')">
+            <div>：{{ communityInfo.communityAddressDirectionSecondValue || '--' }}</div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item :label="$t('community.communityAddressDirectionSecondTips')">
+            <div>：{{ communityInfo.communityAddressDirectionSecondTips || '--' }}</div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item :label="$t('community.communityAddressDirectionThirdValue')">
+            <div>：{{ communityInfo.communityAddressDirectionThirdValue || '--' }}</div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item :label="$t('community.communityAddressDirectionThirdTips')">
+            <div>：{{ communityInfo.communityAddressDirectionThirdTips || '--' }}</div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item :label="$t('community.communityAddressDirectionFourthValue')">
+            <div>：{{ communityInfo.communityAddressDirectionFourthValue || '--' }}</div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item :label="$t('community.communityAddressDirectionFourthTips')">
+            <div>：{{ communityInfo.communityAddressDirectionFourthTips || '--' }}</div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
           <el-form-item :label="$t('community.communityArea')">
             <div>：{{ communityInfo.communityArea || '--' }}</div>
           </el-form-item>
@@ -59,32 +107,37 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityHouseArea')">
-            <div>：{{ communityInfo.communityHouseArea || '--' }}</div>
+          <el-form-item :label="$t('community.communityShopsCount')">
+            <div>：{{ communityInfo.communityShopsCount || '--' }}</div>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
+          <el-form-item :label="$t('community.communityHouseArea')">
+            <div>：{{ communityInfo.communityHouseArea || '--' }}</div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item :label="$t('community.communityRoomCount')">
+            <div>：{{ communityInfo.communityRoomCount || '--' }}</div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <!-- <el-col :span="12">
           <el-form-item :label="$t('community.communityBuildingArea')">
             <div>：{{ communityInfo.communityBuildingArea || '--' }}</div>
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="12">
           <el-form-item :label="$t('community.communityCommonArea')">
             <div>：{{ communityInfo.communityCommonArea || '--' }}</div>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityContacts')">
-            <div>：{{ communityInfo.communityContacts || '--' }}</div>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item :label="$t('community.communityContactsPhone')">
-            <div>：{{ communityInfo.communityContactsPhone || '--' }}</div>
+          <el-form-item :label="$t('community.communityGreenarea')">
+            <div>：{{ communityInfo.communityGreenarea || '--' }}</div>
           </el-form-item>
         </el-col>
       </el-row>
@@ -100,7 +153,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row :gutter="20">
+      <!-- <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item :label="$t('community.communityGreenarea')">
             <div>：{{ communityInfo.communityGreenarea || '--' }}</div>
@@ -111,8 +164,8 @@
             <div>：{{ communityInfo.communityRoadArea || '--' }}</div>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row :gutter="20">
+      </el-row> -->
+      <!-- <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item :label="$t('community.communityLocY')">
             <div>：{{ communityInfo.communityLocY || '--' }}</div>
@@ -123,13 +176,13 @@
             <div>：{{ communityInfo.communityLocX || '--' }}</div>
           </el-form-item>
         </el-col>
-      </el-row>
+      </el-row> -->
       <el-row :gutter="20">
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item :label="$t('community.communityRoomCount')">
             <div>：{{ communityInfo.communityRoomCount || '--' }}</div>
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="12">
           <el-form-item :label="$t('community.communityRemark')">
             <div>：{{ communityInfo.communityRemark || '--' }}</div>
@@ -137,6 +190,19 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item :label="$t('community.communityContacts')">
+            <div>：{{ communityInfo.communityContacts || '--' }}</div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item :label="$t('community.communityContactsPhone')">
+            <div>：{{ communityInfo.communityContactsPhone || '--' }}</div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <!-- 综合管理才有 -->
+      <el-row v-if="communityInfo.communityManagementType" :gutter="20">
         <el-col :span="24">
           <el-form-item :label="$t('community.commonPdf')">
             <img v-for="(item, index) of communityInfo.commonPdf" :key="index" :src="item" class="common-img">

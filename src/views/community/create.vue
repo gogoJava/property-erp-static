@@ -4,19 +4,19 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item :label="$t('community.communityNo')">
-            <el-input v-model="communityInfo.communityNo" />
+            <el-input v-model="communityInfo.communityNo" :placeholder="$t('community.communityNo')"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item :label="$t('community.communityName')">
-            <el-input v-model="communityInfo.communityName" />
+            <el-input v-model="communityInfo.communityName" :placeholder="$t('community.communityName')"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item :label="$t('community.communityAddress')">
-            <el-input v-model="communityInfo.communityAddress" />
+            <el-input v-model="communityInfo.communityAddress" :placeholder="$t('community.communityAddress')"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -30,137 +30,142 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityAddressDirectionFirstTips')">
-            <el-input v-model="communityInfo.communityAddressDirectionFirstTips" />
+          <el-form-item :label="$t('community.communityAddressDirectionFirstValue')">
+            <el-input v-model="communityInfo.communityAddressDirectionFirstValue" :placeholder="'东北'"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityAddressDirectionFirstValue')">
-            <el-input v-model="communityInfo.communityAddressDirectionFirstValue" />
+          <el-form-item :label="$t('community.communityAddressDirectionFirstTips')">
+            <el-input v-model="communityInfo.communityAddressDirectionFirstTips" :placeholder="'新葡京娱乐场'"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row v-if="communityInfo.communityAddressDirectionFirstValue" :gutter="20">
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityAddressDirectionSecondTips')">
-            <el-input v-model="communityInfo.communityAddressDirectionSecondTips" />
+          <el-form-item :label="$t('community.communityAddressDirectionSecondValue')">
+            <el-input v-model="communityInfo.communityAddressDirectionSecondValue" :placeholder="'西北'"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityAddressDirectionSecondValue')">
-            <el-input v-model="communityInfo.communityAddressDirectionSecondValue" />
+          <el-form-item :label="$t('community.communityAddressDirectionSecondTips')">
+            <el-input v-model="communityInfo.communityAddressDirectionSecondTips" :placeholder="'大三巴牌坊'"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row v-if="communityInfo.communityAddressDirectionSecondValue" :gutter="20">
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityAddressDirectionThirdTips')">
-            <el-input v-model="communityInfo.communityAddressDirectionThirdTips" />
+          <el-form-item :label="$t('community.communityAddressDirectionThirdValue')">
+            <el-input v-model="communityInfo.communityAddressDirectionThirdValue" :placeholder="'西南'"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityAddressDirectionThirdValue')">
-            <el-input v-model="communityInfo.communityAddressDirectionThirdValue" />
+          <el-form-item :label="$t('community.communityAddressDirectionThirdTips')">
+            <el-input v-model="communityInfo.communityAddressDirectionThirdTips" :placeholder="'金莲花广场'"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row v-if="communityInfo.communityAddressDirectionThirdValue" :gutter="20">
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityAddressDirectionFourthTips')">
-            <el-input v-model="communityInfo.communityAddressDirectionFourthTips" />
+          <el-form-item :label="$t('community.communityAddressDirectionFourthValue')">
+            <el-input v-model="communityInfo.communityAddressDirectionFourthValue" :placeholder="'南边'"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityAddressDirectionFourthValue')">
-            <el-input v-model="communityInfo.communityAddressDirectionFourthValue" />
+          <el-form-item :label="$t('community.communityAddressDirectionFourthTips')">
+            <el-input v-model="communityInfo.communityAddressDirectionFourthTips" :placeholder="'银河广场'"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item :label="$t('community.communityArea')">
-            <el-input v-model="communityInfo.communityArea" />
+            <el-input v-model="communityInfo.communityArea" :placeholder="$t('community.communityArea')"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item :label="$t('community.communityVerticalArea')">
-            <el-input v-model="communityInfo.communityVerticalArea" />
+            <el-input v-model="communityInfo.communityVerticalArea" :placeholder="$t('community.communityVerticalArea')"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item :label="$t('community.communityCoverArea')">
-            <el-input v-model="communityInfo.communityCoverArea" />
+            <el-input v-model="communityInfo.communityCoverArea" :placeholder="$t('community.communityCoverArea')"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item :label="$t('community.communityNoCoverArea')">
-            <el-input v-model="communityInfo.communityNoCoverArea" />
+            <el-input v-model="communityInfo.communityNoCoverArea" :placeholder="$t('community.communityNoCoverArea')"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item :label="$t('community.communityShopsArea')">
-            <el-input v-model="communityInfo.communityShopsArea" />
+            <el-input v-model="communityInfo.communityShopsArea" :placeholder="$t('community.communityShopsArea')"/>
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item :label="$t('community.communityShopsCount')">
+            <el-input v-model="communityInfo.communityShopsCount" :placeholder="$t('community.communityShopsCount')"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item :label="$t('community.communityHouseArea')">
-            <el-input v-model="communityInfo.communityHouseArea" />
+            <el-input v-model="communityInfo.communityHouseArea" :placeholder="$t('community.communityHouseArea')"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item :label="$t('community.communityRoomCount')">
+            <el-input v-model="communityInfo.communityRoomCount" :placeholder="$t('community.communityRoomCount')"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item :label="$t('community.communityBuildingArea')">
-            <el-input v-model="communityInfo.communityBuildingArea" />
+            <el-input v-model="communityInfo.communityBuildingArea" :placeholder="$t('community.communityBuildingArea')"/>
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="12">
           <el-form-item :label="$t('community.communityCommonArea')">
-            <el-input v-model="communityInfo.communityCommonArea" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item :label="$t('community.communityContacts')">
-            <el-input v-model="communityInfo.communityContacts" />
+            <el-input v-model="communityInfo.communityCommonArea" :placeholder="$t('community.communityCommonArea')"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityContactsPhone')">
-            <el-input v-model="communityInfo.communityContactsPhone" />
+          <el-form-item :label="$t('community.communityGreenarea')">
+            <el-input v-model="communityInfo.communityGreenarea" :placeholder="$t('community.communityGreenarea')"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item :label="$t('community.communityGarageArea')">
-            <el-input v-model="communityInfo.communityGarageArea" />
+            <el-input v-model="communityInfo.communityGarageArea" :placeholder="$t('community.communityGarageArea')"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item :label="$t('community.communityGarageCount')">
-            <el-input v-model="communityInfo.communityGarageCount" />
+            <el-input v-model="communityInfo.communityGarageCount" :placeholder="$t('community.communityGarageCount')"/>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row :gutter="20">
+      <!-- <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item :label="$t('community.communityGreenarea')">
-            <el-input v-model="communityInfo.communityGreenarea" />
+            <el-input v-model="communityInfo.communityGreenarea" :placeholder="$t('community.communityGreenarea')"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item :label="$t('community.communityRoadArea')">
-            <el-input v-model="communityInfo.communityRoadArea" />
+            <el-input v-model="communityInfo.communityRoadArea" :placeholder="$t('community.communityRoadArea')"/>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row :gutter="20">
+      </el-row> -->
+      <!-- <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item :label="$t('community.communityLocY')">
             <el-input v-model="communityInfo.communityLocY" />
@@ -171,21 +176,29 @@
             <el-input v-model="communityInfo.communityLocX" />
           </el-form-item>
         </el-col>
-      </el-row>
+      </el-row> -->
       <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item :label="$t('community.communityRoomCount')">
-            <el-input v-model="communityInfo.communityRoomCount" />
-          </el-form-item>
-        </el-col>
         <el-col :span="12">
           <el-form-item :label="$t('community.communityRemark')">
-            <el-input v-model="communityInfo.communityRemark" />
+            <el-input v-model="communityInfo.communityRemark" :placeholder="$t('community.communityRemark')"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="24">
+        <el-col :span="12">
+          <el-form-item :label="$t('community.communityContacts')">
+            <el-input v-model="communityInfo.communityContacts" :placeholder="$t('community.communityContacts')"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item :label="$t('community.communityContactsPhone')">
+            <el-input v-model="communityInfo.communityContactsPhone" :placeholder="$t('community.communityContactsPhone')"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <!-- 综合管理才有 -->
+      <el-row v-if="communityInfo.communityManagementType" :gutter="20">
+        <el-col :span="12">
           <el-form-item :label="$t('community.commonPdf')">
             <single-image :value.sync="communityInfo.commonPdf" :type="0"/>
           </el-form-item>

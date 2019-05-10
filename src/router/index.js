@@ -269,22 +269,28 @@ export const asyncRouterMap = [
         component: () => import('@/views/report/unit/view.vue'),
         name: 'Unittext',
         meta: { title: 'unitCharge', icon: 'list' }
+      },
+      {
+        path: 'unit/charge',
+        component: () => import('@/views/report/charge/view.vue'),
+        name: 'unitChargeList',
+        meta: { title: 'unitChargeList', icon: 'list' }
       }
     ]
   },
    // 物业投诉
-   {
-    path: '/complaint',
-    component: Layout,
-    children: [
-      {
-        path: 'list',
-        component: () => import('@/views/complaint/list'),
-        name: 'Complaint',
-        meta: { title: 'propertyComplaint', icon: 'email', noCache: true }
-      }
-    ]
-  },
+  //  {
+  //   path: '/complaint',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'list',
+  //       component: () => import('@/views/complaint/list'),
+  //       name: 'Complaint',
+  //       meta: { title: 'propertyComplaint', icon: 'email', noCache: true }
+  //     }
+  //   ]
+  // },
   // 访客登记
   {
     path: '/visitor',
@@ -308,6 +314,19 @@ export const asyncRouterMap = [
         component: () => import('@/views/clubhouse/list'),
         name: 'Clubhouse',
         meta: { title: 'clubhouse', icon: 'drag', noCache: true }
+      }
+    ]
+  },
+  // 场所记录
+  {
+    path: '/placeRecord',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/placeRecord/list'),
+        name: 'PlaceRecord',
+        meta: { title: 'placeRecord', icon: 'icon', noCache: true }
       }
     ]
   },

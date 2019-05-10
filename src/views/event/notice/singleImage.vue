@@ -85,7 +85,7 @@
             return this.$notify({ title: '失败', message: '上传文件失败', type: 'error', duration: 2000 })
           }
           this.fileList.push({ name: '图片', url: (this.imgPrefix + res.data.data.originalUrl) })
-          this.dataFileList({ imageThumbnail: res.data.data.imageThumbnail, imageUrl: res.data.data.originalUrl })
+          this.dataFileList.push({ imageThumbnail: res.data.data.imageThumbnail, imageUrl: res.data.data.originalUrl })
           this.list.push({ imageThumbnail: res.data.data.thumbnailUrl, imageUrl: res.data.data.originalUrl })
           this.$emit('update:value', this.list)
         })

@@ -1,7 +1,7 @@
 <template>
   <div class="unit-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('unit.unitName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
+      <!-- <el-input :placeholder="$t('unit.unitName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" /> -->
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.buildingId') }}:</span>
       <el-select v-model="buildingId" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
@@ -10,71 +10,77 @@
           :label="item.buildingName"
           :value="item.buildingId" />
       </el-select>
-      <!-- <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button> -->
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.unitId') }}:</span>
+      <el-select v-model="unitId" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="item in unitList"
+          :key="item.unitId"
+          :label="item.unitName"
+          :value="item.unitId" />
+      </el-select>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
-      <el-table-column :label="$t('unit.unitNo')" prop="id" align="center" min-width="100">
+      <el-table-column :label="$t('unit.itemNo')" prop="id" align="center" min-width="120">
         <template slot-scope="scope">
-          <span>{{ scope.row.unitNo }}</span>
+          <span>{{ scope.row.itemNo }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('unit.unitName')" min-width="180px" align="center">
+      <el-table-column :label="$t('unit.itemName')" min-width="120px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.unitName }}</span>
+          <span>{{ scope.row.itemName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('unit.buildingId')" min-width="120px" align="center">
+      <el-table-column :label="$t('unit.community')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.building.buildingName }}</span>
+          <span>{{ scope.row.community.communityName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('unit.unitCoveredArea')" min-width="110px" align="center">
+      <el-table-column :label="$t('unit.additionalCost')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.unitCoveredArea }}</span>
+          <span>{{ scope.row.additionalCost }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('unit.unitFullAddress')" min-width="180px" align="center">
+      <el-table-column :label="$t('unit.alculationMethod')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.unitFullAddress }}</span>
+          <span>{{ scope.row.alculationMethod | alculationMethodFilter }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('unit.unitPosition')" min-width="80px" align="center">
+      <el-table-column :label="$t('unit.billingMode')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.unitPosition }}</span>
+          <span>{{ scope.row.billingMode | billingModeFilter }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('unit.unitPurpose')" min-width="80px" align="center">
+      <el-table-column :label="$t('unit.describe')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.unitPurpose }}</span>
+          <span>{{ scope.row.describe }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('unit.unitStatus')" min-width="100px" align="center">
+      <el-table-column :label="$t('unit.formula')" min-width="100px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.unitStatus | unitStatusFilter }}</span>
+          <span>{{ scope.row.formula }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('unit.unitType')" min-width="100px" align="center">
+      <el-table-column :label="$t('unit.lateDate')" min-width="100px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.unitType | unitTypefilter }}</span>
+          <span>{{ scope.row.lateDate }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('unit.unitRelativeProportion')" width="140px" align="center">
+      <el-table-column :label="$t('unit.lateFee')" width="100px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.unitRelativeProportion }}</span>
+          <span>{{ scope.row.lateFee }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('unit.unitChildRelativeProportion')" width="190px" align="center">
+      <el-table-column :label="$t('unit.unitPrice')" width="100px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.unitChildRelativeProportion }}</span>
+          <span>{{ scope.row.unitPrice }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
+      <!-- <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
+          <el-button type="text" size="mini" @click="paymentNotice(scope.row)">{{ $t('table.paymentNotice') }}</el-button>
           <el-button type="text" size="mini" @click="test(scope.row)">关联收费项目</el-button>
-          <!-- <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }} -->
-          <!-- </el-button> -->
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
@@ -92,6 +98,56 @@
         <el-button type="primary" @click="testTwo">{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
+    <!-- 付款通知书 -->
+    <el-dialog :visible.sync="dialogShow2" width="800px" center>
+      <div id="print-me" class="print_notice">
+        <div class="print_notice_title">澳门物业管理有限公司</div>
+        <div class="print_notice_title_en">Macau Property Management Co., Ltd.</div>
+        <div class="print_notice_no">sasbt656532823</div>
+        <el-row class="print_notice_content">
+          <el-col :span="8"><div class="">伊甸园园区</div></el-col>
+          <el-col :span="8"><div class="print_notice_content_title">付款通知书</div></el-col>
+          <!-- <el-col :span="8"></el-col> -->
+        </el-row>
+        <el-row class="print_notice_content">
+          <el-col :span="8"><div class="">Yi Dian Yuan</div></el-col>
+          <el-col :span="8"><div class="print_notice_content_title">Payment Notice</div></el-col>
+          <el-col :span="8"><div style="text-align: right">日期 Date 2019年04月20日</div></el-col>
+        </el-row>
+        <div class="content_table">
+          <div class="content_table_top">
+            <div class="content_table_info">请缴付 Payment for 单位 unit__/车位 Parking__</div>
+            <div class="content_table_amount">金 AMOUNT 额</div>
+          </div>
+          <div class="content_table_item">
+            <div class="content_table_item_num">1</div>
+            <div class="content_table_item_info">
+              <div class="content_table_item_msg">管理费 Management fee for</div>
+              <div class="content_table_item_msg">2019年3月 至 2019年4月:每月$899.00</div>
+            </div>
+            <div class="content_table_item_amount"><span style="position: relative;top: 30px;">$530.00</span></div>
+          </div>
+          <div class="content_table_item">
+            <div class="content_table_item_num">2</div>
+            <div class="content_table_item_info">
+              <div class="content_table_item_msg">管理费 Management fee for</div>
+              <div class="content_table_item_msg">2019年3月 至 2019年4月:每月$899.00</div>
+            </div>
+            <div class="content_table_item_amount"><span style="position: relative;top: 30px;">$530.00</span></div>
+          </div>
+          <div class="content_table_item">
+            <div class="content_table_item_info table_bottom">合共 TOTAL in MOP$</div>
+            <div class="content_table_item_amount"><span style="position: relative;top: 15px;">$998.00</span></div>
+          </div>
+        </div>
+        <div class="content_bottom_tip1">付款方式:  07:00 - 18:00 到地下管理处缴费（现金/支票）</div>
+        <div><span class="content_bottom_tip2">** 中国银行户口自动转账服务，如有需要直接到管理处办理 **</span></div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogShow2 = false">{{ $t('table.cancel') }}</el-button>
+        <el-button v-print="'#print-me'" type="primary" @click="dialogShow2 = false">{{ $t('table.print') }}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -104,6 +160,7 @@
   } from '@/api/unit'
   import {
     getChargeItemList,
+    getChargeUnitItemList,
     addUnitItem
   } from '@/api/charge'
   import {
@@ -122,22 +179,19 @@
       waves
     },
     filters: {
-      unitStatusFilter(value) {
-        // 单元状态0空置1租赁2装修中3入住
-        const sexMap = {
-          0: '空置',
-          1: '租赁',
-          2: '装修中',
-          3: '入住'
+      billingModeFilter(value) {
+        // 收费模式0周期性1临时性
+        const billingModeMap = {
+          0: '周期性',
+          1: '临时性'
         }
-        return sexMap[value]
+        return billingModeMap[value]
       },
-      unitTypefilter(type) {
-        // 单位类型1商铺2住宅3停车场
+      alculationMethodFilter(type) {
+        // 计算方式0定额1公式
         const typeMap = {
-          1: '商铺',
-          2: '住宅',
-          3: '停车场'
+          0: '定额',
+          1: '公式'
         }
         return typeMap[type]
       }
@@ -207,14 +261,21 @@
         password: null,
         buildingList: [],
         buildingId: null,
+        unitList: [],
+        unitId: null,
+        selectUnitId: null,
         chargeItemList: [],
         dialogShow: false,
         itemId: null,
-        unitId: null
+        dialogShow2: false,
+        recordStatus: null
       }
     },
     watch: {
       buildingId() {
+        this.queryUnitList()
+      },
+      unitId() {
         this.getList()
       },
       'listQuery.keyword'() {
@@ -222,20 +283,36 @@
       }
     },
     async created() {
-      await this.queryBuildyList()
+      // await this.queryBuildyList()
+      await Promise.all([
+        // this.queryUnitList(),
+        this.queryBuildyList()
+      ])
       // this.getList()
-      this.queryChargeItemList()
+      // this.queryChargeItemList()
     },
     methods: {
       async getList() {
+        if (!this.unitId) return
         this.listLoading = true
-        const { code, msg, data } = await getUnitList({ ...this.listQuery, buildingId: this.buildingId }).catch(e => e)
+        const { code, msg, data } = await getChargeUnitItemList({ ...this.listQuery, unitId: this.unitId, recordStatus: this.recordStatus }).catch(e => e)
         this.listLoading = false
         if (code !== 200) {
           return this.$notify({ title: '失败1', message: msg, type: 'error', duration: 2000 })
         }
         this.list = data.list
         this.total = data.total
+      },
+      async queryUnitList() {
+        this.unitId = null
+        this.listLoading = true
+        const { code, msg, data } = await getUnitList({ ...this.listQuery, buildingId: this.buildingId }).catch(e => e)
+        this.listLoading = false
+        if (code !== 200) {
+          return this.$notify({ title: '失败1', message: msg, type: 'error', duration: 2000 })
+        }
+        this.unitList = data.list
+        this.unitId = this.unitList[0] && this.unitList[0].unitId || null
       },
       handleModifyStatus(row, status) {
         this.$message({
@@ -261,12 +338,16 @@
         this.dialogFormVisible = true
       },
       test(info) {
-        this.unitId = info.unitId
+        this.selectUnitId = info.unitId
         this.itemId = null
         this.dialogShow = true
       },
+      paymentNotice(info) {
+        this.dialogShow2 = true
+        console.log('paymentNotice')
+      },
       async testTwo() {
-        const data = [{ itemId: this.itemId, unitId: this.unitId }]
+        const data = [{ itemId: this.itemId, unitId: this.selectUnitId }]
         const response = await addUnitItem(data).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '关联失败', message: response.msg, type: 'error', duration: 2000 })
@@ -351,6 +432,93 @@
 <style lang="postcss" scoped>
   .unit-container {
     padding: 30px;
+  }
+  .print_notice {
+    text-align: center;
+    font-size: 16px;
+  }
+  .print_notice_title {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 24px;
+  }
+  .print_notice_title_en {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 24px;
+  }
+  .print_notice_no {
+    text-align: right;
+    font-weight: bold;
+    padding: 10px 0;
+  }
+  .print_notice_content_title {
+    font-weight: 600;
+  }
+  .content_table {
+    border: 1px solid #cdcdcd;
+    margin-top: 15px;
+    text-align: left;
+    padding-top: 15px;
+    position: relative;
+  }
+  .content_table_top {
+    position: relative;
+  }
+  .content_table_info {
+    padding: 15px;
+  }
+  .content_table_amount {
+    padding: 5px 0;
+    width: 150px;
+    border-left: 1px solid #cdcdcd;
+    border-top: 1px solid #cdcdcd;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+  }
+  .content_table_item {
+    position: relative;
+    border-top: 1px solid #cdcdcd;
+  }
+  .content_table_item_amount {
+    /* padding: 5px 15; */
+    text-align: center;
+    height: 100%;
+    width: 150px;
+    border-left: 1px solid #cdcdcd;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+  .content_table_item_num {
+    float: left;
+    padding: 15px;
+    border-right: 1px solid #cdcdcd;
+    line-height: 48px;
+  }
+  .content_table_item_info {
+    padding: 15px;
+  }
+  .content_table_item_msg {
+    position: relative;
+    left: 15px;
+    line-height: 24px;
+  }
+  .table_bottom {
+    font-weight: bold;
+  }
+  .content_bottom_tip1 {
+    text-align: center;
+    padding: 30px 0;
+    font-weight: 600;
+  }
+  .content_bottom_tip2 {
+    text-align: center;
+    padding: 10px;
+    color: #ffffff;
+    background: #000;
   }
 
 </style>

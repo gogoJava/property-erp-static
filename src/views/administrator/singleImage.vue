@@ -1,20 +1,13 @@
 <template>
-  <div class="upload-container-building">
-    <!-- <el-upload :action="action" :file-list="fileList" :http-request="httpRequest" :on-remove="handleRemove" list-type="picture-card">
-      <i class="el-icon-plus"/>
-    </el-upload> -->
-    <el-upload :action="action" :on-remove="handleRemove" :file-list="fileList" :http-request="httpRequest" multiple>
-      <el-button size="small" type="primary">点击上传</el-button>
-      <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+  <div class="upload-container">
+    <el-upload :multiple="false" :show-file-list="false" :http-request="httpRequest" class="image-uploader" list-type="picture-card" action="http://songsong.fun:8080/backstage/back/file/upload?type=8">
+      <img v-if="imageUrl" :src="imageUrl" class="avatar">
+      <i v-else class="el-icon-plus avatar-uploader-icon"/>
     </el-upload>
   </div>
 </template>
 
 <script>
-  // 预览效果见付费文章
-  // import {
-  //   uploadFile
-  // } from '@/api/file'
   import { Loading } from 'element-ui'
   import axios from 'axios'
 
@@ -22,12 +15,8 @@
     name: 'SingleImageUpload',
     props: {
       value: {
-        type: Array,
-        default: () => ([])
-      },
-      type: {
-        type: Number,
-        default: 2 // 0社区pdf 1事件pdf 2楼宇pdf 3楼宇业主名册 4视频广告文件
+        type: String,
+        default: ''
       }
     },
     data() {
@@ -38,11 +27,7 @@
           key: ''
         },
         imageUrl: null,
-        fileList: [],
-        dataFileList: [],
-        list: [],
-        imgPrefix: 'http://songsong.fun:8080/file', // 图片前缀
-        action: ''
+        imgPrefix: 'http://songsong.fun:8080/file' // 图片前缀
       }
     },
     watch: {
@@ -51,20 +36,12 @@
       }
     },
     created() {
-      this.action = 'http://songsong.fun:8080/backstage/back/file/uploadFile?type=' + this.type
       this.setData()
       this.dataObj.token = localStorage.getItem('Admin-Token')
     },
     methods: {
       setData() {
-        this.fileList = []
-        this.list = []
-        this.dataFileList = []
-        this.value.forEach(element => {
-          this.fileList.push({ name: '文件', url: element })
-          this.dataFileList.push(element)
-          this.list.push(element)
-        })
+        this.imageUrl = this.value ? (this.imgPrefix + this.value) : null
       },
       rmImage() {
         this.emitInput('')
@@ -76,17 +53,16 @@
         this.emitInput(this.tempUrl)
       },
       async httpRequest(option) {
-        console.log('option', option)
         const loadingInstance = Loading.service({
           fullscreen: true,
-          text: '上传文件中...'
+          text: '上传图片中...'
         })
         // formData
         const formData = new FormData()
         formData.append(option.filename, option.file)
         const options = {
          // 设置axios的参数
-         url: 'http://songsong.fun:8080/backstage/back/file/uploadFile?type=' + this.type,
+         url: 'http://songsong.fun:8080/backstage/back/file/upload?type=8',
          data: formData,
          method: 'post',
          headers: {
@@ -96,22 +72,14 @@
         }
         axios(options).then((res) => {
           loadingInstance.close()
-          if (res.data.code !== 200 || !res.data.data) {
+          if (res.data.code !== 200) {
             return this.$notify({ title: '失败', message: '上传文件失败', type: 'error', duration: 2000 })
           }
-          this.fileList.push({ name: '文件', url: (this.imgPrefix + res.data.data) })
-          // this.dataFileList({ imageThumbnail: res.data.data.imageThumbnail, imageUrl: res.data.data.originalUrl })
-          // this.list.push({ imageThumbnail: res.data.data.thumbnailUrl, imageUrl: res.data.data.originalUrl })
-          this.list.push((this.imgPrefix + res.data.data))
-          this.$emit('update:value', this.list)
+          this.imageUrl = this.imgPrefix + res.data.data.originalUrl
+          this.$emit('update:value', res.data.data.originalUrl)
         })
+
         return null
-      },
-      handleRemove(file, fileList) {
-        const list = this.dataFileList.filter((item) => {
-          if (fileList.some((value) => value.url.search(item) !== -1)) return true
-        })
-        this.$emit('update:value', list)
       }
     }
   }
@@ -121,8 +89,8 @@
 <style rel="stylesheet/scss" lang="scss">
   @import "~@/styles/mixin.scss";
 
-  .upload-container-building {
-    // width: 100%;
+  .upload-container {
+    width: 100%;
     position: relative;
     @include clearfix;
 
@@ -132,8 +100,8 @@
     }
 
     .el-upload {
-      width: auto;
-      // height: 146px;
+      width: 146px;
+      height: 146px;
     }
 
     .image-preview {
@@ -184,13 +152,18 @@
       }
     }
   }
-  // .avatar-uploader-icon {
-  //   font-size: 28px;
-  //   color: #8c939d;
-  //   width: 178px;
-  //   height: 178px;
-  //   line-height: 178px;
-  //   text-align: center;
-  // }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 146px;
+    height: 146px;
+    line-height: 146px;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 146px;
+    height: 146px;
+  }
 
 </style>

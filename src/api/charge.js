@@ -64,6 +64,15 @@ export function getChargeItemList(query) {
   })
 }
 
+// 获取单位收费项目列表
+export function getChargeUnitItemList(query) {
+  return request({
+    url: '/back/chargeItem/unitItemList',
+    method: 'get',
+    params: query
+  })
+}
+
 // 单元添加收费项目
 export function addUnitItem(params) {
   return request({

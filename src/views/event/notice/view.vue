@@ -94,9 +94,15 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('notice.noticeType')" prop="englishName">
+              <!-- 公告类型0通告1节日提醒2注意事项3政府文件4外判公司须知5工程6办理手续 -->
               <el-select v-model="temp.noticeType" placeholder="请选择">
-                <el-option :value="0" label="触摸屏" />
-                <el-option :value="1" label="APP" />
+                <el-option :value="0" label="通告" />
+                <el-option :value="1" label="节日提醒" />
+                <el-option :value="2" label="注意事项" />
+                <el-option :value="3" label="政府文件" />
+                <el-option :value="4" label="外判公司须知" />
+                <el-option :value="5" label="工程" />
+                <el-option :value="6" label="办理手续" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -114,6 +120,13 @@
               <el-select v-model="temp.buildingId" placeholder="请选择">
                 <el-option v-for="(item, index) in buildingList" :key="index" :value="item.buildingId" :label="item.buildingName" />
               </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item :label="$t('notice.announcementDate')">
+              <el-date-picker v-model="announcementDate" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -176,9 +189,15 @@
     },
     filters: {
       typeFilter(value) {
+        // <!-- 公告类型0通告1节日提醒2注意事项3政府文件4外判公司须知5工程6办理手续 -->
         const typeMap = {
-          0: '触摸屏',
-          1: 'APP'
+          0: '通告',
+          1: '节日提醒',
+          2: '注意事项',
+          3: '政府文件',
+          4: '外判公司须知',
+          5: '工程',
+          6: '办理手续'
         }
         return typeMap[value]
       }
@@ -209,8 +228,11 @@
           noticeTraditionalDetails: '', // 详情（繁体）
           noticeTraditionalTitle: '', // 标题
           noticeType: '', // 通知类型
-          updateTime: '' // 更新时间
+          updateTime: '', // 更新时间
+          startTime: '',
+          entTime: ''
         },
+        announcementDate: [],
         textMap: {
           update: 'Edit',
           create: 'Create'
@@ -255,6 +277,7 @@
       },
       resetTemp() {
         this.temp = null
+        this.announcementDate = []
         this.temp = {
           buildingId: '', // 建筑id
           communityId: '', // 社区ID
@@ -268,7 +291,9 @@
           noticeTraditionalDetails: '', // 详情（繁体）
           noticeTraditionalTitle: '', // 标题
           noticeType: '', // 通知类型
-          updateTime: '' // 更新时间
+          updateTime: '', // 更新时间
+          startTime: '',
+          entTime: ''
         }
       },
       handleCreate() {
@@ -280,7 +305,9 @@
         })
       },
       async createData() {
-        this.temp.communityId = this.$store.getters.communityId
+        // this.temp.communityId = this.$store.getters.communityId
+        this.temp.startTime = this.announcementDate[0] ? this.$moment(this.announcementDate[0]).format('YYYY-MM-DD') : ''
+        this.temp.endTime = this.announcementDate[1] ? this.$moment(this.announcementDate[1]).format('YYYY-MM-DD') : ''
         const response = await createNotice(this.temp).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
@@ -295,8 +322,11 @@
         this.getList()
       },
       handleUpdate(row) {
+        this.announcementDate = []
         this.temp = null
         this.temp = Object.assign({}, row) // copy obj
+        this.announcementDate.push(new Date(this.temp.startTime))
+        this.announcementDate.push(new Date(this.temp.endTime))
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -305,7 +335,9 @@
       },
       async updateData() {
         this.listLoading = true
-        this.temp.communityId = this.$store.getters.communityId
+        // this.temp.communityId = this.$store.getters.communityId
+        this.temp.startTime = this.announcementDate[0] ? this.$moment(this.announcementDate[0]).format('YYYY-MM-DD') : ''
+        this.temp.endTime = this.announcementDate[1] ? this.$moment(this.announcementDate[1]).format('YYYY-MM-DD') : ''
         const response = await updateNotice(this.temp).catch(e => e)
         this.listLoading = false
         if (response.code !== 200) {

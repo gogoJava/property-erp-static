@@ -243,7 +243,7 @@ export default {
   },
   // 单位
   unit: {
-    unitChildRelativeProportion: 'Relative Parts Of A Hierarchical Building(Thousandth)', // 分层建筑物之子部分相对比(千分之一)
+    unitChildRelativeProportion: 'Relative Parts Of A Hierarchical Building(One percent)', // 分层建筑物之子部分相对比(千分之一)
     buildingId: 'Building', // buildingId
     community: 'Community',
     unitCoveredArea: 'Coverage Area(Unit Square Meter)', // 覆盖面积大小(单位平方米)
@@ -253,7 +253,7 @@ export default {
     unitNo: 'Unit No', // 单位编号
     unitPosition: 'Position', // 位置(地下,一楼,二楼,三楼,户外.)
     unitPurpose: 'Use', // 用途
-    unitRelativeProportion: 'Stratified Building Relative(Thousandth)', // 分层建筑物相对比(千分之一)
+    unitRelativeProportion: 'Stratified Building Relative(One percent)', // 分层建筑物相对比(千分之一)
     unitStatus: 'Unit Status', // 单位状态0空置1租赁2装修中3入住
     unitType: 'Unit Type' // 单位类型1商铺2住宅3停车场
   },

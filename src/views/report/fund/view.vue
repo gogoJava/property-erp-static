@@ -90,18 +90,6 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('chargeItem.describe')" prop="idCard">
-              <el-input v-model="temp.describe" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('chargeItem.additionalCost')" prop="englishName">
-              <el-input v-model="temp.additionalCost" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
             <el-form-item :label="$t('chargeItem.alculationMethod')" prop="alculationMethod">
               <el-select v-model="temp.alculationMethod" placeholder="请选择">
                 <!-- 状态0欠费1已付2预支付 -->
@@ -119,9 +107,14 @@
           </el-col>
         </el-row>
         <el-row>
+          <el-col v-if="!temp.billingMode" :span="12">
+            <el-form-item :label="$t('chargeItem.describe')" prop="idCard">
+              <el-input v-model="temp.describe" />
+            </el-form-item>
+          </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('chargeItem.lateFee')" prop="lateFee">
-              <el-input v-model="temp.lateFee" />
+            <el-form-item :label="$t('chargeItem.additionalCost')" prop="englishName">
+              <el-input v-model="temp.additionalCost" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -136,7 +129,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row v-if="temp.billingMode">
           <el-col :span="12">
             <el-form-item :label="$t('chargeItem.unitPrice')" prop="unitPrice">
               <el-input v-model="temp.unitPrice" />
@@ -144,12 +137,18 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('chargeItem.formula')" prop="formula">
-              <el-input v-model="temp.formula" />
+              <!-- <el-input v-model="temp.formula" /> -->
+              <span>單位面積 x 計算單價</span>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="24">
+          <el-col :span="12">
+            <el-form-item :label="$t('chargeItem.lateFee')" prop="lateFee">
+              <el-input v-model="temp.lateFee" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item :label="$t('chargeItem.lateDate')" prop="lateDate">
               <el-input v-model="temp.lateDate" />
             </el-form-item>
@@ -278,7 +277,7 @@
         })
       },
       async createData() {
-        this.temp.communityId = this.$store.getters.communityId
+        // this.temp.communityId = this.$store.getters.communityId
         const response = await addChargeItem(this.temp).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
@@ -302,7 +301,7 @@
       },
       async updateData() {
         this.listLoading = true
-        this.temp.communityId = this.$store.getters.communityId
+        // this.temp.communityId = this.$store.getters.communityId
         const response = await updChargeItem(this.temp).catch(e => e)
         this.listLoading = false
         if (response.code !== 200) {

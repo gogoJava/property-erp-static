@@ -7,6 +7,10 @@
 </template>
 
 <script>
+  // 预览效果见付费文章
+  // import {
+  //   uploadFile
+  // } from '@/api/file'
   import { Loading } from 'element-ui'
   import axios from 'axios'
 
@@ -44,8 +48,8 @@
     methods: {
       setData() {
         this.fileList = []
-        this.dataFileList = []
         this.list = []
+        this.dataFileList = []
         this.value.forEach(element => {
           this.fileList.push({ name: '图片', url: (this.imgPrefix + element.imageUrl) })
           this.dataFileList.push(element)
@@ -85,7 +89,7 @@
             return this.$notify({ title: '失败', message: '上传文件失败', type: 'error', duration: 2000 })
           }
           this.fileList.push({ name: '图片', url: (this.imgPrefix + res.data.data.originalUrl) })
-          this.dataFileList({ imageThumbnail: res.data.data.imageThumbnail, imageUrl: res.data.data.originalUrl })
+          this.dataFileList.push({ imageThumbnail: res.data.data.imageThumbnail, imageUrl: res.data.data.originalUrl })
           this.list.push({ imageThumbnail: res.data.data.thumbnailUrl, imageUrl: res.data.data.originalUrl })
           this.$emit('update:value', this.list)
         })
@@ -168,13 +172,13 @@
       }
     }
   }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
+  // .avatar-uploader-icon {
+  //   font-size: 28px;
+  //   color: #8c939d;
+  //   width: 178px;
+  //   height: 178px;
+  //   line-height: 178px;
+  //   text-align: center;
+  // }
 
 </style>

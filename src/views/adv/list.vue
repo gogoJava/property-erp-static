@@ -25,6 +25,11 @@
           <span>{{ scope.row.type === 0 ? '普通图片' : '视屏' }}</span>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('adv.purpose')" min-width="120px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.purpose | purposeFilter }}</span>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('adv.url')" min-width="180px" align="center">
         <template slot-scope="scope">
           <!-- <span>{{ scope.row.url }}</span> -->
@@ -98,6 +103,27 @@
           </el-col>
         </el-row>
         <el-row>
+          <el-col :span="24">
+            <el-form-item :label="$t('adv.announcementDate')">
+              <el-date-picker v-model="announcementDate" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('adv.purpose')" prop="englishName">
+              <!-- 公告类型0通告1节日提醒2注意事项3政府文件4外判公司须知5工程6办理手续 -->
+              <el-select v-model="temp.purpose" placeholder="请选择">
+                <el-option :value="0" label="通告" />
+                <el-option :value="1" label="节日提醒" />
+                <el-option :value="2" label="注意事项" />
+                <el-option :value="3" label="政府文件" />
+                <el-option :value="4" label="外判公司须知" />
+                <el-option :value="5" label="工程" />
+                <el-option :value="6" label="办理手续" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('adv.url')" prop="url">
               <single-image :value.sync="temp.url" />
@@ -158,6 +184,19 @@
           1: '超级管理员'
         }
         return typeMap[type]
+      },
+      purposeFilter(value) {
+        // <!-- 公告类型0通告1节日提醒2注意事项3政府文件4外判公司须知5工程6办理手续 -->
+        const typeMap = {
+          0: '通告',
+          1: '节日提醒',
+          2: '注意事项',
+          3: '政府文件',
+          4: '外判公司须知',
+          5: '工程',
+          6: '办理手续'
+        }
+        return typeMap[value]
       }
     },
     data() {
@@ -191,8 +230,12 @@
           title: '', // title
           type: 0, // 广告类型 0普通图片1视频
           url: '', // url
-          used: null // 是否使用0否1是
+          used: null, // 是否使用0否1是
+          purpose: null,
+          startTime: '',
+          entTime: ''
         },
+        announcementDate: [],
         dialogFormVisible: false,
         dialogStatus: '',
         textMap: {
@@ -266,6 +309,7 @@
         }
       },
       resetTemp() {
+        this.announcementDate = []
         this.temp = {
           advId: '', // ID
           buildingId: '', // 楼宇id
@@ -276,7 +320,10 @@
           title: '', // title
           type: 0, // 广告类型 0普通图片1视频
           url: '', // url
-          used: null // 是否使用0否1是
+          used: null, // 是否使用0否1是
+          purpose: null,
+          startTime: '',
+          entTime: ''
         }
       },
       handleCreate() {
@@ -288,7 +335,9 @@
         })
       },
       async createData() {
-        this.temp.communityId = this.$store.getters.communityId
+        // this.temp.communityId = this.$store.getters.communityId
+        this.temp.startTime = this.announcementDate[0] ? this.$moment(this.announcementDate[0]).format('YYYY-MM-DD') : ''
+        this.temp.endTime = this.announcementDate[1] ? this.$moment(this.announcementDate[1]).format('YYYY-MM-DD') : ''
         const response = await addAdv(this.temp).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
@@ -303,7 +352,11 @@
         this.getList()
       },
       handleUpdate(row) {
+        this.announcementDate = []
+        this.temp = null
         this.temp = Object.assign({}, row) // copy obj
+        this.announcementDate.push(new Date(this.temp.startTime))
+        this.announcementDate.push(new Date(this.temp.endTime))
         this.temp.password = ''
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
@@ -313,7 +366,9 @@
       },
       async updateData() {
         this.listLoading = true
-        this.temp.communityId = this.$store.getters.communityId
+        // this.temp.communityId = this.$store.getters.communityId
+        this.temp.startTime = this.announcementDate[0] ? this.$moment(this.announcementDate[0]).format('YYYY-MM-DD') : ''
+        this.temp.endTime = this.announcementDate[1] ? this.$moment(this.announcementDate[1]).format('YYYY-MM-DD') : ''
         const response = await updateAdv(this.temp).catch(e => e)
         this.listLoading = false
         if (response.code !== 200) {

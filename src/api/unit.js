@@ -45,3 +45,21 @@ export function addUser(params) {
     data: params
   })
 }
+
+// 房间用户添加
+export function batchAddUser(params) {
+  return request({
+    url: '/back/unit/batchAddUser',
+    method: 'post',
+    data: params
+  })
+}
+
+// 获取单位列表
+export function getUnitUserList(query) {
+  return request({
+    url: '/back/unit/unitUserList',
+    method: 'get',
+    params: query
+  })
+}

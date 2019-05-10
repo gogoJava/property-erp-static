@@ -1,11 +1,7 @@
 <template>
-  <div class="upload-container-building">
-    <!-- <el-upload :action="action" :file-list="fileList" :http-request="httpRequest" :on-remove="handleRemove" list-type="picture-card">
-      <i class="el-icon-plus"/>
-    </el-upload> -->
+  <div class="upload-container">
     <el-upload :action="action" :on-remove="handleRemove" :file-list="fileList" :http-request="httpRequest" multiple>
       <el-button size="small" type="primary">点击上传</el-button>
-      <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
     </el-upload>
   </div>
 </template>
@@ -28,6 +24,10 @@
       type: {
         type: Number,
         default: 2 // 0社区pdf 1事件pdf 2楼宇pdf 3楼宇业主名册 4视频广告文件
+      },
+      action: {
+        type: String,
+        default: ''
       }
     },
     data() {
@@ -41,8 +41,7 @@
         fileList: [],
         dataFileList: [],
         list: [],
-        imgPrefix: 'http://songsong.fun:8080/file', // 图片前缀
-        action: ''
+        imgPrefix: 'http://songsong.fun:8080/file' // 图片前缀
       }
     },
     watch: {
@@ -51,7 +50,7 @@
       }
     },
     created() {
-      this.action = 'http://songsong.fun:8080/backstage/back/file/uploadFile?type=' + this.type
+      // this.action = 'http://songsong.fun:8080/backstage/back/file/uploadFile?type=' + this.type
       this.setData()
       this.dataObj.token = localStorage.getItem('Admin-Token')
     },
@@ -60,7 +59,7 @@
         this.fileList = []
         this.list = []
         this.dataFileList = []
-        this.value.forEach(element => {
+        this.value && this.value.forEach(element => {
           this.fileList.push({ name: '文件', url: element })
           this.dataFileList.push(element)
           this.list.push(element)
@@ -76,17 +75,16 @@
         this.emitInput(this.tempUrl)
       },
       async httpRequest(option) {
-        console.log('option', option)
         const loadingInstance = Loading.service({
           fullscreen: true,
-          text: '上传文件中...'
+          text: '上传图片中...'
         })
         // formData
         const formData = new FormData()
         formData.append(option.filename, option.file)
         const options = {
          // 设置axios的参数
-         url: 'http://songsong.fun:8080/backstage/back/file/uploadFile?type=' + this.type,
+         url: this.action,
          data: formData,
          method: 'post',
          headers: {
@@ -121,7 +119,7 @@
 <style rel="stylesheet/scss" lang="scss">
   @import "~@/styles/mixin.scss";
 
-  .upload-container-building {
+  .upload-container {
     // width: 100%;
     position: relative;
     @include clearfix;

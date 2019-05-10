@@ -97,7 +97,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('building.managementType')" prop="managementType">
-              <el-select v-model="temp.managementType" placeholder="请绑定类型" disabled>
+              <el-select v-model="temp.managementType" :disabled="!$store.getters.managementType" placeholder="请绑定类型">
                 <el-option v-for="(item, index) in typeList" :key="index" :value="item.value" :label="item.label" />
               </el-select>
             </el-form-item>
@@ -129,9 +129,9 @@
             <el-col :span="8"><div>子部分之值</div></el-col>
           </el-row>
           <el-row v-for="(item, index) in temp.buildingChildList" :key="index">
-            <el-col :span="8"><el-input v-model="item.sort" /></el-col>
-            <el-col :span="8"><el-input v-model="item.tips" /></el-col>
-            <el-col :span="8"><el-input v-model="item.value"><el-button slot="append" icon="el-icon-minus" @click.native="cutChildList(index)"/></el-input></el-col>
+            <el-col :span="8"><el-input v-model="item.sort" placeholder="1" /></el-col>
+            <el-col :span="8"><el-input v-model="item.tips" placeholder="数量"/></el-col>
+            <el-col :span="8"><el-input v-model="item.value" placeholder="20"><el-button slot="append" icon="el-icon-minus" @click.native="cutChildList(index)"/></el-input></el-col>
           </el-row>
           <el-row style="text-align: center;"><span style="cursor: pointer;font-size: 30px;" @click="addChildList">+</span></el-row>
           <!-- <el-button icon="el-icon-circle-plus-outline" /> -->
@@ -148,7 +148,8 @@
             </el-form-item>
           </el-col>
         </el-row> -->
-        <el-form-item :label="$t('building.commonPdf')">
+        <!-- 综合类型才有 -->
+        <el-form-item v-if="temp.managementType" :label="$t('building.commonPdf')">
           <single-image :value.sync="temp.commonPdf" :type="2"/>
         </el-form-item>
         <el-form-item :label="$t('building.rosterPdf')">
@@ -348,7 +349,7 @@
         })
       },
       async createData() {
-        this.temp.communityId = this.$store.getters.communityId
+        // this.temp.communityId = this.$store.getters.communityId
         const response = await createBuilding(this.temp).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
@@ -382,7 +383,7 @@
       },
       async updateData() {
         this.listLoading = true
-        this.temp.communityId = this.$store.getters.communityId
+        // this.temp.communityId = this.$store.getters.communityId
         const response = await updateBuilding(this.temp).catch(e => e)
         this.listLoading = false
         if (response.code !== 200) {

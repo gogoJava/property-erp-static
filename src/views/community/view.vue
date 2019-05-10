@@ -81,21 +81,21 @@
           <span>{{ scope.row.communityGreenarea }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('community.communityRoadArea')" prop="communityRoadArea" align="center">
+      <!-- <el-table-column :label="$t('community.communityRoadArea')" prop="communityRoadArea" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.communityRoadArea }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column :label="$t('community.communityManagementType')" prop="communityManagementType" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.communityManagementType === 0 ? '简单管理' : '综合管理' }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('community.commonPdf')" prop="commonPdf" align="center">
+      <!-- <el-table-column :label="$t('community.commonPdf')" prop="commonPdf" align="center">
         <template slot-scope="scope">
           <img v-for="(item, index) of scope.row.commonPdf" :key="index" :src="item" class="common-img">
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <!-- <el-table-column :label="$t('community.communityContacts')" prop="communityContacts" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.communityContacts }}</span>

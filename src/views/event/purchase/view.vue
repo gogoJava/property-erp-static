@@ -6,9 +6,10 @@
       <span style="padding-left: 15px;">{{ $t('event.eventType') }}:</span>
       <el-select v-model="listQuery.eventType" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
         <el-option :value="0" label="全部" />
+        <el-option :value="3" label="投诉" />
         <el-option :value="1" label="采购" />
         <el-option :value="2" label="保养" />
-        <el-option :value="3" label="其他" />
+        <el-option :value="4" label="损坏" />
       </el-select>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
@@ -20,6 +21,16 @@
       <el-table-column :label="$t('event.eventType')" min-width="80px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.eventType | eventTypeFilter }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('event.eventStatus')" min-width="80px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.eventStatus | eventStatusFilter }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('event.eventChannel')" min-width="80px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.eventChannel | eventChannelFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('event.eventCause')" min-width="180px" align="center">
@@ -57,11 +68,6 @@
           <span>{{ scope.row.eventSolve }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('event.eventStatus')" min-width="80px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.eventStatus | eventStatusFilter }}</span>
-        </template>
-      </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
@@ -75,6 +81,13 @@
     <!-- 添加、编辑、详情 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="70%">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="130px" style="margin:0 50px;">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('event.assetNo')" prop="username">
+              <el-input v-model="temp.assetNo" />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('event.eventCause')" prop="username">
@@ -109,39 +122,84 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('event.eventStatus')" prop="eventStatus">
-              <!-- <el-input v-model="temp.eventStatus" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" /> -->
               <el-select v-model="temp.eventStatus" placeholder="请选择">
-                <el-option :value="0" label="开始" />
-                <el-option :value="1" label="待定" />
-                <el-option :value="2" label="完成" />
+                <el-option :value="0" label="跟进中" />
+                <el-option :value="1" label="报价中" />
+                <el-option :value="2" label="接获投诉" />
+                <el-option :value="3" label="与管理机关讨论中" />
+                <el-option :value="4" label="待定" />
+                <el-option :value="5" label="工程进行中" />
+                <el-option :value="6" label="待大会表决" />
+                <el-option :value="7" label="完成" />
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
-        <!-- <el-row>
-          <el-col :span="24">
-            <el-form-item :label="$t('event.eventStatus')" prop="eventStatus">
-              <el-select v-model="temp.eventStatus" placeholder="请选择">
-                <el-option :value="0" label="开始" />
-                <el-option :value="1" label="待定" />
-                <el-option :value="2" label="完成" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row> -->
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('event.eventType')" prop="eventType">
               <el-select v-model="temp.eventType" placeholder="请选择">
                 <el-option :value="1" label="采购" />
                 <el-option :value="2" label="保养" />
-                <el-option :value="3" label="其他" />
+                <el-option :value="3" label="投诉" />
+                <el-option :value="4" label="损坏" />
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col v-if="temp.eventType === 2" :span="12">
+          <el-col :span="12">
+            <!-- 接收渠道0公司1app2业主口头投诉 -->
+            <el-form-item :label="$t('event.eventChannel')" prop="eventChannel">
+              <el-select v-model="temp.eventChannel" placeholder="请选择">
+                <el-option :value="0" label="公司" />
+                <el-option :value="1" label="app" />
+                <el-option :value="2" label="业主口头投诉" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="temp.eventType === 2">
+          <el-col :span="12">
             <el-form-item :label="$t('event.eventRemindCycle')" prop="eventRemindCycle">
               <el-input v-model="temp.eventRemindCycle" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <!-- 事件类型是投诉的时候才有 -->
+        <el-row v-if="temp.eventType === 3">
+          <el-col :span="12">
+            <el-form-item :label="$t('event.complainClassType')" prop="username">
+              <el-input v-model="temp.complainClassType" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('event.complainType')" prop="username">
+              <el-input v-model="temp.complainType" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="temp.eventType === 3">
+          <el-col :span="12">
+            <el-form-item :label="$t('event.complainPosition')" prop="name">
+              <el-input v-model="temp.complainPosition" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('event.complainSpecificPosition')" prop="name">
+              <el-input v-model="temp.complainSpecificPosition" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="temp.eventType === 3">
+          <el-col :span="24">
+            <el-form-item :label="$t('event.complainReply')" prop="username">
+              <el-input v-model="temp.complainReply" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item :label="$t('event.eventSolve')" prop="eventSolve">
+              <el-input v-model="temp.eventSolve" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -154,8 +212,15 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item :label="$t('event.eventSolve')" prop="eventSolve">
-              <el-input v-model="temp.eventSolve" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" />
+            <el-form-item :label="$t('event.reportPdf')" prop="reportPdf">
+              <single-image :value.sync="temp.reportPdf" action="http://songsong.fun:8080/backstage/back/file/upload?type=5"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item :label="$t('event.reports')" prop="reports">
+              <single-image :value.sync="temp.reports" action="http://songsong.fun:8080/backstage/back/file/uploadFile?type=1"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -177,19 +242,27 @@
   } from '@/api/event'
   import { getCommunityList } from '@/api/community'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+  import SingleImage from './singleImage'
 
   export default {
     name: 'Event',
     components: {
-      Pagination
+      Pagination,
+      SingleImage
     },
     filters: {
       // 事件进度0开始1待定2完成
       eventStatusFilter(status) {
+        // 事件进度0跟进中1报价中2接获投诉3与管理机关讨论中4待定5工程进行中6待开大会表决7完成
         const statusMap = {
-          0: '开始',
-          1: '待定',
-          2: '完成'
+          0: '跟进中',
+          1: '报价中',
+          2: '接获投诉',
+          3: '与管理机关讨论中',
+          4: '待定',
+          5: '工程进行中',
+          6: '待开大会表决',
+          7: '完成'
         }
         return statusMap[status]
       },
@@ -198,9 +271,19 @@
         const typeMap = {
           1: '采购',
           2: '保养',
-          3: '其他'
+          3: '投诉',
+          4: '损坏'
         }
         return typeMap[type]
+      },
+      // 接收渠道0公司1app2业主口头投诉
+      eventChannelFilter(value) {
+        const valueMap = {
+          0: '公司',
+          1: 'app',
+          2: '业主口头投诉'
+        }
+        return valueMap[value]
       }
     },
     data() {
@@ -230,7 +313,16 @@
           eventSolve: '', // 解决方案
           eventStatus: 0, // 事件进度0开始1待定2完成
           eventType: 1, // 事件类型1采购2保养3其他
-          eventRemindCycle: null
+          eventRemindCycle: null,
+          eventChannel: null,
+          reportPdf: [],
+          reports: [],
+          complainClassType: '',
+          complainPosition: '',
+          complainReply: '',
+          complainSpecificPosition: '',
+          complainType: '',
+          assetNo: ''
         },
         textMap: {
           update: 'Edit',
@@ -288,7 +380,16 @@
           eventSolve: '', // 解决方案
           eventStatus: 0, // 事件进度0开始1待定2完成
           eventType: 1, // 事件类型1采购2保养3其他
-          eventRemindCycle: null
+          eventRemindCycle: null,
+          eventChannel: null,
+          reportPdf: [],
+          reports: [],
+          complainClassType: '',
+          complainPosition: '',
+          complainReply: '',
+          complainSpecificPosition: '',
+          complainType: '',
+          assetNo: ''
         }
       },
       handleCreate() {
@@ -300,7 +401,7 @@
         })
       },
       async createData() {
-        this.temp.communityId = this.$store.getters.communityId
+        // this.temp.communityId = this.$store.getters.communityId
         this.temp.eventDate = this.eventDate ? this.$moment(this.eventDate).format('YYYY-MM-DD') : ''
         this.temp.eventFinishDate = this.eventFinishDate ? this.$moment(this.eventFinishDate).format('YYYY-MM-DD') : ''
         const response = await createEvent(this.temp).catch(e => e)
@@ -327,7 +428,7 @@
         })
       },
       async updateData() {
-        this.temp.communityId = this.$store.getters.communityId
+        // this.temp.communityId = this.$store.getters.communityId
         this.temp.eventDate = this.eventDate ? this.$moment(this.eventDate).format('YYYY-MM-DD') : ''
         this.temp.eventFinishDate = this.eventFinishDate ? this.$moment(this.eventFinishDate).format('YYYY-MM-DD') : ''
         this.listLoading = true

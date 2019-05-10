@@ -1,5 +1,5 @@
 <template>
-  <div class="upload-container">
+  <div class="upload-container-community">
     <!-- <el-upload :file-list="fileList" :http-request="httpRequest" :on-remove="handleRemove" list-type="picture-card" action="http://songsong.fun:8080/backstage/back/file/upload?type=7">
       <i class="el-icon-plus"/>
     </el-upload> -->
@@ -58,6 +58,7 @@
       setData() {
         this.fileList = []
         this.list = []
+        this.dataFileList = []
         this.value.forEach(element => {
           this.fileList.push({ name: '文件', url: element })
           this.dataFileList.push(element)
@@ -118,7 +119,7 @@
 <style rel="stylesheet/scss" lang="scss">
   @import "~@/styles/mixin.scss";
 
-  .upload-container {
+  .upload-container-community {
     // width: 100%;
     position: relative;
     @include clearfix;

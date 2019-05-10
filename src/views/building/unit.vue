@@ -12,7 +12,7 @@
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
-      <el-table-column :label="$t('unit.unitPurpose')" min-width="80px" align="center">
+      <el-table-column :label="$t('unit.unitPurpose')" min-width="150px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.unitPurpose }}</span>
         </template>
@@ -67,13 +67,13 @@
           <span>{{ scope.row.unitChildRelativeProportion }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
+      <el-table-column :label="$t('table.actions')" align="center" width="200" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
           <!-- <el-button size="mini" @click="handleUpdatePwd(scope.row)">{{ $t('table.updatePwd') }}</el-button> -->
           <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
           </el-button>
-          <el-button type="text" size="mini" @click="bindUser(scope.row)">绑定用户</el-button>
+          <el-button type="text" size="mini" @click="bindUser(scope.row)">{{ $t('table.bindUser') }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -85,9 +85,8 @@
         <el-form-item :label="$t('unit.unitPurpose')" prop="unitPurpose">
           <el-select v-model="temp.unitPurpose" placeholder="请选择用途">
             <el-option :key="1" value="商业" label="商业" />
-            <el-option :key="2" value="轻型汽车" label="轻型汽车" />
-            <el-option :key="3" value="电单车" label="电单车" />
-            <el-option :key="4" value="住宅" label="住宅" />
+            <el-option :key="2" value="轻型汽车/电单车" label="轻型汽车/电单车" />
+            <el-option :key="3" value="住宅" label="住宅" />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('unit.unitNo')" prop="unitNo">
@@ -107,11 +106,11 @@
             <el-option v-for="(item, index) in buildingList" :key="index" :value="item.buildingId" :label="item.buildingName" />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="$store.getters.isSuper" :label="$t('unit.community')" prop="communityId">
+        <!-- <el-form-item v-if="$store.getters.isSuper" :label="$t('unit.community')" prop="communityId">
           <el-select v-model="temp.communityId" placeholder="请绑定社区">
             <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item :label="$t('unit.unitPosition')" prop="unitPosition">
           <el-input v-model="temp.unitPosition" />
         </el-form-item>
@@ -147,12 +146,39 @@
     </el-dialog>
     <el-dialog :visible.sync="dialogShow" width="800px">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="250px" style="width: 700px;">
-        <el-form-item label="住户">
-          <el-select v-model="userId" placeholder="请绑定住户">
-            <el-option v-for="(item, index) in proprietorList" :key="index" :value="item.userId" :label="item.username" />
+        <el-form-item label="业主">
+          <el-select v-model="userIds" multiple collapse-tags placeholder="请绑定住户">
+            <el-option v-for="(item, index) in allProprietorList" :key="index" :value="item.userId" :label="item.username" />
           </el-select>
         </el-form-item>
       </el-form>
+      <el-table :data="proprietorList">
+        <el-table-column :label="$t('proprietor.username')" prop="id" align="center" min-width="120">
+          <template slot-scope="scope">
+            <span>{{ scope.row.username }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('proprietor.englishName')" prop="id" align="center" min-width="120">
+          <template slot-scope="scope">
+            <span>{{ scope.row.englishName }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('proprietor.sex')" prop="id" align="center" min-width="80">
+          <template slot-scope="scope">
+            <span>{{ scope.row.sex | sexFilter }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('proprietor.email')" prop="id" align="center" min-width="120">
+          <template slot-scope="scope">
+            <span>{{ scope.row.email }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('proprietor.advanceAmount')" prop="id" align="center" min-width="120">
+          <template slot-scope="scope">
+            <span>{{ scope.row.advanceAmount }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogShow = false">{{ $t('table.cancel') }}</el-button>
         <el-button type="primary" @click="testTwo">{{ $t('table.confirm') }}</el-button>
@@ -167,7 +193,8 @@
     createUnit,
     updateUnit,
     delUnit,
-    addUser
+    batchAddUser,
+    getUnitUserList
   } from '@/api/unit'
   import {
     getBuildingList
@@ -206,6 +233,13 @@
           3: '停车场'
         }
         return typeMap[type]
+      },
+      sexFilter(value) {
+        const sexMap = {
+          0: '女',
+          1: '男'
+        }
+        return sexMap[value]
       }
     },
     data() {
@@ -275,8 +309,10 @@
         buildingId: null,
         communityList: [],
         proprietorList: [],
+        allProprietorList: [],
         dialogShow: false,
-        userId: null
+        userId: null,
+        userIds: []
       }
     },
     watch: {
@@ -286,8 +322,8 @@
     },
     async created() {
       this.queryBuildyList()
-      this.queryProprietorList()
-      this.queryCommunityList()
+      this.queryAllProprietorList()
+      // this.queryCommunityList()
     },
     methods: {
       async getList() {
@@ -333,7 +369,7 @@
         })
       },
       async createData() {
-        this.temp.communityId = this.$store.getters.communityId
+        // this.temp.communityId = this.$store.getters.communityId
         const response = await createUnit(this.temp).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
@@ -357,7 +393,7 @@
       },
       async updateData() {
         this.listLoading = true
-        this.temp.communityId = this.$store.getters.communityId
+        // this.temp.communityId = this.$store.getters.communityId
         const response = await updateUnit(this.temp).catch(e => e)
         this.listLoading = false
         if (response.code !== 200) {
@@ -404,30 +440,47 @@
       //   const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
       //   this.communityList = response.data.list
       // },
-      async queryProprietorList() {
+      async queryAllProprietorList() {
         this.listLoading = true
-        const { code, msg, data } = await getProprietorList(this.listQuery).catch(e => e)
+        const { code, msg, data } = await getProprietorList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.listLoading = false
         if (code !== 200) {
           return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
         }
-        this.proprietorList = [... data.list]
+        this.allProprietorList = [... data.list]
       },
-      bindUser(info) {
+      async queryProprietorList(unitId) {
+        const { code, msg, data } = await getUnitUserList({ unitId }).catch(e => e)
+        if (code !== 200) {
+          return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+        }
+        this.proprietorList = [... data]
+        this.userIds = []
+        this.proprietorList.forEach(value => {
+          this.userIds.push(value.userId)
+        })
+      },
+      async bindUser(info) {
         this.userId = null
         this.unitId = info.unitId
+        await this.queryProprietorList(this.unitId)
         this.dialogShow = true
       },
       async testTwo() {
-        const data = { userId: this.userId, unitId: this.unitId, owner: true }
+        const data = []
+        this.userIds.forEach(userId => {
+          data.push({ userId: userId, unitId: this.unitId, owner: true })
+        })
+        // const data = { userId: this.userId, unitId: this.unitId, owner: true }
         // const data = {
         //   userUnit: [{ userId: this.userId, unitId: this.unitId, owner: true }]
         // }
-        const response = await addUser(data).catch(e => e)
+        const response = await batchAddUser(data).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '关联失败', message: response.msg, type: 'error', duration: 2000 })
         }
         this.dialogFormVisible = false
+        this.dialogShow = false
         this.$notify({
           title: '成功',
           message: '关联成功',

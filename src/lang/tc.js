@@ -243,7 +243,7 @@ export default {
   },
   // 单位
   unit: {
-    unitChildRelativeProportion: '分層建築物之子部分相對比(千分之一)', // 分層建築物之子部分相對比(千分之一)
+    unitChildRelativeProportion: '分層建築物之子部分相對比(百分之一)', // 分層建築物之子部分相對比(千分之一)
     buildingId: '建築', // buildingId
     community: '社區',
     unitCoveredArea: '覆蓋面積大小(單位平方米)', // 覆蓋面積大小(單位平方米)
@@ -253,7 +253,7 @@ export default {
     unitNo: '單位編號', // 單位編號
     unitPosition: '位置', // 位置(地下,一楼,二楼,三楼,户外.)
     unitPurpose: '用途', // 用途
-    unitRelativeProportion: '分層建築物相對比(千分之一)', // 分層建築物相對比(千分之一)
+    unitRelativeProportion: '分層建築物相對比(百分之一)', // 分層建築物相對比(千分之一)
     unitStatus: '單位狀態', // 單位狀態0空置1租赁2装修中3入住
     unitType: '單位類型' // 单位類型1商铺2住宅3停车场
   },

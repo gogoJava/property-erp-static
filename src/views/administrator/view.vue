@@ -4,7 +4,6 @@
       <el-input :placeholder="$t('administrator.name')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
-
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
       <el-table-column :label="$t('administrator.name')" prop="id" align="center" min-width="100">
         <template slot-scope="scope">
@@ -19,6 +18,11 @@
       <el-table-column :label="$t('administrator.username')" min-width="150px">
         <template slot-scope="scope">
           <span>{{ scope.row.username }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('administrator.portrait')" min-width="120px" align="center">
+        <template slot-scope="scope">
+          <img v-if="scope.row.portrait" :src="(imgPrefix + scope.row.portrait)" class="proprietor-portrait">
         </template>
       </el-table-column>
       <el-table-column :label="$t('administrator.sex')" min-width="60px" align="center">
@@ -48,37 +52,66 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
     <!-- 添加、编辑、详情 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="90px" style="width: 400px; margin-left:50px;">
-        <el-form-item :label="$t('administrator.name')" prop="name">
-          <el-input v-model="temp.name" />
-        </el-form-item>
-        <el-form-item :label="$t('administrator.username')" prop="username">
-          <el-input v-model="temp.username" />
-        </el-form-item>
-        <el-form-item :label="$t('administrator.sex')" prop="sex">
-          <el-select v-model="temp.sex" placeholder="请选择">
-            <el-option :key="0" :value="0" label="女" />
-            <el-option :key="1" :value="1" label="男" />
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('administrator.type')" prop="type">
-          <el-select v-model="temp.type" placeholder="请选择">
-            <el-option :key="0" :value="0" label="普通管理员" />
-            <el-option :key="1" :value="1" label="超级管理员" />
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('administrator.communityId')" prop="communityId">
-          <el-select v-model="temp.communityId" placeholder="请绑定社区">
-            <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('administrator.email')" prop="email">
-          <el-input v-model="temp.email" />
-        </el-form-item>
-        <el-form-item v-if="dialogStatus==='create'" :label="$t('administrator.password')" prop="email">
-          <el-input v-model="temp.password" />
-        </el-form-item>
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="90px">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('administrator.name')" prop="name">
+              <el-input v-model="temp.name" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('administrator.sex')" prop="sex">
+              <el-select v-model="temp.sex" placeholder="请选择">
+                <el-option :key="0" :value="0" label="女" />
+                <el-option :key="1" :value="1" label="男" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('administrator.username')" prop="username">
+              <el-input v-model="temp.username" />
+            </el-form-item>
+          </el-col>
+          <el-col v-if="dialogStatus==='create'" :span="12">
+            <el-form-item :label="$t('administrator.password')" prop="password">
+              <el-input v-model="temp.password" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('administrator.type')" prop="type">
+              <el-select v-model="temp.type" placeholder="请选择">
+                <el-option :key="0" :value="0" label="普通管理员" />
+                <el-option :key="1" :value="1" label="超级管理员" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('administrator.communityId')" prop="name">
+              <el-select v-model="temp.communityId" placeholder="请绑定社区">
+                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('administrator.email')" prop="email">
+              <el-input v-model="temp.email" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('administrator.portrait')" prop="portrait">
+              <single-image :value.sync="temp.portrait" />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{ $t('table.cancel') }}</el-button>
@@ -116,11 +149,13 @@
     parseTime
   } from '@/utils'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+  import SingleImage from './singleImage'
 
   export default {
     name: 'Administrator',
     components: {
-      Pagination
+      Pagination,
+      SingleImage
     },
     directives: {
       waves
@@ -179,7 +214,8 @@
           type: 0,
           password: '',
           email: '',
-          roleIds: null
+          roleIds: null,
+          portrait: ''
         },
         dialogFormVisible: false,
         dialogUpdateVisible: false,
@@ -210,7 +246,8 @@
           }]
         },
         downloadLoading: false,
-        password: ''
+        password: '',
+        imgPrefix: 'http://songsong.fun:8080/file' // 图片前缀
       }
     },
     watch: {
@@ -269,7 +306,8 @@
           type: 0,
           password: '',
           email: '',
-          roleIds: null
+          roleIds: null,
+          portrait: ''
         }
       },
       handleCreate() {
@@ -373,6 +411,11 @@
 <style lang="postcss" scoped>
   .administrator-container {
     padding: 30px;
+  }
+  .proprietor-portrait {
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
   }
 </style>
 

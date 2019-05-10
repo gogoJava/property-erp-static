@@ -37,7 +37,6 @@
     watch: {
       value() {
         this.imageUrl = this.value ? (this.imgPrefix + this.value) : null
-        console.log('imageUrl', this.imageUrl)
       }
     },
     created() {

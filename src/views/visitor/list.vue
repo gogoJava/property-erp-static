@@ -2,7 +2,6 @@
   <div class="visitor-container">
     <div class="filter-container">
       <el-input :placeholder="$t('visitor.visitorName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
-      <!-- <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button> -->
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('visitor.visitorName')" prop="id" align="center" min-width="120">
@@ -43,6 +42,11 @@
       <el-table-column :label="$t('visitor.building')" min-width="80px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.buildingName || '--' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('visitor.visitorImage')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <img v-for="(item, index) of scope.row.visitorImage" :key="index" :src="(imgPrefix + item.imageUrl)" class="clubhouse-img">
         </template>
       </el-table-column>
       <!-- <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
@@ -185,7 +189,8 @@
         },
         dialogStatus: '',
         dialogFormVisible: false,
-        rules: {}
+        rules: {},
+        imgPrefix: 'http://songsong.fun:8080/file' // 图片前缀
       }
     },
     watch: {
@@ -224,5 +229,10 @@
 <style lang="postcss" scoped>
  .visitor-container {
     padding: 30px;
+  }
+  .clubhouse-img {
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
   }
 </style>

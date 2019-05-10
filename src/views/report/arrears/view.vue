@@ -3,8 +3,10 @@
     <div class="filter-container">
       <el-input :placeholder="$t('charge.unitItemId')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleExport()">{{ $t('table.export') }}</el-button>
+      <el-button size="mini" type="primary" style="position: relative;right: 15px;top: -4px;float: right;" @click="handleExport()">{{ $t('table.confirmPay') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
+      <el-table-column type="selection" width="40" />
       <el-table-column :label="$t('charge.unitItemId')" prop="id" align="center" min-width="120">
         <template slot-scope="scope">
           <span>{{ scope.row.chargeItem ? scope.row.chargeItem.itemName : '--' }}</span>
@@ -55,9 +57,11 @@
           <span>{{ scope.row.recordLateFee || '--' }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
+      <el-table-column :label="$t('table.actions')" align="center" width="260" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
+          <el-button type="text" size="mini" @click="paymentNotice(scope.row)">{{ $t('table.paymentNotice') }}</el-button>
+          <el-button type="text" size="mini" @click="paymentNotice(scope.row)">{{ $t('table.confirmPay') }}</el-button>
           <!-- <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
           </el-button> -->
         </template>
@@ -131,6 +135,56 @@
         <el-button type="primary" @click="updateData()">{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
+    <!-- 付款通知书 -->
+    <el-dialog :visible.sync="dialogShow2" width="800px" center>
+      <div id="print-me" class="print_notice">
+        <div class="print_notice_title">澳门物业管理有限公司</div>
+        <div class="print_notice_title_en">Macau Property Management Co., Ltd.</div>
+        <div class="print_notice_no">sasbt656532823</div>
+        <el-row class="print_notice_content">
+          <el-col :span="8"><div class="">伊甸园园区</div></el-col>
+          <el-col :span="8"><div class="print_notice_content_title">付款通知书</div></el-col>
+          <!-- <el-col :span="8"></el-col> -->
+        </el-row>
+        <el-row class="print_notice_content">
+          <el-col :span="8"><div class="">Yi Dian Yuan</div></el-col>
+          <el-col :span="8"><div class="print_notice_content_title">Payment Notice</div></el-col>
+          <el-col :span="8"><div style="text-align: right">日期 Date 2019年04月20日</div></el-col>
+        </el-row>
+        <div class="content_table">
+          <div class="content_table_top">
+            <div class="content_table_info">请缴付 Payment for 单位 unit__/车位 Parking__</div>
+            <div class="content_table_amount">金 AMOUNT 额</div>
+          </div>
+          <div class="content_table_item">
+            <div class="content_table_item_num">1</div>
+            <div class="content_table_item_info">
+              <div class="content_table_item_msg">管理费 Management fee for</div>
+              <div class="content_table_item_msg">2019年3月 至 2019年4月:每月$899.00</div>
+            </div>
+            <div class="content_table_item_amount"><span style="position: relative;top: 30px;">$530.00</span></div>
+          </div>
+          <div class="content_table_item">
+            <div class="content_table_item_num">2</div>
+            <div class="content_table_item_info">
+              <div class="content_table_item_msg">管理费 Management fee for</div>
+              <div class="content_table_item_msg">2019年3月 至 2019年4月:每月$899.00</div>
+            </div>
+            <div class="content_table_item_amount"><span style="position: relative;top: 30px;">$530.00</span></div>
+          </div>
+          <div class="content_table_item">
+            <div class="content_table_item_info table_bottom">合共 TOTAL in MOP$</div>
+            <div class="content_table_item_amount"><span style="position: relative;top: 15px;">$998.00</span></div>
+          </div>
+        </div>
+        <div class="content_bottom_tip1">付款方式:  07:00 - 18:00 到地下管理处缴费（现金/支票）</div>
+        <div><span class="content_bottom_tip2">** 中国银行户口自动转账服务，如有需要直接到管理处办理 **</span></div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogShow2 = false">{{ $t('table.cancel') }}</el-button>
+        <el-button v-print="'#print-me'" type="primary" @click="dialogShow2 = false">{{ $t('table.print') }}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -200,7 +254,8 @@
         },
         dialogStatus: '',
         dialogFormVisible: false,
-        rules: {}
+        rules: {},
+        dialogShow2: false
       }
     },
     watch: {
@@ -320,6 +375,9 @@
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
+      },
+      paymentNotice(info) {
+        this.dialogShow2 = true
       }
     }
   }
@@ -328,5 +386,93 @@
 <style lang="postcss" scoped>
  .charge-container {
     padding: 30px;
+  }
+
+  .print_notice {
+    text-align: center;
+    font-size: 16px;
+  }
+  .print_notice_title {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 24px;
+  }
+  .print_notice_title_en {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 24px;
+  }
+  .print_notice_no {
+    text-align: right;
+    font-weight: bold;
+    padding: 10px 0;
+  }
+  .print_notice_content_title {
+    font-weight: 600;
+  }
+  .content_table {
+    border: 1px solid #cdcdcd;
+    margin-top: 15px;
+    text-align: left;
+    padding-top: 15px;
+    position: relative;
+  }
+  .content_table_top {
+    position: relative;
+  }
+  .content_table_info {
+    padding: 15px;
+  }
+  .content_table_amount {
+    padding: 5px 0;
+    width: 150px;
+    border-left: 1px solid #cdcdcd;
+    border-top: 1px solid #cdcdcd;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+  }
+  .content_table_item {
+    position: relative;
+    border-top: 1px solid #cdcdcd;
+  }
+  .content_table_item_amount {
+    /* padding: 5px 15; */
+    text-align: center;
+    height: 100%;
+    width: 150px;
+    border-left: 1px solid #cdcdcd;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+  .content_table_item_num {
+    float: left;
+    padding: 15px;
+    border-right: 1px solid #cdcdcd;
+    line-height: 48px;
+  }
+  .content_table_item_info {
+    padding: 15px;
+  }
+  .content_table_item_msg {
+    position: relative;
+    left: 15px;
+    line-height: 24px;
+  }
+  .table_bottom {
+    font-weight: bold;
+  }
+  .content_bottom_tip1 {
+    text-align: center;
+    padding: 30px 0;
+    font-weight: 600;
+  }
+  .content_bottom_tip2 {
+    text-align: center;
+    padding: 10px;
+    color: #ffffff;
+    background: #000;
   }
 </style>

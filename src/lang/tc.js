@@ -64,6 +64,7 @@ export default {
     i18n: '国际化',
     externalLink: '外链',
     community: '社區管理',
+    communityTest: '社区Test',
     communityList: '社區列表',
     communityCreate: '創建社區',
     administrator: '社區物業管理員',
@@ -81,9 +82,11 @@ export default {
     costSummary: '費用匯總',
     fundFee: '基金費用管理',
     unitCharge: '單元收費管理',
+    unitChargeList: '單元收費項目',
     propertyComplaint: '物業投訴',
     visitor: '訪客登記',
     clubhouse: '會所管理',
+    placeRecord: '場所記錄管理',
     advertisement: '廣告管理'
   },
   navbar: {
@@ -153,7 +156,12 @@ export default {
     delete: '删除',
     cancel: '取消',
     confirm: '确定',
-    preCharge: '預收費'
+    preCharge: '預收費',
+    paymentNotice: '付款通知書',
+    print: '打印',
+    confirmPay: '確認收款',
+    linked: '關聯',
+    bindUser: '綁定業主'
   },
   errorLog: {
     tips: '请点击右上角bug小圖標',
@@ -215,7 +223,8 @@ export default {
     communityRemark: '備註', // 備註
     communityRoadArea: '道路面積', // 道路面積
     communityRoomCount: '房間總數', // 房间总数
-    commonPdf: '社區之公共部分' // 社區之公共部分
+    commonPdf: '樓宇之公共部分', // 社區之公共部分
+    communityShopsCount: '商舖數量'
   },
   // 管理员
   administrator: {
@@ -226,7 +235,8 @@ export default {
     sex: '性别', // 性别0女1男
     type: '類型', // 類型0普通管理员1超级管理员
     username: '用戶名', // 用戶名
-    password: '密碼' // 密碼
+    password: '密碼', // 密碼
+    portrait: '頭像'
   },
   // 建築
   building: {
@@ -239,7 +249,12 @@ export default {
     deleted: '是否註銷', // 是否註銷
     floorLowNum: '樓下幾層', // 樓下幾層
     floorUpNum: '樓上幾層', // 樓上幾層
-    fullAddress: '樓宇全址' // 樓宇全址
+    fullAddress: '樓宇全址', // 樓宇全址
+    floorList: '樓宇樓層',
+    commonPdf: '樓宇之公共部分', // 楼宇之公共部分
+    buildingChildList: '樓宇子部分', // 楼宇子部分
+    rosterPdf: '業主花名冊文件',
+    managementType: '管理類型' // 管理类型(0简单管理1综合管理)
   },
   // 单位
   unit: {
@@ -255,7 +270,18 @@ export default {
     unitPurpose: '用途', // 用途
     unitRelativeProportion: '分層建築物相對比(百分之一)', // 分層建築物相對比(千分之一)
     unitStatus: '單位狀態', // 單位狀態0空置1租赁2装修中3入住
-    unitType: '單位類型' // 单位類型1商铺2住宅3停车场
+    unitType: '單位類型', // 单位類型1商铺2住宅3停车场
+    unitTitle: '單位業權',
+    additionalCost: '額外費用',
+    alculationMethod: '計算方式',
+    billingMode: '收費模式',
+    describe: '金額',
+    formula: '計算公式',
+    itemName: '收費項目名字',
+    itemNo: '收費項目編號',
+    lateDate: '滯納金天數',
+    lateFee: '滯納金率',
+    unitPrice: '計算單價'
   },
   // 业主
   proprietor: {
@@ -276,7 +302,10 @@ export default {
     updateTime: '更新日期', // 更新時間
     userId: '用戶ID', // 用戶id
     username: '用戶登錄賬號', // 用戶登錄賬號
-    password: '密碼' // 密碼
+    password: '密碼', // 密碼
+    userWithCommunities: '關聯單位',
+    bindCommunities: '綁定社區',
+    advanceAmount: '預收金額'
   },
   asset: {
     assetDescribe: '描述', // 描述
@@ -291,7 +320,14 @@ export default {
     assetTraditionalPosition: '位置信息（繁体）', // 位置信息（繁体）
     assetType: '資產類型', // 資產類型：电器、公共设备
     community: '社區',
-    communityId: '社區ID' // 社區ID
+    communityId: '社區ID', // 社區ID
+    assetMaintain: '保養',
+    assetMaintainRemindCycle: '保養週期',
+    assetBuyDate: '購入日期',
+    assetStatus: '狀態',
+    assetNo: '資產編號',
+    assetImage: '資產相片',
+    assetOverdueDate: '保固日期'
   },
   notice: {
     buildingId: '建築', // 建築id
@@ -307,7 +343,10 @@ export default {
     noticeTraditionalDetails: '詳情（繁体）', // 詳情（繁体）
     noticeTraditionalTitle: '公告標題（繁体）', // 標題
     noticeType: '通知類型', // 通知類型
-    updateTime: '更新時間' // 更新時間
+    updateTime: '更新時間', // 更新時間
+    startTime: '開始日期',
+    endTime: '結束日期',
+    announcementDate: '公佈日期'
   },
   event: {
     community: '社區',
@@ -321,7 +360,16 @@ export default {
     eventSolve: '解決方案', // 解決方案
     eventStatus: '事件進度', // 事件進度
     eventType: '事件類型', // 事件類型1采购2保养3其他
-    eventRemindCycle: '提醒週期'
+    eventRemindCycle: '提醒週期',
+    eventChannel: '接收渠道',
+    reportPdf: '事件圖片',
+    reports: '報告PDF',
+    complainClassType: '投訴標題',
+    complainPosition: '投訴位置',
+    complainReply: '投訴進度回复',
+    complainSpecificPosition: '具體位置',
+    complainType: '投訴類型',
+    assetNo: '資產編號'
   },
   adv: {
     adv: '廣告',
@@ -335,7 +383,9 @@ export default {
     title: '標題', // title
     type: '廣告類型', // 廣告類型 0普通圖片1视频
     url: '資源', // url
-    used: '是否使用' // 是否使用0否1是
+    used: '是否使用', // 是否使用0否1是
+    purpose: '公告類型',
+    announcementDate: '公佈日期'
   },
   complain: {
     complain: '投訴/保修',
@@ -369,7 +419,8 @@ export default {
     visitorId: 'id', // visitorId
     visitorName: '訪問者名字', // visitorName
     visitorSex: '性别', // 性别0女1男
-    visitorPhone: '聯繫號碼' // visitorPhone
+    visitorPhone: '聯繫號碼', // visitorPhone
+    visitorImage: '圖片'
   },
   clubhouse: {
     community: '社區',
@@ -390,7 +441,9 @@ export default {
     placeTraditionalIntroduction: '簡介(繁体)', // 簡介(繁体)
     placeTraditionalName: '場所名字(繁体)', // 場所名字(繁体)
     placeUpperLimit: '預約時間上限',
-    placeIconType: '圖標類型'
+    placeIconType: '圖標類型',
+    placeCharge: '收費',
+    placeAttachCharge: '清潔費用'
   },
   charge: {
     recordActualAmount: '實際收取金額', // 實際收取金額
@@ -419,5 +472,20 @@ export default {
     lateFee: '滯納金率', // 滯納金率(单位:百分之一)
     unitPrice: '計算單價', // 計算單價
     lateDate: '滯納開始天數' // 滯納開始天數
+  },
+  placeRecord: {
+    attachCharge: '附加費用',
+    averageCharge: '每小時費用',
+    communityId: '社區',
+    createTime: '創建時間', // createTime
+    updateTime: '更新時間', // updateTime
+    orderDate: '預定時間',
+    orderEndTime: '結束時間',
+    orderStartTime: '開始時間',
+    place: '場所',
+    recordStatus: '预定状态',
+    totalCharge: '总费用',
+    totalHour: '总时间',
+    userId: '用户ID'
   }
 }

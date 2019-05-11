@@ -347,7 +347,6 @@ export default {
     startTime: '开始日期',
     endTime: '结束日期',
     announcementDate: '公布日期'
-
   },
   event: {
     community: '社区',
@@ -487,6 +486,6 @@ export default {
     totalCharge: '总费用',
     totalHour: '总时间',
     updateTime: '更新时间',
-    userId: '用户ID'
+    userId: '用戶'
   }
 }

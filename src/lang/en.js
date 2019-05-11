@@ -64,6 +64,7 @@ export default {
     i18n: 'I18n',
     externalLink: 'External Link',
     community: 'Community',
+    communityTest: '社区Test',
     communityList: 'Community List',
     communityCreate: 'Create Community',
     administrator: 'Administrator',
@@ -81,9 +82,11 @@ export default {
     costSummary: 'Cost Summary',
     fundFee: 'Fund Fee',
     unitCharge: 'Unit Charge',
+    unitChargeList: 'Unit charge item',
     propertyComplaint: 'Property Complaint',
     visitor: 'Visitor',
     clubhouse: 'Clubhouse',
+    placeRecord: 'Location record management',
     advertisement: 'Advertisement'
   },
   navbar: {
@@ -153,7 +156,12 @@ export default {
     delete: 'Delete',
     cancel: 'Cancel',
     confirm: 'Confirm',
-    preCharge: 'Pre-charge'
+    preCharge: 'Pre-charge',
+    paymentNotice: 'Payment Notice',
+    print: 'Print',
+    confirmPay: 'confirmed paid',
+    linked: 'Association',
+    bindUser: 'Bound owner'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',
@@ -215,7 +223,8 @@ export default {
     communityRemark: 'Remarks', // 备注
     communityRoadArea: 'Road Area', // 道路面积
     communityRoomCount: 'Rooms Number', // 房间总数
-    commonPdf: 'Public Part Of The Community' // 社区之公共部分
+    commonPdf: 'Public Part Of The Community', // 社区之公共部分
+    communityShopsCount: 'Number of shops'
   },
   // 管理员
   administrator: {
@@ -226,7 +235,8 @@ export default {
     sex: 'Gender', // 性别0女1男
     type: 'Type', // 类型0普通管理员1超级管理员
     username: 'Username', // 用户名
-    password: 'Password' // 密码
+    password: 'Password', // 密码
+    portrait: 'Portrait'
   },
   // 建筑
   building: {
@@ -239,7 +249,12 @@ export default {
     deleted: 'Logout', // 是否注销
     floorLowNum: 'Several Floors Downstairs', // 楼下几层
     floorUpNum: 'Several Floors Upstairs', // 楼上几层
-    fullAddress: 'Building Address' // 楼宇全址
+    fullAddress: 'Building Address', // 楼宇全址
+    floorList: 'Building floor',
+    commonPdf: 'Public part of the building', // 楼宇之公共部分
+    buildingChildList: 'Building subsection', // 楼宇子部分
+    rosterPdf: "Owner's roster document",
+    managementType: 'Management type' // 管理类型(0简单管理1综合管理)
   },
   // 单位
   unit: {
@@ -255,7 +270,18 @@ export default {
     unitPurpose: 'Use', // 用途
     unitRelativeProportion: 'Stratified Building Relative(One percent)', // 分层建筑物相对比(千分之一)
     unitStatus: 'Unit Status', // 单位状态0空置1租赁2装修中3入住
-    unitType: 'Unit Type' // 单位类型1商铺2住宅3停车场
+    unitType: 'Unit Type', // 单位类型1商铺2住宅3停车场
+    unitTitle: 'Unit ownership',
+    additionalCost: 'Additional Charges',
+    alculationMethod: 'Calculation',
+    billingMode: 'Charging Mode',
+    describe: 'Amount',
+    formula: 'Calculation Formula',
+    itemName: 'Charge Item Name',
+    itemNo: 'Charge Item No',
+    lateDate: 'Late Gold Days',
+    lateFee: 'Late Payment Rate',
+    unitPrice: 'Calculate Unit Price'
   },
   // 业主
   proprietor: {
@@ -276,7 +302,10 @@ export default {
     updateTime: 'Update Time', // 更新时间
     userId: 'UserId', // 用户id
     username: 'Login Account', // 用户登录账号
-    password: 'Password' // 密码
+    password: 'Password', // 密码
+    userWithCommunities: 'Associated unit',
+    bindCommunities: 'Binding community',
+    advanceAmount: 'Advance receipt amount'
   },
   asset: {
     assetDescribe: 'Description', // 描述
@@ -291,7 +320,14 @@ export default {
     assetTraditionalPosition: 'Location Information（Traditional Chinese）', // 位置信息（繁体）
     assetType: 'Asset Type', // 资产类型：电器、公共设备
     community: 'Community',
-    communityId: 'Community ID' // 社区ID
+    communityId: 'Community ID', // 社区ID
+    assetMaintain: 'maintenance',
+    assetMaintainRemindCycle: 'Maintenance cycle',
+    assetBuyDate: 'Purchase date',
+    assetStatus: 'status',
+    assetNo: 'Asset Number',
+    assetImage: 'Asset photo',
+    assetOverdueDate: 'Warranty date'
   },
   notice: {
     buildingId: 'Building', // 建筑id
@@ -307,7 +343,10 @@ export default {
     noticeTraditionalDetails: 'Detail（Traditional Chinese）', // 详情（繁体）
     noticeTraditionalTitle: 'Bulletin Title（Traditional Chinese）', // 标题
     noticeType: 'Notification Type', // 通知类型
-    updateTime: 'Update Time' // 更新时间
+    updateTime: 'Update Time', // 更新时间
+    startTime: 'Start Time',
+    endTime: 'End date',
+    announcementDate: 'Announcement date'
   },
   event: {
     community: 'Community',
@@ -321,7 +360,16 @@ export default {
     eventSolve: 'Solution', // 解决方案
     eventStatus: 'Event Progress', // 事件进度
     eventType: 'Event Type', // 事件类型1采购2保养3其他
-    eventRemindCycle: 'Reminder Cycle'
+    eventRemindCycle: 'Reminder Cycle',
+    eventChannel: 'Receiving channel',
+    reportPdf: 'Event picture',
+    reports: 'Report PDF',
+    complainClassType: 'Complaint title',
+    complainPosition: 'Complaint location',
+    complainReply: 'Complaint progress response',
+    complainSpecificPosition: 'Specific location',
+    complainType: 'Type of complaint',
+    assetNo: 'Asset Number'
   },
   adv: {
     adv: 'Advertisement',
@@ -335,7 +383,9 @@ export default {
     title: 'Title', // title
     type: 'Advertisement Type', // 广告类型 0普通图片1视频
     url: 'Resource', // url
-    used: 'Used' // 是否使用0否1是
+    used: 'Used', // 是否使用0否1是
+    purpose: 'Announcement type',
+    announcementDate: 'Announcement date'
   },
   complain: {
     complain: 'Complaint/Warranty',
@@ -369,7 +419,8 @@ export default {
     visitorId: 'id', // visitorId
     visitorName: 'Visitor Name', // visitorName
     visitorSex: 'Gender', // 性别0女1男
-    visitorPhone: 'Contact Number' // visitorPhone
+    visitorPhone: 'Contact Number', // visitorPhone
+    visitorImage: 'image'
   },
   clubhouse: {
     community: 'Community',
@@ -390,7 +441,9 @@ export default {
     placeTraditionalIntroduction: 'Introduction(Traditional Chinese)', // 简介(简体)
     placeTraditionalName: 'Place Name(Traditional Chinese)', // 场所名字(繁体)
     placeUpperLimit: 'Appointment Time Limit',
-    placeIconType: 'Icon Type'
+    placeIconType: 'Icon Type',
+    placeCharge: 'Charge',
+    placeAttachCharge: 'Cleaning fee'
   },
   charge: {
     recordActualAmount: 'Actual Amount Charged', // 实际收取金额
@@ -419,5 +472,20 @@ export default {
     lateFee: 'Late Payment Rate', // 滞纳金率(单位:百分之一)
     unitPrice: 'Calculate Unit Price', // 计算单价
     lateDate: 'Days Of Late Start' // 滞纳开始天数
+  },
+  placeRecord: {
+    attachCharge: 'additional fees',
+    averageCharge: 'Hourly fee',
+    communityId: 'community',
+    createTime: 'Create Time', // createTime
+    updateTime: 'Update Time', // updateTime
+    orderDate: 'scheduled time',
+    orderEndTime: 'End Time',
+    orderStartTime: 'Start Time',
+    place: 'place',
+    recordStatus: 'Scheduled state',
+    totalCharge: 'Total cost',
+    totalHour: 'Total time',
+    userId: 'user'
   }
 }

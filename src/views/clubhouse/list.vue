@@ -3,6 +3,14 @@
     <div class="filter-container">
       <el-input :placeholder="$t('clubhouse.placeTraditionalName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('clubhouse.community') }}:</span>
+      <el-select v-model="listQuery.communityId" :placeholder="$t('clubhouse.community')" clearable style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="item in communityList"
+          :key="item.communityId"
+          :label="item.communityName"
+          :value="item.communityId" />
+      </el-select>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
       <el-table-column :label="$t('clubhouse.placeTraditionalName')" prop="id" align="center" min-width="160">
@@ -18,6 +26,11 @@
       <el-table-column :label="$t('clubhouse.placeEnglishName')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.placeEnglishName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('clubhouse.community')" prop="communityId" align="center" min-width="120">
+        <template slot-scope="scope">
+          <span>{{ scope.row.community.communityName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('clubhouse.placeIntroduction')" min-width="180px" align="center">
@@ -288,7 +301,8 @@
         listQuery: {
           pageNo: 1,
           pageSize: 10,
-          keyword: ''
+          keyword: '',
+          communityId: ''
         },
         importanceOptions: [1, 2, 3],
         sortOptions: [{
@@ -354,11 +368,14 @@
         },
         downloadLoading: false,
         password: '',
-        imgPrefix: 'http://songsong.fun:8080/file' // 图片前缀
+        imgPrefix: 'http://songsong.fun/file' // 图片前缀
       }
     },
     watch: {
       'listQuery.keyword'() {
+        this.getList()
+      },
+      'listQuery.communityId'() {
         this.getList()
       }
     },
@@ -368,6 +385,7 @@
     },
     methods: {
       async getList() {
+        if (!this.listQuery.communityId) delete this.listQuery.communityId
         this.listLoading = true
         const response = await getClubhouseList(this.listQuery).catch(e => e)
         if (response.code !== 200) {
@@ -385,7 +403,7 @@
       // 获取社区列表
       async queryCommunityList() {
         if (!this.$store.getters.isSuper) return
-        const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
     },
       handleModifyStatus(row, status) {

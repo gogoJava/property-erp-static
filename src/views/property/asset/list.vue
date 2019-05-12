@@ -1,8 +1,18 @@
 <template>
   <div class="asset-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('asset.assetDescribe')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
+      <el-input :placeholder="$t('asset.assetNo') + ' ' + $t('asset.assetName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('asset.assetStatus') }}:</span>
+      <el-select v-model="listQuery.assetStatus" :placeholder="$t('asset.assetStatus')" style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="(item, index) in assetStatusList"
+          :key="index"
+          :label="item.label"
+          :value="item.value" />
+      </el-select>
+      <el-input :placeholder="$t('asset.assetMaintainRemindCycle')" v-model="listQuery.assetMaintainRemindCycle" style="width: 200px;position: relative;padding-left: 15px;" class="filter-item" />
+      <el-date-picker v-model="listQuery.assetOverdueDate" :placeholder="$t('asset.assetOverdueDate')" type="date" value-format="yyyy-MM-dd" format="yyyy-MM-dd" style="position: relative;top: -4px;left: 15px;"/>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
       <el-table-column :label="$t('asset.assetNo')" prop="assetNo" align="center" min-width="80">
@@ -30,6 +40,21 @@
           <span>{{ scope.row.assetEnglishName }}</span>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('asset.assetStatus')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.assetStatus | assetStatusFilter }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('asset.assetMaintainRemindCycle')" min-width="80px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.assetMaintainRemindCycle }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('asset.assetOverdueDate')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.assetOverdueDate ? $moment(scope.row.assetOverdueDate).format('YYYY-MM-DD HH:mm') : '--' }}</span>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('asset.assetPosition')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.assetPosition }}</span>
@@ -45,19 +70,9 @@
           <span>{{ scope.row.assetMaintain }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('asset.assetMaintainRemindCycle')" min-width="80px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.assetMaintainRemindCycle }}</span>
-        </template>
-      </el-table-column>
       <el-table-column :label="$t('asset.assetBuyDate')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.assetBuyDate ? $moment(scope.row.assetBuyDate).format('YYYY-MM-DD HH:mm') : '--' }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('asset.assetOverdueDate')" min-width="180px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.assetOverdueDate ? $moment(scope.row.assetOverdueDate).format('YYYY-MM-DD HH:mm') : '--' }}</span>
         </template>
       </el-table-column>
       <!-- <el-table-column :label="$t('asset.assetType')" min-width="180px" align="center">
@@ -68,11 +83,6 @@
       <el-table-column :label="$t('asset.community')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.community.communityName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('asset.assetStatus')" min-width="180px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.assetStatus | assetStatusFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
@@ -262,7 +272,10 @@
         listQuery: {
           pageNo: 1,
           pageSize: 10,
-          keyword: ''
+          keyword: '',
+          assetMaintainRemindCycle: '',
+          assetOverdueDate: '',
+          assetStatus: ''
         },
         importanceOptions: [1, 2, 3],
         sortOptions: [{
@@ -328,8 +341,30 @@
         communityList: []
       }
     },
+    computed: {
+      assetStatusList() {
+        // 状态0使用中1货存2损坏3弃置
+        const list = [
+          { label: '全部', value: '' },
+          { label: '使用中', value: 0 },
+          { label: '货存', value: 1 },
+          { label: '损坏', value: 2 },
+          { label: '弃置', value: 3 }
+        ]
+        return list
+      }
+    },
     watch: {
       'listQuery.keyword'() {
+        this.getList()
+      },
+      'listQuery.assetStatus'() {
+        this.getList()
+      },
+      'listQuery.assetMaintainRemindCycle'() {
+        this.getList()
+      },
+      'listQuery.assetOverdueDate'() {
         this.getList()
       }
     },

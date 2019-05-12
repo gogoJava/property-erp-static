@@ -81,3 +81,12 @@ export function addUnitItem(params) {
     data: params
   })
 }
+
+// 设置为已收费
+export function setChargeItemRecordConfirm(params) {
+  return request({
+    url: '/back/chargeItemRecord/charge',
+    method: 'post',
+    data: params
+  })
+}

@@ -41,7 +41,7 @@
         fileList: [],
         dataFileList: [],
         list: [],
-        imgPrefix: 'http://songsong.fun:8080/file' // 图片前缀
+        imgPrefix: 'http://songsong.fun/file' // 图片前缀
       }
     },
     watch: {
@@ -50,7 +50,7 @@
       }
     },
     created() {
-      // this.action = 'http://songsong.fun:8080/backstage/back/file/uploadFile?type=' + this.type
+      // this.action = 'http://songsong.fun/backstage/back/file/uploadFile?type=' + this.type
       this.setData()
       this.dataObj.token = localStorage.getItem('Admin-Token')
     },

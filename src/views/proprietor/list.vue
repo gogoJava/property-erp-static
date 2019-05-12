@@ -1,7 +1,7 @@
 <template>
   <div class="proprietor-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('proprietor.name')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
+      <el-input :placeholder="$t('proprietor.username') + ' ' + $t('proprietor.name')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
@@ -10,14 +10,14 @@
           <span>{{ scope.row.username }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('proprietor.name')" min-width="180px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
-        </template>
-      </el-table-column>
       <el-table-column :label="$t('proprietor.portrait')" min-width="120px" align="center">
         <template slot-scope="scope">
           <img v-if="scope.row.portrait" :src="(imgPrefix + scope.row.portrait)" class="proprietor-portrait">
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('proprietor.name')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('proprietor.englishName')" min-width="110px" align="center">
@@ -368,7 +368,7 @@
         communityList: [],
         advanceAmount: null, // 预收费
         userId: null, // 预收费用户id
-        imgPrefix: 'http://songsong.fun:8080/file', // 图片前缀
+        imgPrefix: 'http://songsong.fun/file', // 图片前缀
         unitShow: false,
         communitys: [],
         userIds: '',

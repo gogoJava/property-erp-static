@@ -3,9 +3,11 @@
     <div class="filter-container">
       <el-input :placeholder="$t('charge.unitItemId')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleExport()">{{ $t('table.export') }}</el-button>
-      <el-button size="mini" type="primary" style="position: relative;right: 15px;top: -4px;float: right;" @click="handleExport()">{{ $t('table.confirmPay') }}</el-button>
+      <el-button size="mini" type="primary" style="position: relative;right: 15px;top: -4px;float: right;" @click="confirmPay()">{{ $t('table.confirmPay') }}</el-button>
+      <!-- <el-button size="mini" type="primary" style="position: relative;right: 15px;top: -4px;float: right;" @click="confirmPay()">{{ $t('table.confirmPay') }}</el-button> -->
+      <el-button type="primary" size="mini" style="position: relative;right: 15px;top: -4px;float: right;" @click="paymentNotice()">{{ $t('table.paymentNotice') }}</el-button>
     </div>
-    <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
+    <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="40" />
       <el-table-column :label="$t('charge.unitItemId')" prop="id" align="center" min-width="120">
         <template slot-scope="scope">
@@ -61,7 +63,7 @@
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
           <el-button type="text" size="mini" @click="paymentNotice(scope.row)">{{ $t('table.paymentNotice') }}</el-button>
-          <el-button type="text" size="mini" @click="paymentNotice(scope.row)">{{ $t('table.confirmPay') }}</el-button>
+          <el-button type="text" size="mini" @click="confirmPay(scope.row)">{{ $t('table.confirmPay') }}</el-button>
           <!-- <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
           </el-button> -->
         </template>
@@ -136,45 +138,37 @@
       </div>
     </el-dialog>
     <!-- 付款通知书 -->
-    <el-dialog :visible.sync="dialogShow2" width="800px" center>
+    <el-dialog :visible.sync="dialogShow2" width="900px" top="30px" center class="print">
       <div id="print-me" class="print_notice">
         <div class="print_notice_title">澳门物业管理有限公司</div>
         <div class="print_notice_title_en">Macau Property Management Co., Ltd.</div>
-        <div class="print_notice_no">sasbt656532823</div>
+        <div class="print_notice_no"><span v-for="(paymentNoticeInfo, index) in paymentNoticeInfoList" :key="index"><span v-if="index">、</span>{{ paymentNoticeInfo.chargeItem.itemNo }}</span></div>
         <el-row class="print_notice_content">
-          <el-col :span="8"><div class="">伊甸园园区</div></el-col>
+          <el-col :span="8"><span v-if="paymentNoticeInfoList[0]">{{ paymentNoticeInfoList[0].community.communityName }}</span></el-col>
           <el-col :span="8"><div class="print_notice_content_title">付款通知书</div></el-col>
           <!-- <el-col :span="8"></el-col> -->
         </el-row>
         <el-row class="print_notice_content">
-          <el-col :span="8"><div class="">Yi Dian Yuan</div></el-col>
-          <el-col :span="8"><div class="print_notice_content_title">Payment Notice</div></el-col>
-          <el-col :span="8"><div style="text-align: right">日期 Date 2019年04月20日</div></el-col>
+          <!-- <el-col :span="8"><div class="">1</div></el-col> -->
+          <el-col :span="8" :offset="8"><div class="print_notice_content_title">Payment Notice</div></el-col>
+          <el-col :span="8"><div style="text-align: right">日期 Date {{ $moment().format('YYYY年MM月DD日') }}</div></el-col>
         </el-row>
         <div class="content_table">
           <div class="content_table_top">
-            <div class="content_table_info">请缴付 Payment for 单位 unit__/车位 Parking__</div>
+            <div class="content_table_info">请缴付 Payment for 单位 unit_____ / 车位 Parking_____</div>
             <div class="content_table_amount">金 AMOUNT 额</div>
           </div>
-          <div class="content_table_item">
-            <div class="content_table_item_num">1</div>
+          <div v-for="(paymentNoticeInfo, index) in paymentNoticeInfoList" :key="index" class="content_table_item">
+            <div class="content_table_item_num">{{ index + 1 }}</div>
             <div class="content_table_item_info">
               <div class="content_table_item_msg">管理费 Management fee for</div>
-              <div class="content_table_item_msg">2019年3月 至 2019年4月:每月$899.00</div>
+              <div class="content_table_item_msg">{{ paymentNoticeInfo.recordDate }} : ${{ paymentNoticeInfo.recordAmount.toFixed(2) }}  <span v-if="paymentNoticeInfo.recordRemark">({{ paymentNoticeInfo.recordRemark }})</span></div>
             </div>
-            <div class="content_table_item_amount"><span style="position: relative;top: 30px;">$530.00</span></div>
-          </div>
-          <div class="content_table_item">
-            <div class="content_table_item_num">2</div>
-            <div class="content_table_item_info">
-              <div class="content_table_item_msg">管理费 Management fee for</div>
-              <div class="content_table_item_msg">2019年3月 至 2019年4月:每月$899.00</div>
-            </div>
-            <div class="content_table_item_amount"><span style="position: relative;top: 30px;">$530.00</span></div>
+            <div class="content_table_item_amount"><span style="position: relative;top: 30px;">${{ paymentNoticeInfo.recordAmount.toFixed(2) }}</span></div>
           </div>
           <div class="content_table_item">
             <div class="content_table_item_info table_bottom">合共 TOTAL in MOP$</div>
-            <div class="content_table_item_amount"><span style="position: relative;top: 15px;">$998.00</span></div>
+            <div class="content_table_item_amount"><span style="position: relative;top: 15px;">${{ totalPrice }}</span></div>
           </div>
         </div>
         <div class="content_bottom_tip1">付款方式:  07:00 - 18:00 到地下管理处缴费（现金/支票）</div>
@@ -182,7 +176,8 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogShow2 = false">{{ $t('table.cancel') }}</el-button>
-        <el-button v-print="'#print-me'" type="primary" @click="dialogShow2 = false">{{ $t('table.print') }}</el-button>
+        <el-button v-print="'#print-me'" type="primary">{{ $t('table.print') }}</el-button>
+        <!-- <el-button type="primary" @click="printJS('print-me', 'html')">{{ $t('table.print') }}</el-button> -->
       </div>
     </el-dialog>
   </div>
@@ -192,7 +187,8 @@
   import {
     getChargeItemRecordList,
     updateChargeItemRecord,
-    delChargeItemRecord
+    delChargeItemRecord,
+    setChargeItemRecordConfirm
   } from '@/api/charge'
   import {
     getBuildingList
@@ -200,6 +196,7 @@
   import { getCommunityList } from '@/api/community'
   import { chargeExport } from '@/api/file'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+  import printJS from 'print-js'
 
   export default {
     name: 'Charge',
@@ -255,7 +252,20 @@
         dialogStatus: '',
         dialogFormVisible: false,
         rules: {},
-        dialogShow2: false
+        dialogShow2: false,
+        recordIdList: [],
+        // paymentNoticeInfo: null,
+        paymentNoticeInfoList: [],
+        communityName: ''
+      }
+    },
+    computed: {
+      totalPrice() {
+        let total = 0
+        this.paymentNoticeInfoList.forEach(paymentNoticeInfo => {
+          total = total + paymentNoticeInfo.recordAmount
+        })
+        return total.toFixed(2)
       }
     },
     watch: {
@@ -269,6 +279,7 @@
       // this.queryBuildingList()
     },
     methods: {
+      printJS,
       async getList() {
         this.listLoading = true
         const { code, msg, data } = await getChargeItemRecordList(this.listQuery).catch(e => e)
@@ -377,7 +388,44 @@
         document.body.removeChild(link)
       },
       paymentNotice(info) {
+        // console.log('info', info)
+        // this.paymentNoticeInfo = { ...info }
+        if (info) {
+          this.paymentNoticeInfoList = [info]
+        }
+        if (!this.paymentNoticeInfoList.length) return this.$notify({ title: '提示', message: '请选择要打印的选项！', type: 'info', duration: 2000 })
         this.dialogShow2 = true
+      },
+      confirmPay(info) {
+        // info有值，则是单个，否则是批量
+        if (info) {
+          this.recordIdList = [info.recordId]
+        }
+        if (!this.recordIdList.length) return this.$notify({ title: '提示', message: '请选择要收费的收费项目', type: 'info', duration: 2000 })
+        this.$confirm('确定收费?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async() => {
+          const { code, msg } = await setChargeItemRecordConfirm(this.recordIdList).catch(e => e)
+          if (code !== 200) {
+            return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+          }
+          this.$notify({
+            title: '成功',
+            message: '确认收费成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+        }).catch(() => {})
+      },
+      handleSelectionChange(val) {
+        this.paymentNoticeInfoList = [...val]
+        this.recordIdList = []
+        val.forEach(element => {
+          this.recordIdList.push(element.recordId)
+        })
       }
     }
   }
@@ -387,15 +435,17 @@
  .charge-container {
     padding: 30px;
   }
-
   .print_notice {
     text-align: center;
-    font-size: 16px;
+    font-size: 12px;
+    /* width: 840px;
+    height: 592px; */
   }
   .print_notice_title {
     font-size: 20px;
     font-weight: bold;
     line-height: 24px;
+    padding-top: 15px;
   }
   .print_notice_title_en {
     font-size: 20px;
@@ -466,7 +516,7 @@
   }
   .content_bottom_tip1 {
     text-align: center;
-    padding: 30px 0;
+    padding: 15px 0;
     font-weight: 600;
   }
   .content_bottom_tip2 {

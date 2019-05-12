@@ -240,7 +240,7 @@
         dialogStatus: '',
         dialogFormVisible: false,
         rules: {},
-        imgPrefix: 'http://songsong.fun:8080/file' // 图片前缀
+        imgPrefix: 'http://songsong.fun/file' // 图片前缀
       }
     },
     watch: {

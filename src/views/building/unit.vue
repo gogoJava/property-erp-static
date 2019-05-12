@@ -1,6 +1,7 @@
 <template>
   <div class="unit-container">
     <div class="filter-container">
+      <el-input :placeholder="$t('unit.unitName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.buildingId') }}:</span>
       <el-select v-model="buildingId" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
@@ -9,12 +10,20 @@
           :label="item.buildingName"
           :value="item.buildingId" />
       </el-select>
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.unitPurpose') }}:</span>
+      <el-select v-model="listQuery.unitType" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="(item, index) in unitTypeList"
+          :key="index"
+          :label="item.label"
+          :value="item.value" />
+      </el-select>
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('unit.unitPurpose')" min-width="150px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.unitPurpose }}</span>
+          <span>{{ scope.row.unitType | unitTypeFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('unit.unitNo')" prop="id" align="center" min-width="100">
@@ -82,11 +91,11 @@
     <!-- 添加、编辑、详情 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="800px">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="250px" style="width: 700px;">
-        <el-form-item :label="$t('unit.unitPurpose')" prop="unitPurpose">
-          <el-select v-model="temp.unitPurpose" placeholder="请选择用途">
-            <el-option :key="1" value="商业" label="商业" />
-            <el-option :key="2" value="轻型汽车/电单车" label="轻型汽车/电单车" />
-            <el-option :key="3" value="住宅" label="住宅" />
+        <el-form-item :label="$t('unit.unitPurpose')" prop="unitType">
+          <el-select v-model="temp.unitType" placeholder="请选择用途">
+            <el-option :key="1" :value="1" label="商业" />
+            <el-option :key="2" :value="2" label="轻型汽车/电单车" />
+            <el-option :key="3" :value="3" label="住宅" />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('unit.unitNo')" prop="unitNo">
@@ -240,6 +249,15 @@
           1: '男'
         }
         return sexMap[value]
+      },
+      unitTypeFilter(type) {
+        // 单位用途1商业2轻型汽车/电单车3住宅
+        const typeMap = {
+          1: '商业',
+          2: '轻型汽车/电单车',
+          3: '住宅'
+        }
+        return typeMap[type]
       }
     },
     data() {
@@ -250,7 +268,9 @@
         listLoading: true,
         listQuery: {
           pageNo: 1,
-          pageSize: 10
+          pageSize: 10,
+          keyword: '',
+          unitType: ''
         },
         importanceOptions: [1, 2, 3],
         sortOptions: [{
@@ -315,8 +335,26 @@
         userIds: []
       }
     },
+    computed: {
+      unitTypeList() {
+        // 单位用途1商业2轻型汽车/电单车3住宅
+        const list = [
+          { label: '全部', value: '' },
+          { label: '商业', value: 1 },
+          { label: '轻型汽车/电单车', value: 2 },
+          { label: '住宅', value: 3 }
+        ]
+        return list
+      }
+    },
     watch: {
       buildingId() {
+        this.getList()
+      },
+      'listQuery.keyword'() {
+        this.getList()
+      },
+      'listQuery.unitType'() {
         this.getList()
       }
     },

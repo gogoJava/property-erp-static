@@ -1,6 +1,6 @@
 <template>
   <div class="upload-container">
-    <el-upload :file-list="fileList" :http-request="httpRequest" :on-remove="handleRemove" list-type="picture-card" action="http://songsong.fun:8080/backstage/back/file/upload?type=3">
+    <el-upload :file-list="fileList" :http-request="httpRequest" :on-remove="handleRemove" list-type="picture-card" action="http://songsong.fun/backstage/back/file/upload?type=3">
       <i class="el-icon-plus"/>
     </el-upload>
   </div>
@@ -33,7 +33,7 @@
         fileList: [],
         dataFileList: [],
         list: [],
-        imgPrefix: 'http://songsong.fun:8080/file' // 图片前缀
+        imgPrefix: 'http://songsong.fun/file' // 图片前缀
       }
     },
     watch: {
@@ -75,7 +75,7 @@
         formData.append(option.filename, option.file)
         const options = {
          // 设置axios的参数
-         url: 'http://songsong.fun:8080/backstage/back/file/upload?type=3',
+         url: 'http://songsong.fun/backstage/back/file/upload?type=3',
          data: formData,
          method: 'post',
          headers: {

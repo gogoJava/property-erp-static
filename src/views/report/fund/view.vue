@@ -4,7 +4,6 @@
       <el-input :placeholder="$t('chargeItem.itemName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
-
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('chargeItem.itemName')" prop="id" align="center" min-width="120">
         <template slot-scope="scope">
@@ -23,7 +22,8 @@
       </el-table-column>
       <el-table-column :label="$t('chargeItem.describe')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.describe }}</span>
+          <!-- 金额用unitPrice -->
+          <span>{{ scope.row.unitPrice }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('chargeItem.additionalCost')" min-width="180px" align="center">
@@ -109,7 +109,8 @@
         <el-row>
           <el-col v-if="!temp.billingMode" :span="12">
             <el-form-item :label="$t('chargeItem.describe')" prop="idCard">
-              <el-input v-model="temp.describe" />
+              <!-- 金额用unitPrice字段 -->
+              <el-input v-model="temp.unitPrice" />
             </el-form-item>
           </el-col>
           <el-col :span="12">

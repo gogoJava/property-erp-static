@@ -1,5 +1,5 @@
 <template>
-  <div class="upload-container">
+  <div class="upload-container-proprietor">
     <el-upload :multiple="false" :show-file-list="false" :http-request="httpRequest" class="image-uploader" list-type="picture-card" action="http://songsong.fun/backstage/back/file/upload?type=3">
       <img v-if="imageUrl" :src="imageUrl" class="avatar">
       <i v-else class="el-icon-plus avatar-uploader-icon"/>
@@ -89,7 +89,7 @@
 <style rel="stylesheet/scss" lang="scss">
   @import "~@/styles/mixin.scss";
 
-  .upload-container {
+  .upload-container-proprietor {
     width: 100%;
     position: relative;
     @include clearfix;

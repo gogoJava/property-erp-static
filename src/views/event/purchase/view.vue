@@ -91,7 +91,7 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
     <!-- 添加、编辑、详情 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="70%">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="70%" top="30px">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="130px" style="margin:0 50px;">
         <el-row>
           <el-col :span="12">
@@ -379,7 +379,7 @@
       // 获取社区列表
       async queryCommunityList() {
         if (!this.$store.getters.isSuper) return
-        const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
       },
       resetTemp() {

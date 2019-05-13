@@ -52,7 +52,7 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     <!-- 添加、编辑、详情 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%" top="60px">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px" style="margin:0 50px;">
         <el-row>
           <el-col :span="12">
@@ -416,12 +416,12 @@
       // 获取社区列表
       async queryCommunityList() {
         if (!this.$store.getters.isSuper) return
-        const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = [...this.communityList, ...response.data.list]
       },
        // 获取建筑列表
       async queryBuildList() {
-        const response = await getBuildingList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getBuildingList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.buildingList = [...this.buildingList, ...response.data.list]
       },
       // 上传图片成功

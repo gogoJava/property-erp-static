@@ -1,7 +1,8 @@
 <template>
   <div class="charge-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('charge.unitItemId')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
+      <el-input :placeholder="$t('charge.unitItemId') + ' ' + $t('charge.userId')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
+      <el-input :placeholder="$t('charge.unitNo')" v-model="listQuery.unitNo" style="width: 200px;position: relative;left: 30px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleExport()">{{ $t('table.export') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
@@ -13,6 +14,11 @@
       <el-table-column :label="$t('charge.userId')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.user ? scope.row.user.name : '--' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('charge.unitNo')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.unitNo }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('charge.recordTime')" min-width="120px" align="center">
@@ -103,21 +109,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="12">
-            <el-form-item :label="$t('charge.communityId')" prop="communityId">
-              <el-select v-model="temp.communityId" placeholder="请绑定社区">
-                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
-              </el-select>
-            </el-form-item>
-          </el-col> -->
         </el-row>
-        <!-- <el-row>
-          <el-col :span="12">
-            <el-form-item :label="$t('charge.chargeType')" prop="countryCode">
-              <el-input v-model="temp.chargeType" />
-            </el-form-item>
-          </el-col>
-        </el-row> -->
         <el-row>
           <el-col :span="24">
             <el-form-item :label="$t('charge.recordLateFee')" prop="recordLateFee">
@@ -186,7 +178,8 @@
         listQuery: {
           pageNo: 1,
           pageSize: 10,
-          keyword: ''
+          keyword: '',
+          unitNo: ''
         },
         communityList: [],
         buildingList: [],
@@ -219,6 +212,9 @@
     watch: {
       'listQuery.keyword'() {
         this.getList()
+      },
+      'listQuery.unitNo'() {
+        this.getList()
       }
     },
     created() {
@@ -240,12 +236,12 @@
       // 获取社区列表
       async queryCommunityList() {
         if (!this.$store.getters.isSuper) return
-        const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
       },
       // 获取建筑列表
       async queryBuildingList() {
-        const response = await getBuildingList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getBuildingList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.buildingList = response.data.list
       },
       resetTemp() {

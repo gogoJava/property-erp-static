@@ -89,7 +89,7 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
     <!-- 添加、编辑、详情 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="70%" top="30px">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px" style="margin:0 50px;">
         <el-row>
           <el-col :span="12">
@@ -210,20 +210,6 @@
     <el-dialog :title="$t('proprietor.userWithCommunities')" :visible.sync="unitShow" width="80%">
       <linked-unit v-if="unitShow" :user-id="userId" :all-units="allUnits" @refresh-data="unitShow = false"/>
     </el-dialog>
-    <!-- 绑定社区 -->
-    <!-- <el-dialog :visible.sync="dialogBindShow" width="800px">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="250px" style="width: 700px;">
-        <el-form-item label="住户">
-          <el-select v-model="communitys" multiple collapse-tags placeholder="请绑定社区">
-            <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogBindShow = false">{{ $t('table.cancel') }}</el-button>
-        <el-button type="primary" @click="testTwo">{{ $t('table.confirm') }}</el-button>
-      </div>
-    </el-dialog> -->
   </div>
 </template>
 
@@ -543,7 +529,7 @@
       // 获取社区列表
       async queryCommunityList() {
         if (!this.$store.getters.isSuper) return
-        const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
       },
       // 上传图片成功

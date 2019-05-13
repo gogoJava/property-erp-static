@@ -2,7 +2,7 @@
   <div class="unit-container">
     <el-row style="position: relative;top: -30px;">
       <span>{{ $t('unit.unitId') }} : </span>
-      <el-select v-model="unitIds" multiple collapse-tags placeholder="请绑定单元">
+      <el-select v-model="unitIds" filterable multiple collapse-tags placeholder="请绑定单元">
         <el-option v-for="(item, index) in allUnits" :key="index" :value="item.unitId" :label="item.unitName" />
       </el-select>
       <el-button type="primary" style="position: relative;left: 30px;" @click="testTwo">{{ $t('proprietor.userWithCommunities') }}</el-button>
@@ -105,7 +105,7 @@
         listLoading: false,
         listQuery: {
           pageNo: 1,
-          pageSize: 9999,
+          pageSize: 99999,
           keyword: ''
         },
         unitIds: []

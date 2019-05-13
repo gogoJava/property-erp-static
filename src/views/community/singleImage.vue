@@ -1,19 +1,13 @@
 <template>
   <div class="upload-container-community">
-    <!-- <el-upload :file-list="fileList" :http-request="httpRequest" :on-remove="handleRemove" list-type="picture-card" action="http://songsong.fun/backstage/back/file/upload?type=7">
-      <i class="el-icon-plus"/>
-    </el-upload> -->
-    <el-upload :action="action" :on-remove="handleRemove" :file-list="fileList" :http-request="httpRequest" multiple>
+    <el-upload :action="action" :on-remove="handleRemove" :on-preview="handlePreview" :file-list="fileList" :http-request="httpRequest" multiple>
       <el-button size="small" type="primary">点击上传</el-button>
     </el-upload>
+    <!-- <a v-show="false" ref="download" /> -->
   </div>
 </template>
 
 <script>
-  // 预览效果见付费文章
-  // import {
-  //   uploadFile
-  // } from '@/api/file'
   import { Loading } from 'element-ui'
   import axios from 'axios'
 
@@ -60,7 +54,7 @@
         this.list = []
         this.dataFileList = []
         this.value.forEach(element => {
-          this.fileList.push({ name: '文件', url: element })
+          this.fileList.push({ name: this.fileName(element), url: element })
           this.dataFileList.push(element)
           this.list.push(element)
         })
@@ -97,9 +91,7 @@
           if (res.data.code !== 200 || !res.data.data) {
             return this.$notify({ title: '失败', message: '上传文件失败', type: 'error', duration: 2000 })
           }
-          this.fileList.push({ name: '文件', url: (this.imgPrefix + res.data.data) })
-          // this.dataFileList({ imageThumbnail: res.data.data.imageThumbnail, imageUrl: res.data.data.originalUrl })
-          // this.list.push({ imageThumbnail: res.data.data.thumbnailUrl, imageUrl: res.data.data.originalUrl })
+          this.fileList.push({ name: this.fileName(res.data.data), url: (this.imgPrefix + res.data.data) })
           this.list.push((this.imgPrefix + res.data.data))
           this.$emit('update:value', this.list)
         })
@@ -110,6 +102,19 @@
           if (fileList.some((value) => value.url.search(item) !== -1)) return true
         })
         this.$emit('update:value', list)
+      },
+      handlePreview(file) {
+        const a = document.createElement('a')
+        a.setAttribute('download', this.fileName(file.url))
+        a.setAttribute('href', file.url)
+        a.setAttribute('target', '_blank')
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      },
+      fileName(fileUrl) {
+        const arr = fileUrl.split('/')
+        return arr[arr.length - 1]
       }
     }
   }

@@ -52,7 +52,7 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
     <!-- 添加、编辑、详情 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%" top="120px">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="90px">
         <el-row>
           <el-col :span="12">
@@ -277,7 +277,7 @@
       },
       // 获取社区列表
       async queryCommunityList() {
-        const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
     },
       handleModifyStatus(row, status) {

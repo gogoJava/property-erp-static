@@ -53,7 +53,6 @@
       <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-          <!-- <el-button size="mini" @click="handleUpdatePwd(scope.row)">{{ $t('table.updatePwd') }}</el-button> -->
           <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
           </el-button>
         </template>
@@ -61,7 +60,7 @@
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
     <!-- 添加、编辑、详情 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="70%">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="70%" top="30px">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="120px" style="margin:0 50px;">
         <el-row>
           <el-col :span="12">
@@ -134,20 +133,7 @@
             <el-col :span="8"><el-input v-model="item.value" placeholder="20"><el-button slot="append" icon="el-icon-minus" @click.native="cutChildList(index)"/></el-input></el-col>
           </el-row>
           <el-row style="text-align: center;"><span style="cursor: pointer;font-size: 30px;" @click="addChildList">+</span></el-row>
-          <!-- <el-button icon="el-icon-circle-plus-outline" /> -->
         </el-form-item>
-        <!-- <el-row>
-          <el-col :span="12">
-            <el-form-item :label="$t('building.commonPdf')" prop="commonPdf">
-              <single-image :value.sync="temp.commonPdf" :type="2"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('building.rosterPdf')" prop="rosterPdf">
-              <single-image :value.sync="temp.rosterPdf" :type="3"/>
-            </el-form-item>
-          </el-col>
-        </el-row> -->
         <!-- 综合类型才有 -->
         <el-form-item v-if="temp.managementType" :label="$t('building.commonPdf')">
           <single-image :value.sync="temp.commonPdf" :type="2"/>
@@ -416,7 +402,7 @@
       // 获取社区列表
       async queryCommunityList() {
         if (!this.$store.getters.isSuper) return
-        const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
       },
       addChildList() {

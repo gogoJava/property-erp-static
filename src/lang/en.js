@@ -161,7 +161,8 @@ export default {
     print: 'Print',
     confirmPay: 'confirmed paid',
     linked: 'Association',
-    bindUser: 'Bound owner'
+    bindUser: 'Bound owner',
+    download: 'download'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',
@@ -456,7 +457,8 @@ export default {
     recordStatus: 'Status', // 状态0欠费1已付2预支付
     recordTime: 'Charging Time', // 收费时间
     unitItemId: 'Unit Charge Item', // 单位收费项目
-    userId: 'User' // 住户
+    userId: 'User', // 住户
+    unitNo: 'Unit number'
   },
   chargeItem: {
     additionalCost: 'Additional Charges(Fund Fee)', // 额外费用(基金费用)

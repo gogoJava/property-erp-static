@@ -161,7 +161,8 @@ export default {
     print: '打印',
     confirmPay: '确认收款',
     linked: '关联',
-    bindUser: '绑定业主'
+    bindUser: '绑定业主',
+    download: '下载'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',
@@ -456,7 +457,8 @@ export default {
     recordStatus: '状态', // 状态0欠费1已付2预支付
     recordTime: '收费时间', // 收费时间
     unitItemId: '单位收费项目', // 单位收费项目
-    userId: '住户' // 住户
+    userId: '住户', // 住户
+    unitNo: '单元编号'
   },
   chargeItem: {
     additionalCost: '额外费用(基金费用)', // 额外费用(基金费用)

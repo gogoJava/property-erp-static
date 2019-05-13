@@ -1,5 +1,5 @@
 <template>
-  <div class="upload-container">
+  <div class="upload-container-adv">
     <el-upload :data="dataObj" :multiple="false" :show-file-list="false" :http-request="httpRequest" class="image-uploader" drag action="http://songsong.fun/backstage/back/file/upload?type=3">
       <img v-if="imageUrl" :src="imageUrl" class="avatar">
       <i v-else class="el-icon-plus avatar-uploader-icon"/>
@@ -41,8 +41,6 @@
     },
     created() {
       this.dataObj.token = localStorage.getItem('Admin-Token')
-      // this.imageUrl = this.value ? (this.imgPrefix + this.value) : null
-      // console.log('imageUrl', this.imageUrl)
     },
     methods: {
       rmImage() {
@@ -90,7 +88,7 @@
 <style rel="stylesheet/scss" lang="scss">
   @import "~@/styles/mixin.scss";
 
-  .upload-container {
+  .upload-container-adv {
     width: 100%;
     position: relative;
     @include clearfix;

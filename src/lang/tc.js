@@ -161,7 +161,8 @@ export default {
     print: '打印',
     confirmPay: '確認收款',
     linked: '關聯',
-    bindUser: '綁定業主'
+    bindUser: '綁定業主',
+    download: '下載'
   },
   errorLog: {
     tips: '请点击右上角bug小圖標',
@@ -456,7 +457,8 @@ export default {
     recordStatus: '狀態', // 狀態0欠费1已付2预支付
     recordTime: '收費時間', // 收費時間
     unitItemId: '單位收費項目', // 單位收費項目
-    userId: '住戶' // 住戶
+    userId: '住戶', // 住戶
+    unitNo: '單元編號'
   },
   chargeItem: {
     additionalCost: '額外費用(基金費用)', // 額外費用(基金費用)

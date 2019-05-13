@@ -1,5 +1,5 @@
 <template>
-  <div class="upload-container">
+  <div class="upload-container-clubhouse">
     <el-upload :file-list="fileList" :http-request="httpRequest" :on-remove="handleRemove" list-type="picture-card" action="http://songsong.fun/backstage/back/file/upload?type=3">
       <i class="el-icon-plus"/>
     </el-upload>
@@ -109,7 +109,7 @@
 <style rel="stylesheet/scss" lang="scss">
   @import "~@/styles/mixin.scss";
 
-  .upload-container {
+  .upload-container-clubhouse {
     // width: 100%;
     position: relative;
     @include clearfix;

@@ -125,11 +125,6 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <!-- <el-col :span="12">
-          <el-form-item :label="$t('community.communityBuildingArea')">
-            <div>：{{ communityInfo.communityBuildingArea || '--' }}</div>
-          </el-form-item>
-        </el-col> -->
         <el-col :span="12">
           <el-form-item :label="$t('community.communityCommonArea')">
             <div>：{{ communityInfo.communityCommonArea || '--' }}</div>
@@ -153,36 +148,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <!-- <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item :label="$t('community.communityGreenarea')">
-            <div>：{{ communityInfo.communityGreenarea || '--' }}</div>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item :label="$t('community.communityRoadArea')">
-            <div>：{{ communityInfo.communityRoadArea || '--' }}</div>
-          </el-form-item>
-        </el-col>
-      </el-row> -->
-      <!-- <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item :label="$t('community.communityLocY')">
-            <div>：{{ communityInfo.communityLocY || '--' }}</div>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item :label="$t('community.communityLocX')">
-            <div>：{{ communityInfo.communityLocX || '--' }}</div>
-          </el-form-item>
-        </el-col>
-      </el-row> -->
       <el-row :gutter="20">
-        <!-- <el-col :span="12">
-          <el-form-item :label="$t('community.communityRoomCount')">
-            <div>：{{ communityInfo.communityRoomCount || '--' }}</div>
-          </el-form-item>
-        </el-col> -->
         <el-col :span="12">
           <el-form-item :label="$t('community.communityRemark')">
             <div>：{{ communityInfo.communityRemark || '--' }}</div>
@@ -205,7 +171,15 @@
       <el-row v-if="communityInfo.communityManagementType" :gutter="20">
         <el-col :span="24">
           <el-form-item :label="$t('community.commonPdf')">
-            <img v-for="(item, index) of communityInfo.commonPdf" :key="index" :src="item" class="common-img">
+            <div v-for="(item, index) in communityInfo.commonPdf" :key="index" class="common-img-detail-community">
+              <el-tooltip :content="$t('table.download')" placement="top">
+                <span>
+                  <i class="el-icon-folder-opened" style="width: 24px;"/>
+                  <a :href="item" :download="fileName(item)">{{ fileName(item) }}</a>
+                  <i class="el-icon-download" style="padding-left: 80px;"/>
+                </span>
+              </el-tooltip>
+            </div>
           </el-form-item>
         </el-col>
       </el-row>
@@ -271,6 +245,10 @@
           return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
         }
         this.communityInfo = { ...data }
+      },
+      fileName(fileUrl) {
+        const arr = fileUrl.split('/')
+        return arr[arr.length - 1]
       }
     }
   }
@@ -280,9 +258,9 @@
   .community-detail-view {
     padding: 30px;
   }
-  .common-img {
-    width: 48px;
-    height: 48px;
+  .common-img-detail-community {
+    /* width: 48px;
+    height: 48px; */
     cursor: pointer;
   }
 </style>

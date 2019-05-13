@@ -416,13 +416,13 @@
       },
        // 获取建筑列表
       async queryBuildyList() {
-        const response = await getBuildingList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getBuildingList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.buildingList = response.data.list
         this.buildingId = this.buildingList[0].buildingId
       },
       // 获取社区列表
       async queryChargeItemList() {
-        const response = await getChargeItemList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getChargeItemList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.chargeItemList = response.data.list
       }
     }

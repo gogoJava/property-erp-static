@@ -214,12 +214,12 @@
       },
       // 获取社区列表
       async queryCommunityList() {
-        const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
       },
       // 获取建筑列表
       async queryBuildingList() {
-        const response = await getBuildingList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getBuildingList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.buildingList = response.data.list
       }
     }

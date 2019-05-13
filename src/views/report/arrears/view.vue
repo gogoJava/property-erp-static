@@ -1,10 +1,10 @@
 <template>
   <div class="charge-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('charge.unitItemId')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
+      <el-input :placeholder="$t('charge.unitItemId') + ' ' + $t('charge.userId')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
+      <el-input :placeholder="$t('charge.unitNo')" v-model="listQuery.unitNo" style="width: 200px;position: relative;left: 30px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleExport()">{{ $t('table.export') }}</el-button>
       <el-button size="mini" type="primary" style="position: relative;right: 15px;top: -4px;float: right;" @click="confirmPay()">{{ $t('table.confirmPay') }}</el-button>
-      <!-- <el-button size="mini" type="primary" style="position: relative;right: 15px;top: -4px;float: right;" @click="confirmPay()">{{ $t('table.confirmPay') }}</el-button> -->
       <el-button type="primary" size="mini" style="position: relative;right: 15px;top: -4px;float: right;" @click="paymentNotice()">{{ $t('table.paymentNotice') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @selection-change="handleSelectionChange">
@@ -17,6 +17,11 @@
       <el-table-column :label="$t('charge.userId')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.user ? scope.row.user.name : '--' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('charge.unitNo')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.unitNo }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('charge.recordTime')" min-width="120px" align="center">
@@ -162,7 +167,7 @@
             <div class="content_table_item_num">{{ index + 1 }}</div>
             <div class="content_table_item_info">
               <div class="content_table_item_msg">管理费 Management fee for</div>
-              <div class="content_table_item_msg">{{ paymentNoticeInfo.recordDate }} : ${{ paymentNoticeInfo.recordAmount.toFixed(2) }}  <span v-if="paymentNoticeInfo.recordRemark">({{ paymentNoticeInfo.recordRemark }})</span></div>
+              <div class="content_table_item_msg">{{ paymentNoticeInfo.recordDate }} : ${{ paymentNoticeInfo.recordAmount.toFixed(2) }}  <span>({{ paymentNoticeInfo.chargeItem.itemName }})</span></div>
             </div>
             <div class="content_table_item_amount"><span style="position: relative;top: 30px;">${{ paymentNoticeInfo.recordAmount.toFixed(2) }}</span></div>
           </div>
@@ -224,6 +229,7 @@
           pageNo: 1,
           pageSize: 10,
           keyword: '',
+          unitNo: '',
           recordStatus: 0 // 状态0欠费1已付2预支付
         },
         communityList: [],
@@ -271,6 +277,9 @@
     watch: {
       'listQuery.keyword'() {
         this.getList()
+      },
+      'listQuery.unitNo'() {
+        this.getList()
       }
     },
     created() {
@@ -293,12 +302,12 @@
       // 获取社区列表
       async queryCommunityList() {
         if (!this.$store.getters.isSuper) return
-        const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
       },
       // 获取建筑列表
       async queryBuildingList() {
-        const response = await getBuildingList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getBuildingList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.buildingList = response.data.list
       },
       resetTemp() {
@@ -388,8 +397,7 @@
         document.body.removeChild(link)
       },
       paymentNotice(info) {
-        // console.log('info', info)
-        // this.paymentNoticeInfo = { ...info }
+        console.log('info', info)
         if (info) {
           this.paymentNoticeInfoList = [info]
         }

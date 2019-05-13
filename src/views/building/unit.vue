@@ -89,7 +89,7 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
     <!-- 添加、编辑、详情 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="800px">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="800px" top="15px">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="250px" style="width: 700px;">
         <el-form-item :label="$t('unit.unitPurpose')" prop="unitType">
           <el-select v-model="temp.unitType" placeholder="请选择用途">
@@ -115,11 +115,6 @@
             <el-option v-for="(item, index) in buildingList" :key="index" :value="item.buildingId" :label="item.buildingName" />
           </el-select>
         </el-form-item>
-        <!-- <el-form-item v-if="$store.getters.isSuper" :label="$t('unit.community')" prop="communityId">
-          <el-select v-model="temp.communityId" placeholder="请绑定社区">
-            <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
-          </el-select>
-        </el-form-item> -->
         <el-form-item :label="$t('unit.unitPosition')" prop="unitPosition">
           <el-input v-model="temp.unitPosition" />
         </el-form-item>
@@ -131,13 +126,6 @@
             <el-option :key="3" :value="3" label="入住" />
           </el-select>
         </el-form-item>
-        <!-- <el-form-item :label="$t('unit.unitType')" prop="unitType">
-          <el-select v-model="temp.unitType" placeholder="请选择单位类型">
-            <el-option :key="1" :value="1" label="商铺" />
-            <el-option :key="2" :value="2" label="住宅" />
-            <el-option :key="3" :value="3" label="停车场" />
-          </el-select>
-        </el-form-item> -->
         <el-form-item :label="$t('unit.unitRelativeProportion')" prop="unitRelativeProportion">
           <el-input v-model="temp.unitRelativeProportion" />
         </el-form-item>
@@ -156,7 +144,7 @@
     <el-dialog :visible.sync="dialogShow" width="800px">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="250px" style="width: 700px;">
         <el-form-item label="业主">
-          <el-select v-model="userIds" multiple collapse-tags placeholder="请绑定住户">
+          <el-select v-model="userIds" filterable multiple collapse-tags placeholder="请绑定住户">
             <el-option v-for="(item, index) in allProprietorList" :key="index" :value="item.userId" :label="item.username" />
           </el-select>
         </el-form-item>
@@ -463,19 +451,19 @@
       },
        // 获取建筑列表
       async queryBuildyList() {
-        const response = await getBuildingList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getBuildingList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.buildingList = response.data.list
         this.buildingId = this.buildingList[0].buildingId
       },
       // 获取社区列表
       async queryCommunityList() {
         if (!this.$store.getters.isSuper) return
-        const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
       },
       // 获取用户列表
       // async queryCommunityList() {
-      //   const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+      //   const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
       //   this.communityList = response.data.list
       // },
       async queryAllProprietorList() {

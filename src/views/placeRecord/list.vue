@@ -64,13 +64,11 @@
       <el-table-column :label="$t('placeRecord.orderEndTime')" min-width="120px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.orderEndTime }}</span>
-          <!-- <span>{{ scope.row.orderEndTime ? $moment(scope.row.orderEndTime).format('YYYY-MM-DD') : '--' }}</span> -->
         </template>
       </el-table-column>
       <el-table-column :label="$t('placeRecord.orderStartTime')" min-width="120px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.orderStartTime }}</span>
-          <!-- <span>{{ scope.row.orderStartTime ? $moment(scope.row.orderStartTime).format('YYYY-MM-DD') : '--' }}</span> -->
         </template>
       </el-table-column>
       <el-table-column :label="$t('placeRecord.recordStatus')" min-width="180px" align="center">
@@ -366,7 +364,7 @@
       // 获取社区列表
       async queryCommunityList() {
         if (!this.$store.getters.isSuper) return
-        const response = await getCommunityList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
     },
       handleModifyStatus(row, status) {

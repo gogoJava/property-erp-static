@@ -82,7 +82,7 @@
     <el-dialog :visible.sync="dialogShow" width="800px">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="250px" style="width: 700px;">
         <el-form-item label="收费项目" prop="itemId">
-          <el-select v-model="itemId" placeholder="请绑定收费项目">
+          <el-select v-model="itemId" filterable placeholder="请绑定收费项目">
             <el-option v-for="(item, index) in chargeItemList" :key="index" :value="item.itemId" :label="item.itemName" />
           </el-select>
         </el-form-item>
@@ -335,13 +335,13 @@
       },
        // 获取建筑列表
       async queryBuildyList() {
-        const response = await getBuildingList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getBuildingList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.buildingList = response.data.list
         this.buildingId = this.buildingList[0].buildingId
       },
       // 获取社区列表
       async queryChargeItemList() {
-        const response = await getChargeItemList({ pageNo: 1, pageSize: 9999 }).catch(e => e)
+        const response = await getChargeItemList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.chargeItemList = response.data.list
       }
     }

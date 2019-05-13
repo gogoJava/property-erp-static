@@ -125,11 +125,6 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <!-- <el-col :span="12">
-          <el-form-item :label="$t('community.communityBuildingArea')">
-            <el-input v-model="communityInfo.communityBuildingArea" :placeholder="$t('community.communityBuildingArea')" />
-          </el-form-item>
-        </el-col> -->
         <el-col :span="12">
           <el-form-item :label="$t('community.communityCommonArea')">
             <el-input v-model="communityInfo.communityCommonArea" :placeholder="$t('community.communityCommonArea')" />
@@ -152,36 +147,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <!-- <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item :label="$t('community.communityGreenarea')">
-            <el-input v-model="communityInfo.communityGreenarea" :placeholder="$t('community.communityGreenarea')" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item :label="$t('community.communityRoadArea')">
-            <el-input v-model="communityInfo.communityRoadArea" :placeholder="$t('community.communityRoadArea')" />
-          </el-form-item>
-        </el-col>
-      </el-row> -->
-      <!-- <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item :label="$t('community.communityLocY')">
-            <el-input v-model="communityInfo.communityLocY" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item :label="$t('community.communityLocX')">
-            <el-input v-model="communityInfo.communityLocX" />
-          </el-form-item>
-        </el-col>
-      </el-row> -->
       <el-row :gutter="20">
-        <!-- <el-col :span="12">
-          <el-form-item :label="$t('community.communityRoomCount')">
-            <el-input v-model="communityInfo.communityRoomCount" />
-          </el-form-item>
-        </el-col> -->
         <el-col :span="12">
           <el-form-item :label="$t('community.communityRemark')">
             <el-input v-model="communityInfo.communityRemark" :placeholder="$t('community.communityRemark')" />

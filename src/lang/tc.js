@@ -483,9 +483,9 @@ export default {
     orderEndTime: '結束時間',
     orderStartTime: '開始時間',
     place: '場所',
-    recordStatus: '预定状态',
-    totalCharge: '总费用',
-    totalHour: '总时间',
+    recordStatus: '預定狀態',
+    totalCharge: '總費用',
+    totalHour: '總時間',
     userId: '用户ID'
   }
 }

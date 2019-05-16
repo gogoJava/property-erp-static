@@ -282,7 +282,8 @@ export default {
     itemNo: '收費項目編號',
     lateDate: '滯納金天數',
     lateFee: '滯納金率',
-    unitPrice: '計算單價'
+    unitPrice: '計算單價',
+    owner: '是否有主業主'
   },
   // 业主
   proprietor: {
@@ -306,7 +307,8 @@ export default {
     password: '密碼', // 密碼
     userWithCommunities: '關聯單位',
     bindCommunities: '綁定社區',
-    advanceAmount: '預收金額'
+    advanceAmount: '預收金額',
+    owner: '是否為業主'
   },
   asset: {
     assetDescribe: '描述', // 描述

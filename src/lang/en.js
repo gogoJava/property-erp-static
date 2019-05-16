@@ -282,7 +282,8 @@ export default {
     itemNo: 'Charge Item No',
     lateDate: 'Late Gold Days',
     lateFee: 'Late Payment Rate',
-    unitPrice: 'Calculate Unit Price'
+    unitPrice: 'Calculate Unit Price',
+    owner: 'Is there a main owner'
   },
   // 业主
   proprietor: {
@@ -306,7 +307,8 @@ export default {
     password: 'Password', // 密码
     userWithCommunities: 'Associated unit',
     bindCommunities: 'Binding community',
-    advanceAmount: 'Advance receipt amount'
+    advanceAmount: 'Advance receipt amount',
+    owner: 'owner'
   },
   asset: {
     assetDescribe: 'Description', // 描述

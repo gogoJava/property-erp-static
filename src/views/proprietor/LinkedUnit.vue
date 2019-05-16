@@ -5,7 +5,7 @@
       <el-select v-model="unitIds" filterable multiple collapse-tags placeholder="请绑定单元">
         <el-option v-for="(item, index) in allUnits" :key="index" :value="item.unitId" :label="item.unitName" />
       </el-select>
-      <el-button type="primary" style="position: relative;left: 30px;" @click="testTwo">{{ $t('proprietor.userWithCommunities') }}</el-button>
+      <!-- <el-button type="primary" style="position: relative;left: 30px;" @click="testTwo">{{ $t('proprietor.userWithCommunities') }}</el-button> -->
     </el-row>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('unit.unitNo')" prop="id" align="center" min-width="100">
@@ -13,7 +13,7 @@
           <span>{{ scope.row.unitNo }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('unit.unitName')" min-width="180px" align="center">
+      <el-table-column :label="$t('unit.unitName')" min-width="160px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.unitName }}</span>
         </template>
@@ -23,7 +23,7 @@
           <span>{{ scope.row.building.buildingName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('unit.unitFullAddress')" min-width="180px" align="center">
+      <el-table-column :label="$t('unit.unitFullAddress')" min-width="150px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.unitFullAddress }}</span>
         </template>
@@ -43,9 +43,21 @@
           <span>{{ scope.row.unitType | unitTypefilter }}</span>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('unit.owner')" min-width="120px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.owner ? '有' : '无' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('table.actions')" align="center" width="60">
+        <template slot-scope="scope">
+          <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}</el-button>
+        </template>
+      </el-table-column>
     </el-table>
-
-    <!-- <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" /> -->
+    <div style="padding-top: 15px;text-align: right;">
+      <el-button @click="cancel">{{ $t('table.cancel') }}</el-button>
+      <el-button type="primary" @click="testTwo">{{ $t('proprietor.userWithCommunities') }}</el-button>
+    </div>
   </div>
 </template>
 
@@ -112,9 +124,8 @@
       }
     },
     watch: {
-      userId() {
-        console.log('ssss', this.userId)
-        // this.getList()
+      unitIds() {
+        this.list = this.allUnits.filter(v => this.unitIds.some(item => item === v.unitId))
       }
     },
     async created() {
@@ -135,11 +146,20 @@
         })
       },
       async testTwo() {
-        const data = []
-        this.unitIds.forEach(unitId => {
-          data.push({ userId: this.userId, unitId: unitId, owner: true })
+        const userUnitList = []
+        // this.proprietorList.forEach(value => {
+        //   if (value.owner) {
+        //     owner = value.owner
+        //   }
+        //   userUnitList.push({ userId: value.userId, unitId: this.unitId, owner: value.owner })
+        // })
+        // const data = []
+        this.list.forEach(element => {
+          const obj = { userId: this.userId, unitId: element.unitId, owner: !element.owner }
+          if (element.owner) delete obj.owner
+          userUnitList.push(obj)
         })
-        const response = await batchAddUser(data).catch(e => e)
+        const response = await batchAddUser({ userUnitList, userId: this.userId }).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '关联失败', message: response.msg, type: 'error', duration: 2000 })
         }
@@ -150,6 +170,14 @@
           duration: 2000
         })
         this.$emit('refresh-data')
+        this.$emit('refresh-unit-data')
+      },
+      cancel() {
+        this.$emit('refresh-data')
+      },
+      handleDelete(info) {
+        this.list = this.list.filter(v => v.unitId !== info.unitId)
+        this.unitIds = this.unitIds.filter(v => v !== info.unitId)
       }
     }
   }

@@ -36,3 +36,12 @@ export function delProprietor(params) {
     params
   })
 }
+
+// 获取业主详情
+export function getProprietorDetail(query) {
+  return request({
+    url: 'back/user/detail',
+    method: 'get',
+    params: query
+  })
+}

@@ -47,11 +47,19 @@ export function addUser(params) {
 }
 
 // 房间用户添加
-export function batchAddUser(params) {
+export function batchAddUser({ userId, userUnitList }) {
   return request({
-    url: '/back/unit/batchAddUser',
+    url: '/back/unit/batchAddUser?userId=' + userId,
     method: 'post',
-    data: params
+    data: userUnitList
+  })
+}
+// 房间用户添加
+export function batchAddUserUnitId({ userUnitList, unitId }) {
+  return request({
+    url: '/back/unit/batchAddUser?unitId=' + unitId,
+    method: 'post',
+    data: userUnitList
   })
 }
 

@@ -141,15 +141,15 @@
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
-    <el-dialog :visible.sync="dialogShow" width="800px">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="250px" style="width: 700px;">
+    <el-dialog :visible.sync="dialogShow" width="75%">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" style="text-align: left;">
         <el-form-item label="业主">
           <el-select v-model="userIds" filterable multiple collapse-tags placeholder="请绑定住户">
             <el-option v-for="(item, index) in allProprietorList" :key="index" :value="item.userId" :label="item.username" />
           </el-select>
         </el-form-item>
       </el-form>
-      <el-table :data="proprietorList">
+      <el-table :data="proprietorList" border fit highlight-current-row>
         <el-table-column :label="$t('proprietor.username')" prop="id" align="center" min-width="120">
           <template slot-scope="scope">
             <span>{{ scope.row.username }}</span>
@@ -158,6 +158,11 @@
         <el-table-column :label="$t('proprietor.englishName')" prop="id" align="center" min-width="120">
           <template slot-scope="scope">
             <span>{{ scope.row.englishName }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('proprietor.owner')" prop="id" align="center" min-width="120">
+          <template slot-scope="scope">
+            <el-switch v-model="scope.row.owner" @change="ownerChange(scope.row)"/>
           </template>
         </el-table-column>
         <el-table-column :label="$t('proprietor.sex')" prop="id" align="center" min-width="80">
@@ -175,6 +180,11 @@
             <span>{{ scope.row.advanceAmount }}</span>
           </template>
         </el-table-column>
+        <el-table-column :label="$t('table.actions')" align="center" width="60">
+          <template slot-scope="scope">
+            <el-button size="text" type="danger" @click="handleBindDelete(scope.row)">{{ $t('table.delete') }}</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogShow = false">{{ $t('table.cancel') }}</el-button>
@@ -190,7 +200,7 @@
     createUnit,
     updateUnit,
     delUnit,
-    batchAddUser,
+    batchAddUserUnitId,
     getUnitUserList
   } from '@/api/unit'
   import {
@@ -344,6 +354,16 @@
       },
       'listQuery.unitType'() {
         this.getList()
+      },
+      userIds() {
+        const list = []
+        this.allProprietorList.forEach(v => {
+          if (this.userIds.some(item => item === v.userId)) {
+            const rr = this.proprietorList.find(info => info.userId === v.userId)
+            list.push({ ...v, owner: rr ? rr.owner : false })
+          }
+        })
+        this.proprietorList = [...list]
       }
     },
     async created() {
@@ -484,6 +504,9 @@
         this.userIds = []
         this.proprietorList.forEach(value => {
           this.userIds.push(value.userId)
+          if (value.owner) {
+            this.userId = value.userId
+          }
         })
       },
       async bindUser(info) {
@@ -493,15 +516,17 @@
         this.dialogShow = true
       },
       async testTwo() {
-        const data = []
-        this.userIds.forEach(userId => {
-          data.push({ userId: userId, unitId: this.unitId, owner: true })
+        let owner = false
+        // let userId = ''
+        const userUnitList = []
+        this.proprietorList.forEach(value => {
+          if (value.owner) {
+            owner = value.owner
+          }
+          userUnitList.push({ userId: value.userId, unitId: this.unitId, owner: value.owner })
         })
-        // const data = { userId: this.userId, unitId: this.unitId, owner: true }
-        // const data = {
-        //   userUnit: [{ userId: this.userId, unitId: this.unitId, owner: true }]
-        // }
-        const response = await batchAddUser(data).catch(e => e)
+        if (!owner && this.proprietorList.length) return this.$notify({ title: '提示', message: '一定要选一个拥有业主', type: 'info', duration: 2000 })
+        const response = await batchAddUserUnitId({ userUnitList, unitId: this.unitId }).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '关联失败', message: response.msg, type: 'error', duration: 2000 })
         }
@@ -514,6 +539,15 @@
           duration: 2000
         })
         this.getList()
+      },
+      handleBindDelete(info) {
+        this.proprietorList = this.proprietorList.filter(v => v.userId !== info.userId)
+        this.userIds = this.userIds.filter(v => v !== info.userId)
+      },
+      ownerChange(info) {
+        this.proprietorList = this.proprietorList.map(v => {
+          return { ...v, owner: v.owner ? (info.userId === v.userId) : false }
+        })
       }
     }
   }

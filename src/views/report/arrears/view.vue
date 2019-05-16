@@ -147,7 +147,7 @@
       <div id="print-me" class="print_notice">
         <div class="print_notice_title">澳门物业管理有限公司</div>
         <div class="print_notice_title_en">Macau Property Management Co., Ltd.</div>
-        <div class="print_notice_no"><span v-for="(paymentNoticeInfo, index) in paymentNoticeInfoList" :key="index"><span v-if="index">、</span>{{ paymentNoticeInfo.chargeItem.itemNo }}</span></div>
+        <div class="print_notice_no"><span v-for="(paymentNoticeInfo, index) in paymentNoticeInfoList" :key="index"><span v-if="index">、</span>MGMT2019-P-{{ paymentNoticeInfo.chargeItem.itemNo }}</span></div>
         <el-row class="print_notice_content">
           <el-col :span="8"><span v-if="paymentNoticeInfoList[0]">{{ paymentNoticeInfoList[0].community.communityName }}</span></el-col>
           <el-col :span="8"><div class="print_notice_content_title">付款通知书</div></el-col>
@@ -160,7 +160,7 @@
         </el-row>
         <div class="content_table">
           <div class="content_table_top">
-            <div class="content_table_info">请缴付 Payment for 单位 unit_____ / 车位 Parking_____</div>
+            <div class="content_table_info">请缴付 Payment for 单位 unit <span v-for="(paymentNoticeInfo, index) in paymentNoticeInfoList" :key="index"><span v-if="index">、</span>{{ paymentNoticeInfo.unitNo }}</span> / 车位 Parking_____</div>
             <div class="content_table_amount">金 AMOUNT 额</div>
           </div>
           <div v-for="(paymentNoticeInfo, index) in paymentNoticeInfoList" :key="index" class="content_table_item">

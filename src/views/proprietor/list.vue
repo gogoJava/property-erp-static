@@ -208,7 +208,7 @@
     </el-dialog>
     <!-- 关联单元 -->
     <el-dialog :title="$t('proprietor.userWithCommunities')" :visible.sync="unitShow" width="80%">
-      <linked-unit v-if="unitShow" :user-id="userId" :all-units="allUnits" @refresh-data="unitShow = false"/>
+      <linked-unit v-if="unitShow" :user-id="userId" :all-units="allUnits" @refresh-data="unitShow = false" @refresh-unit-data="getAllList"/>
     </el-dialog>
   </div>
 </template>
@@ -218,7 +218,8 @@
     getProprietorList,
     createProprietor,
     updateProprietor,
-    delProprietor
+    delProprietor,
+    getProprietorDetail
   } from '@/api/proprietor'
   import {
     addAdvance
@@ -401,7 +402,8 @@
           type: '',
           password: '',
           email: '',
-          communities: []
+          communities: [],
+          communityId: ''
         }
       },
       handleCreate() {
@@ -441,10 +443,15 @@
         })
         this.getList()
       },
-      handleUpdate(row) {
+      async getDetail(userId) {
+        const res = await getProprietorDetail({ userId }).catch(e => e)
+        this.temp.userWithCommunities = [...res.data.userWithCommunities]
+      },
+      async handleUpdate(row) {
         this.userId = row.userId
         this.temp = Object.assign({}, row) // copy obj
         this.temp.password = ''
+        await this.getDetail(this.userId)
         const communities = []
         this.temp.userWithCommunities && this.temp.userWithCommunities.forEach(element => {
           communities.push(element.communityId)
@@ -492,6 +499,7 @@
             })
           }
         })
+        if (!this.temp.communities.length) return this.$notify({ title: '', message: '请选择社区！', type: 'error', duration: 2000 })
         this.listLoading = true
         // this.temp.communityId = this.$store.getters.communityId
         this.temp.birthday = this.birthday ? this.$moment(this.birthday).format('YYYY-MM-DD') : ''

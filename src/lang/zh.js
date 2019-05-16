@@ -282,7 +282,8 @@ export default {
     itemNo: '收费项目编号',
     lateDate: '滞纳开始天数',
     lateFee: '滞纳金率',
-    unitPrice: '计算单价'
+    unitPrice: '计算单价',
+    owner: '是否有主业主'
   },
   // 业主
   proprietor: {
@@ -306,7 +307,8 @@ export default {
     password: '密码', // 密码
     userWithCommunities: '关联单位',
     bindCommunities: '绑定社区',
-    advanceAmount: '预收金额'
+    advanceAmount: '预收金额',
+    owner: '是否为业主'
   },
   asset: {
     assetDescribe: '描述', // 描述

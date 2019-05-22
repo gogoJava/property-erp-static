@@ -28,11 +28,28 @@ export function delManager(params) {
   })
 }
 
+// 管理员详情
+export function getManagerDetail(params) {
+  return request({
+    url: '/back/manager/detail',
+    method: 'get',
+    params
+  })
+}
+
 // 修改管理员
 export function updateManager(params) {
   return request({
     url: '/back/manager/upd',
     method: 'post',
     data: params
+  })
+}
+
+// 获取角色列表
+export function getRoleList() {
+  return request({
+    url: '/back/manager/getRoleList',
+    method: 'post'
   })
 }

@@ -6,52 +6,37 @@
       </el-aside>
       <el-container style="padding: 0 15px;">
         <!-- 建筑 -->
-        <div v-if="showType === 1" style="width: 100%;">
-          <el-table :key="1" :data="list" border fit highlight-current-row>
-            <el-table-column :label="$t('building.buildingNo')" prop="id" align="center" min-width="100">
+        <div style="width: 100%;">
+          <el-table :data="list" row-key="label" border fit highlight-current-row>
+            <el-table-column v-if="showType === 1" :label="$t('building.buildingNo')" prop="id" align="center" min-width="100">
               <template slot-scope="scope">
                 <span>{{ scope.row.buildingNo }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('building.buildingName')" min-width="180px" align="center">
+            <el-table-column v-if="showType === 1" :label="$t('building.buildingName')" min-width="180px" align="center">
               <template slot-scope="scope">
                 <span>{{ scope.row.buildingName }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('building.fullAddress')" min-width="180px" align="center">
+            <el-table-column v-if="showType === 1" :label="$t('building.fullAddress')" min-width="180px" align="center">
               <template slot-scope="scope">
-                <span>{{ scope.row.fullAddress }}</span>
+                <span>{{ scope.row.communityAddress }}</span>
+                <span>{{ scope.row.communityAddressDirectionFirstValue }}</span>
+                <span>{{ scope.row.communityAddressDirectionSecondValue }}</span>
+                <span>{{ scope.row.communityAddressDirectionThirdValue }}</span>
+                <span>{{ scope.row.communityAddressDirectionFourthValue }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
-              <!-- <template slot-scope="scope">
-                <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-                <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
-                </el-button>
-              </template> -->
-            </el-table-column>
-          </el-table>
-        </div>
-        <!-- 单位 -->
-        <div v-if="showType === 2" style="width: 100%;">
-          <el-table :key="2" :data="list" border fit highlight-current-row>
-            <el-table-column :label="$t('unit.unitNo')" prop="id" align="center" min-width="100">
+            <!-- 单位 -->
+            <el-table-column v-if="showType === 2" :label="$t('unit.unitNo')" prop="id" align="center" min-width="100">
               <template slot-scope="scope">
                 <span>{{ scope.row.unitNo }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('unit.unitName')" min-width="180px" align="center">
+            <el-table-column v-if="showType === 2" :label="$t('unit.unitName')" min-width="180px" align="center">
               <template slot-scope="scope">
                 <span>{{ scope.row.unitName }}</span>
               </template>
-            </el-table-column>
-            <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
-              <!-- <template slot-scope="scope">
-                <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-                <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
-                </el-button>
-                <el-button type="text" size="mini" @click="bindUser(scope.row)">绑定用户</el-button>
-              </template> -->
             </el-table-column>
           </el-table>
         </div>
@@ -85,18 +70,21 @@
     data() {
       return {
         list: [],
+        buildingList: [],
+        unitList: [],
         listLoading: true,
         defaultProps: {
           children: 'children',
           label: 'label'
         },
         resData: [],
-        showType: 1
+        showType: 1,
+        key: 'key'
       }
     },
     computed: {
       treeData() {
-        console.log('resData', this.resData)
+        // console.log('resData', this.resData)
         return this.resData.map(item => {
           let children = []
           if (item.buildingWithUnits) {
@@ -155,12 +143,21 @@
         }
         this.resData = response.data
         this.list = this.resData[0].buildingWithUnits || this.resData[0].unitList || []
+        // this.buildingList = this.resData[0].buildingWithUnits || []
+        // this.unitList = this.resData[0].unitList || []
+        this.key = this.resData[0].communityId || this.resData[0].buildingId
         this.listLoading = false
       },
       handleNodeClick(data) {
         console.log('handleNodeClick', data)
         if (data.type === 3) return
+        this.key = data.communityId || data.buildingId
         this.showType = data.type || 1
+        // if (this.showType === 1) {
+        //   this.buildingList = data.children
+        // } else {
+        //   this.unitList = data.children
+        // }
         this.list = data.children
       }
     }

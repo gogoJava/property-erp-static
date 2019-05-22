@@ -80,7 +80,7 @@ export default {
     receivedInquiry: '已收款查詢',
     prepaidInquiry: '預支付查詢',
     costSummary: '費用匯總',
-    fundFee: '基金費用管理',
+    fundFee: '收費項目管理',
     unitCharge: '單元收費管理',
     unitChargeList: '單元收費項目',
     propertyComplaint: '物業投訴',
@@ -237,7 +237,8 @@ export default {
     type: '類型', // 類型0普通管理员1超级管理员
     username: '用戶名', // 用戶名
     password: '密碼', // 密碼
-    portrait: '頭像'
+    portrait: '頭像',
+    roleIds: '角色'
   },
   // 建築
   building: {

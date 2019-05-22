@@ -96,7 +96,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('building.managementType')" prop="managementType">
-              <el-select v-model="temp.managementType" :disabled="!$store.getters.managementType" placeholder="请绑定类型">
+              <el-select v-model="temp.managementType" disabled placeholder="请绑定类型">
                 <el-option v-for="(item, index) in typeList" :key="index" :value="item.value" :label="item.label" />
               </el-select>
             </el-form-item>
@@ -121,7 +121,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item :label="$t('building.buildingChildList')" prop="buildingChildList">
+        <el-form-item v-if="!!temp.managementType" :label="$t('building.buildingChildList')" prop="buildingChildList">
           <el-row>
             <el-col :span="8"><div>排序</div></el-col>
             <el-col :span="8"><div>子部分之提示</div></el-col>
@@ -267,6 +267,12 @@
         ]
       }
     },
+    computed: {
+      setectedCommunity() {
+        if (!this.temp.communityId) return null
+        return this.communityList.find(v => v.communityId === this.temp.communityId)
+      }
+    },
     watch: {
       'listQuery.keyword'() {
         this.getList()
@@ -275,6 +281,9 @@
         if (!this.dialogFormVisible) {
           this.resetTemp()
         }
+      },
+      'temp.communityId'() {
+        this.temp.managementType = this.setectedCommunity && this.setectedCommunity.communityManagementType
       }
     },
     created() {
@@ -320,7 +329,7 @@
           commonPdf: [],
           buildingChildList: [],
           rosterPdf: [],
-          managementType: this.$store.getters.managementType
+          managementType: null
         }
       },
       handleCreate() {

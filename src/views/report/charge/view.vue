@@ -11,7 +11,7 @@
           :value="item.buildingId" />
       </el-select>
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.unitId') }}:</span>
-      <el-select v-model="unitId" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
+      <el-select v-model="unitId" filterable placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
           v-for="item in unitList"
           :key="item.unitId"
@@ -306,7 +306,7 @@
       async queryUnitList() {
         this.unitId = null
         this.listLoading = true
-        const { code, msg, data } = await getUnitList({ ...this.listQuery, buildingId: this.buildingId }).catch(e => e)
+        const { code, msg, data } = await getUnitList({ pageNo: 1, pageSize: 99999, buildingId: this.buildingId }).catch(e => e)
         this.listLoading = false
         if (code !== 200) {
           return this.$notify({ title: '失败1', message: msg, type: 'error', duration: 2000 })

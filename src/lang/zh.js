@@ -80,7 +80,7 @@ export default {
     receivedInquiry: '已收款查询',
     prepaidInquiry: '预支付查询',
     costSummary: '费用汇总',
-    fundFee: '基金费用管理',
+    fundFee: '收费项目管理',
     unitCharge: '单元收费管理',
     unitChargeList: '单元收费项目',
     propertyComplaint: '物业投诉',
@@ -237,7 +237,8 @@ export default {
     type: '类型', // 类型0普通管理员1超级管理员
     username: '用户名', // 用户名
     password: '密码', // 密码
-    portrait: '头像'
+    portrait: '头像',
+    roleIds: '角色'
   },
   // 建筑
   building: {

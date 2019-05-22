@@ -52,7 +52,7 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
     <!-- 添加、编辑、详情 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%" top="120px">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="70%" top="120px">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="90px">
         <el-row>
           <el-col :span="12">
@@ -85,13 +85,14 @@
           <el-col :span="12">
             <el-form-item :label="$t('administrator.type')" prop="type">
               <el-select v-model="temp.type" placeholder="请选择">
+                <!-- <el-option v-for="(item, index) in roleList" :key="index" :value="item.roleId" :label="item.roleName" /> -->
                 <el-option :key="0" :value="0" label="普通管理员" />
                 <el-option :key="1" :value="1" label="超级管理员" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('administrator.communityId')" prop="name">
+            <el-form-item :label="$t('administrator.communityId')" prop="communityId">
               <el-select v-model="temp.communityId" placeholder="请绑定社区">
                 <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
               </el-select>
@@ -99,6 +100,13 @@
           </el-col>
         </el-row>
         <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('administrator.roleIds')" prop="type">
+              <el-select v-model="temp.roleIds" multiple collapse-tags placeholder="请选择角色">
+                <el-option v-for="(item, index) in roleList" :key="index" :value="item.roleId" :label="item.roleName" />
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('administrator.email')" prop="email">
               <el-input v-model="temp.email" />
@@ -141,7 +149,9 @@
     getAdministratorList,
     addManager,
     delManager,
-    updateManager
+    updateManager,
+    getRoleList,
+    getManagerDetail
   } from '@/api/administrator'
   import { getCommunityList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
@@ -214,7 +224,7 @@
           type: 0,
           password: '',
           email: '',
-          roleIds: null,
+          roleIds: [],
           portrait: ''
         },
         dialogFormVisible: false,
@@ -230,24 +240,31 @@
         rules: {
           type: [{
             required: true,
-            message: 'type is required',
-            trigger: 'change'
+            message: '请选择类型',
+            trigger: ['change', 'blur']
           }],
           name: [{
             type: 'string',
             required: true,
-            message: 'name is required',
-            trigger: 'change'
+            message: '请填写名字',
+            trigger: ['change', 'blur']
           }],
           sex: [{
             required: true,
-            message: 'sex is required',
-            trigger: 'change'
+            message: '请选择性别',
+            trigger: ['change', 'blur']
+          }],
+          communityId: [{
+            type: 'string',
+            required: true,
+            message: '请选择社区',
+            trigger: ['change', 'blur']
           }]
         },
         downloadLoading: false,
         password: '',
-        imgPrefix: 'http://songsong.fun/file' // 图片前缀
+        imgPrefix: 'http://songsong.fun/file', // 图片前缀
+        roleList: [] // 角色列表
       }
     },
     watch: {
@@ -258,6 +275,7 @@
     created() {
       this.getList()
       this.queryCommunityList()
+      this.queryRoleList()
     },
     methods: {
       async getList() {
@@ -279,7 +297,12 @@
       async queryCommunityList() {
         const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
-    },
+      },
+      // 获取社区列表
+      async queryRoleList() {
+        const response = await getRoleList().catch(e => e)
+        this.roleList = response.data
+      },
       handleModifyStatus(row, status) {
         this.$message({
           message: '操作成功',
@@ -306,8 +329,8 @@
           type: 0,
           password: '',
           email: '',
-          roleIds: null,
-          portrait: ''
+          portrait: '',
+          roleIds: []
         }
       },
       handleCreate() {
@@ -319,6 +342,7 @@
         })
       },
       async createData() {
+        this.temp.roleIds = this.temp.roleIds.join(',')
         const response = await addManager(this.temp).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
@@ -332,8 +356,10 @@
         })
         this.getList()
       },
-      handleUpdate(row) {
-        this.temp = Object.assign({}, row) // copy obj
+      async handleUpdate(row) {
+        const res = await getManagerDetail({ managerId: row.managerId })
+        this.temp = Object.assign({}, res.data) // copy obj
+        this.temp.roleIds = this.temp.roleIds && this.temp.roleIds.split(',')
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -352,6 +378,7 @@
       },
       async updateData() {
         this.listLoading = true
+        this.temp.roleIds = this.temp.roleIds.join(',')
         const response = await updateManager(this.temp).catch(e => e)
         this.listLoading = false
         if (response.code !== 200) {

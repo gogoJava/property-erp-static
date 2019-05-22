@@ -44,8 +44,8 @@
       </el-table-column>
       <el-table-column :label="$t('chargeItem.billingMode')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <!-- 收费模式0周期性1临时性 -->
-          <span>{{ scope.row.billingMode ? '临时性' : '周期性' }}</span>
+          <!-- 收费模式0每月一次1单次收费 -->
+          <span>{{ scope.row.billingMode ? '单次收费' : '每月一次' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('chargeItem.lateFee')" min-width="100px" align="center">
@@ -92,9 +92,8 @@
           <el-col :span="12">
             <el-form-item :label="$t('chargeItem.alculationMethod')" prop="alculationMethod">
               <el-select v-model="temp.alculationMethod" placeholder="请选择">
-                <!-- 状态0欠费1已付2预支付 -->
-                <el-option :value="0" label="周期性" />
-                <el-option :value="1" label="临时性" />
+                <el-option :value="0" label="每月一次" />
+                <el-option :value="1" label="单次收费" />
               </el-select>
             </el-form-item>
           </el-col>

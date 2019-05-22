@@ -80,7 +80,7 @@ export default {
     receivedInquiry: 'Received Inquiry',
     prepaidInquiry: 'Prepaid Inquiry',
     costSummary: 'Cost Summary',
-    fundFee: 'Fund Fee',
+    fundFee: 'Charge Project Management',
     unitCharge: 'Unit Charge',
     unitChargeList: 'Unit charge item',
     propertyComplaint: 'Property Complaint',
@@ -237,7 +237,8 @@ export default {
     type: 'Type', // 类型0普通管理员1超级管理员
     username: 'Username', // 用户名
     password: 'Password', // 密码
-    portrait: 'Portrait'
+    portrait: 'Portrait',
+    roleIds: 'Role'
   },
   // 建筑
   building: {

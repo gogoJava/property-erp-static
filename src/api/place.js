@@ -27,3 +27,12 @@ export function updatePlaceRecord(params) {
     data: params
   })
 }
+
+// 场所使用统计
+export function getPlaceStatistic(query) {
+  return request({
+    url: '/back/placeRecord/statis',
+    method: 'get',
+    params: query
+  })
+}

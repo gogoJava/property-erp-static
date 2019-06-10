@@ -87,7 +87,8 @@ export default {
     visitor: 'Visitor',
     clubhouse: 'Clubhouse',
     placeRecord: 'Location record management',
-    advertisement: 'Advertisement'
+    advertisement: 'Advertisement',
+    statistic: 'Usage statistics'
   },
   navbar: {
     logOut: 'Log Out',

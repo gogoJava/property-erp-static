@@ -343,6 +343,19 @@ export const asyncRouterMap = [
       }
     ]
   },
+  // 使用统计
+  {
+    path: '/statistic',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/statistic/view'),
+        name: 'Statistic',
+        meta: { title: 'statistic', icon: 'example', noCache: true }
+      }
+    ]
+  },
 
   // {
   //   path: '/icon',

@@ -87,7 +87,8 @@ export default {
     visitor: '訪客登記',
     clubhouse: '會所管理',
     placeRecord: '場所記錄管理',
-    advertisement: '廣告管理'
+    advertisement: '廣告管理',
+    statistic: '使用統計'
   },
   navbar: {
     logOut: '退出登錄',

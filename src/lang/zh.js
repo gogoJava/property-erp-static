@@ -87,7 +87,8 @@ export default {
     visitor: '访客登记',
     clubhouse: '会所管理',
     placeRecord: '场所记录管理',
-    advertisement: '广告管理'
+    advertisement: '广告管理',
+    statistic: '使用统计'
   },
   navbar: {
     logOut: '退出登录',

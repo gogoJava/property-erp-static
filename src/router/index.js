@@ -7,10 +7,10 @@ Vue.use(Router)
 import Layout from '@/views/layout/Layout'
 
 /* Router Modules */
-import componentsRouter from './modules/components'
-import chartsRouter from './modules/charts'
-import tableRouter from './modules/table'
-import nestedRouter from './modules/nested'
+// import componentsRouter from './modules/components'
+// import chartsRouter from './modules/charts'
+// import tableRouter from './modules/table'
+// import nestedRouter from './modules/nested'
 
 /** note: Submenu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -24,10 +24,11 @@ import nestedRouter from './modules/nested'
 * redirect: noredirect           if `redirect:noredirect` will no redirect in the breadcrumb
 * name:'router-name'             the name is used by <keep-alive> (must set!!!)
 * meta : {
-    roles: ['admin','editor']     will control the page roles (you can set multiple roles)
+    roles: ['admin','editor']    will control the page roles (you can set multiple roles)
     title: 'title'               the name show in submenu and breadcrumb (recommend set)
-    icon: 'svg-name'             the icon show in the sidebar,
-    noCache: true                if true ,the page will no be cached(default is false)
+    icon: 'svg-name'             the icon show in the sidebar
+    noCache: true                if true, the page will no be cached(default is false)
+    breadcrumb: false            if false, the item will hidden in breadcrumb(default is true)
   }
 **/
 export const constantRouterMap = [
@@ -74,275 +75,293 @@ export const constantRouterMap = [
         meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
       }
     ]
-  },
-  {
-    path: '/documentation',
-    component: Layout,
-    redirect: '/documentation/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/documentation/index'),
-        name: 'Documentation',
-        meta: { title: 'documentation', icon: 'documentation', noCache: true }
-      }
-    ]
-  },
-  {
-    path: '/guide',
-    component: Layout,
-    redirect: '/guide/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/guide/index'),
-        name: 'Guide',
-        meta: { title: 'guide', icon: 'guide', noCache: true }
-      }
-    ]
   }
 ]
 
-export default new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRouterMap
-})
-
 export const asyncRouterMap = [
+
+  // 社区管理
   {
-    path: '/permission',
+    path: '/community',
     component: Layout,
-    redirect: '/permission/index',
-    alwaysShow: true, // will always show the root menu
+    redirect: '/community/list',
+    name: 'Community',
     meta: {
-      title: 'permission',
-      icon: 'lock',
-      roles: ['admin', 'editor'] // you can set roles in root nav
+      title: 'community',
+      icon: 'table'
     },
     children: [
       {
-        path: 'page',
-        component: () => import('@/views/permission/page'),
-        name: 'PagePermission',
-        meta: {
-          title: 'pagePermission',
-          roles: ['admin'] // or you can only set roles in sub nav
-        }
+        path: 'list',
+        component: () => import('@/views/community/view'),
+        name: 'List',
+        meta: { title: 'communityList', icon: 'list', noCache: true }
       },
-      {
-        path: 'directive',
-        component: () => import('@/views/permission/directive'),
-        name: 'DirectivePermission',
-        meta: {
-          title: 'directivePermission'
-          // if do not set roles, means: this page does not require permission
-        }
-      }
-    ]
-  },
-
-  {
-    path: '/icon',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/svg-icons/index'),
-        name: 'Icons',
-        meta: { title: 'icons', icon: 'icon', noCache: true }
-      }
-    ]
-  },
-
-  /** When your routing table is too long, you can split it into small modules**/
-  componentsRouter,
-  chartsRouter,
-  nestedRouter,
-  tableRouter,
-
-  {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/list',
-    name: 'Example',
-    meta: {
-      title: 'example',
-      icon: 'example'
-    },
-    children: [
       {
         path: 'create',
-        component: () => import('@/views/example/create'),
-        name: 'CreateArticle',
-        meta: { title: 'createArticle', icon: 'edit' }
+        component: () => import('@/views/community/create'),
+        name: 'CreateCommunity',
+        meta: { title: 'communityCreate', icon: 'edit' }
       },
       {
-        path: 'edit/:id(\\d+)',
-        component: () => import('@/views/example/edit'),
-        name: 'EditArticle',
-        meta: { title: 'editArticle', noCache: true },
+        path: 'edit/:id',
+        component: () => import('@/views/community/edit'),
+        name: 'EditCommunity',
+        meta: { title: '编辑社区', noCache: true },
         hidden: true
       },
       {
-        path: 'list',
-        component: () => import('@/views/example/list'),
-        name: 'ArticleList',
-        meta: { title: 'articleList', icon: 'list' }
+        path: 'detail/:id',
+        component: () => import('@/views/community/detail'),
+        name: 'DetailCommunity',
+        meta: { title: '社区详情', noCache: true },
+        hidden: true
       }
     ]
   },
-
+  // 物业管理员
   {
-    path: '/tab',
+    path: '/community/manage',
     component: Layout,
     children: [
       {
         path: 'index',
-        component: () => import('@/views/tab/index'),
-        name: 'Tab',
-        meta: { title: 'tab', icon: 'tab' }
+        component: () => import('@/views/community/tree'),
+        name: 'communityTest',
+        meta: { title: 'communityTest', icon: 'table', noCache: true }
       }
     ]
   },
-
+  // 物业管理员
   {
-    path: '/error',
+    path: '/administrator',
+    name: 'administrator',
     component: Layout,
-    redirect: 'noredirect',
-    name: 'ErrorPages',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/administrator/view'),
+        name: 'administrator',
+        meta: { title: 'administrator', icon: 'user', noCache: true }
+      }
+    ]
+  },
+  // 建筑管理
+  {
+    path: '/building',
+    component: Layout,
+    redirect: '/building/list',
+    name: 'building',
     meta: {
-      title: 'errorPages',
-      icon: '404'
+      title: 'building',
+      icon: 'chart'
     },
     children: [
       {
-        path: '401',
-        component: () => import('@/views/errorPage/401'),
-        name: 'Page401',
-        meta: { title: 'page401', noCache: true }
+        path: 'list',
+        component: () => import('@/views/building/list'),
+        name: 'BuildList',
+        meta: { title: 'buildingList', icon: 'list', noCache: true }
       },
       {
-        path: '404',
-        component: () => import('@/views/errorPage/404'),
-        name: 'Page404',
-        meta: { title: 'page404', noCache: true }
+        path: 'unitlist',
+        component: () => import('@/views/building/unit'),
+        name: 'UnitList',
+        meta: { title: 'unitList', icon: 'excel' }
       }
     ]
   },
-
+  // 业主管理
   {
-    path: '/error-log',
+    path: '/proprietor',
     component: Layout,
-    redirect: 'noredirect',
     children: [
       {
-        path: 'log',
-        component: () => import('@/views/errorLog/index'),
-        name: 'ErrorLog',
-        meta: { title: 'errorLog', icon: 'bug' }
+        path: 'list',
+        component: () => import('@/views/proprietor/list'),
+        name: 'proprietor',
+        meta: { title: 'proprietor', icon: 'peoples', noCache: true }
       }
     ]
   },
-
+  // 物业资产
   {
-    path: '/excel',
+    path: '/asset',
     component: Layout,
-    redirect: '/excel/export-excel',
-    name: 'Excel',
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/property/asset/list'),
+        name: 'asset',
+        meta: { title: 'propertyAssets', icon: 'money', noCache: true }
+      }
+    ]
+  },
+  // 物业公告
+  {
+    path: '/bulletin',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/event/notice/view.vue'),
+        name: 'Bulletin',
+        meta: { title: 'bulletin', icon: 'wechat', noCache: true }
+      }
+    ]
+  },
+  // 物业事件
+  {
+    path: '/event',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/event/purchase/view.vue'),
+        name: 'event',
+        meta: { title: 'propertyEvent', icon: 'form' }
+      }
+    ]
+  },
+  // 物业报表
+  {
+    path: '/report',
+    component: Layout,
+    redirect: '/arrears',
+    name: 'report',
     meta: {
-      title: 'excel',
+      title: 'propertyReport',
       icon: 'excel'
     },
     children: [
       {
-        path: 'export-excel',
-        component: () => import('@/views/excel/exportExcel'),
-        name: 'ExportExcel',
-        meta: { title: 'exportExcel' }
+        path: 'arrears',
+        component: () => import('@/views/report/arrears/view.vue'),
+        name: 'Arrears',
+        meta: { title: 'arrears', icon: 'list' }
       },
       {
-        path: 'export-selected-excel',
-        component: () => import('@/views/excel/selectExcel'),
-        name: 'SelectExcel',
-        meta: { title: 'selectExcel' }
+        path: 'charged',
+        component: () => import('@/views/report/charged/view.vue'),
+        name: 'Charged',
+        meta: { title: 'receivedInquiry', icon: 'list' }
       },
       {
-        path: 'upload-excel',
-        component: () => import('@/views/excel/uploadExcel'),
-        name: 'UploadExcel',
-        meta: { title: 'uploadExcel' }
+        path: 'prepayment',
+        component: () => import('@/views/report/prepayment/view.vue'),
+        name: 'Prepayment',
+        meta: { title: 'prepaidInquiry', icon: 'list' }
+      },
+      {
+        path: 'summary',
+        component: () => import('@/views/report/summary/view.vue'),
+        name: 'Summary',
+        meta: { title: 'costSummary', icon: 'list' }
+      },
+      {
+        path: 'fund',
+        component: () => import('@/views/report/fund/view.vue'),
+        name: 'Fund',
+        meta: { title: 'fundFee', icon: 'list' }
+      },
+      {
+        path: 'unit',
+        component: () => import('@/views/report/unit/view.vue'),
+        name: 'Unittext',
+        meta: { title: 'unitCharge', icon: 'list' }
+      },
+      {
+        path: 'unit/charge',
+        component: () => import('@/views/report/charge/view.vue'),
+        name: 'unitChargeList',
+        meta: { title: 'unitChargeList', icon: 'list' }
+      }
+    ]
+  },
+   // 物业投诉
+  //  {
+  //   path: '/complaint',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'list',
+  //       component: () => import('@/views/complaint/list'),
+  //       name: 'Complaint',
+  //       meta: { title: 'propertyComplaint', icon: 'email', noCache: true }
+  //     }
+  //   ]
+  // },
+  // 访客登记
+  {
+    path: '/visitor',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/visitor/list'),
+        name: 'Visitor',
+        meta: { title: 'visitor', icon: 'edit', noCache: true }
+      }
+    ]
+  },
+  // 会所管理
+  {
+    path: '/clubhouse',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/clubhouse/list'),
+        name: 'Clubhouse',
+        meta: { title: 'clubhouse', icon: 'drag', noCache: true }
+      }
+    ]
+  },
+  // 场所记录
+  {
+    path: '/placeRecord',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/placeRecord/list'),
+        name: 'PlaceRecord',
+        meta: { title: 'placeRecord', icon: 'icon', noCache: true }
+      }
+    ]
+  },
+  // 广告管理
+  {
+    path: '/adv',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/adv/list'),
+        name: 'Clubhouse',
+        meta: { title: 'advertisement', icon: 'bug', noCache: true }
       }
     ]
   },
 
-  {
-    path: '/zip',
-    component: Layout,
-    redirect: '/zip/download',
-    alwaysShow: true,
-    meta: { title: 'zip', icon: 'zip' },
-    children: [
-      {
-        path: 'download',
-        component: () => import('@/views/zip/index'),
-        name: 'ExportZip',
-        meta: { title: 'exportZip' }
-      }
-    ]
-  },
-
-  {
-    path: '/theme',
-    component: Layout,
-    redirect: 'noredirect',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/theme/index'),
-        name: 'Theme',
-        meta: { title: 'theme', icon: 'theme' }
-      }
-    ]
-  },
-
-  {
-    path: '/clipboard',
-    component: Layout,
-    redirect: 'noredirect',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/clipboard/index'),
-        name: 'ClipboardDemo',
-        meta: { title: 'clipboardDemo', icon: 'clipboard' }
-      }
-    ]
-  },
-
-  {
-    path: '/i18n',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/i18n-demo/index'),
-        name: 'I18n',
-        meta: { title: 'i18n', icon: 'international' }
-      }
-    ]
-  },
-
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://github.com/PanJiaChen/vue-element-admin',
-        meta: { title: 'externalLink', icon: 'link' }
-      }
-    ]
-  },
+  // {
+  //   path: '/icon',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/svg-icons/index'),
+  //       name: 'Icons',
+  //       meta: { title: 'icons', icon: 'icon', noCache: true }
+  //     }
+  //   ]
+  // },
 
   { path: '*', redirect: '/404', hidden: true }
 ]
+
+export default new Router({
+  mode: 'history', // require service support
+  scrollBehavior: () => ({ y: 0 }),
+  routes: [...constantRouterMap, ...asyncRouterMap]
+})

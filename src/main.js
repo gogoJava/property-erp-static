@@ -17,14 +17,26 @@ import i18n from './lang' // Internationalization
 import './icons' // icon
 import './errorLog' // error log
 import './permission' // permission control
-import './mock' // simulation data
+import Print from 'vue-print-nb'
+
+// moment
+import moment from 'moment'
+
+Vue.prototype.$moment = moment
 
 import * as filters from './filters' // global filters
+
+import { mockXHR } from '../mock' // simulation data
+
+// mock api in github pages site build
+if (process.env.NODE_ENV === 'production') { mockXHR() }
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size
   i18n: (key, value) => i18n.t(key, value)
 })
+
+Vue.use(Print)
 
 // register global utility filters.
 Object.keys(filters).forEach(key => {

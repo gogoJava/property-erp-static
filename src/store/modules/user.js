@@ -8,12 +8,15 @@ const user = {
     code: '',
     token: getToken(),
     name: '',
+    communityId: '',
+    isSuper: false,
     avatar: '',
     introduction: '',
     roles: [],
     setting: {
       articlePlatform: []
-    }
+    },
+    managementType: 0
   },
 
   mutations: {
@@ -32,8 +35,11 @@ const user = {
     SET_STATUS: (state, status) => {
       state.status = status
     },
-    SET_NAME: (state, name) => {
-      state.name = name
+    SET_NAME: (state, data) => {
+      state.name = data.name
+      state.communityId = data.communityId
+      state.isSuper = data.type === 1
+      state.managementType = data.managementType
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
@@ -45,58 +51,29 @@ const user = {
 
   actions: {
     // 用户名登录
-    LoginByUsername({ commit }, userInfo) {
+    async LoginByUsername({ commit, dispatch }, userInfo) {
       const username = userInfo.username.trim()
-      return new Promise((resolve, reject) => {
-        loginByUsername(username, userInfo.password).then(response => {
-          const data = response.data
-          commit('SET_TOKEN', data.token)
-          setToken(response.data.token)
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
-      })
+      const { code, data } = await loginByUsername(username, userInfo.password).catch(e => e)
+      if (code !== 200) return
+      commit('SET_TOKEN', data.token)
+      setToken(data.token)
+      commit('SET_ROLES', [data.manager])
+      commit('SET_NAME', { name: data.manager.username, communityId: data.manager.communityId, type: data.manager.type, managementType: data.manager.managementType })
+      // type 类型0普通管理员1超级管理员
+      const role = { roles: [data.manager.type === 1 ? 'super' : 'admin'] }
+      dispatch('GenerateRoutes', role) // 动态修改权限后 重绘侧边菜单
     },
 
     // 获取用户信息
-    GetUserInfo({ commit, state }) {
-      return new Promise((resolve, reject) => {
-        getUserInfo(state.token).then(response => {
-          if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
-            reject('error')
-          }
-          const data = response.data
-
-          if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', data.roles)
-          } else {
-            reject('getInfo: roles must be a non-null array !')
-          }
-
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
-          commit('SET_INTRODUCTION', data.introduction)
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-      })
+    async GetUserInfo({ commit, dispatch, state }) {
+      const { code, data } = await getUserInfo().catch(e => e)
+      if (!data || code !== 200) return
+      commit('SET_ROLES', [data])
+      commit('SET_NAME', { name: data.username, communityId: data.communityId, type: data.type, managementType: data.managementType })
+      const role = { roles: [data.type === 1 ? 'super' : 'admin'] }
+      dispatch('GenerateRoutes', role) // 动态修改权限后 重绘侧边菜单
+      return data
     },
-
-    // 第三方验证登录
-    // LoginByThirdparty({ commit, state }, code) {
-    //   return new Promise((resolve, reject) => {
-    //     commit('SET_CODE', code)
-    //     loginByThirdparty(state.status, state.email, state.code).then(response => {
-    //       commit('SET_TOKEN', response.data.token)
-    //       setToken(response.data.token)
-    //       resolve()
-    //     }).catch(error => {
-    //       reject(error)
-    //     })
-    //   })
-    // },
 
     // 登出
     LogOut({ commit, state }) {
@@ -129,7 +106,7 @@ const user = {
         getUserInfo(role).then(response => {
           const data = response.data
           commit('SET_ROLES', data.roles)
-          commit('SET_NAME', data.name)
+          commit('SET_NAME', { name: data.username, communityId: data.communityId, type: data.type, managementType: data.managementType })
           commit('SET_AVATAR', data.avatar)
           commit('SET_INTRODUCTION', data.introduction)
           dispatch('GenerateRoutes', data) // 动态修改权限后 重绘侧边菜单

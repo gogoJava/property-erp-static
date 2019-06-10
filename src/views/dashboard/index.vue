@@ -1,6 +1,7 @@
 <template>
   <div class="dashboard-container">
-    <component :is="currentRole"/>
+    <!-- <component :is="currentRole"/> -->
+    <div style="text-align: center;font-size: 36px;padding-top: 90px;color: #409EFF;">欢迎来到物业管理系统!</div>
   </div>
 </template>
 
@@ -29,3 +30,4 @@ export default {
   }
 }
 </script>
+

@@ -26,20 +26,29 @@ router.beforeEach((to, from, next) => {
     } else {
       if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
         store.dispatch('GetUserInfo').then(res => { // 拉取user_info
-          const roles = res.data.roles // note: roles must be a array! such as: ['editor','develop']
+          const roles = [res] // note: roles must be a array! such as: ['editor','develop']
           store.dispatch('GenerateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表
+            // console.log('to', to)
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-            next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+            next()
+            // next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
           })
         }).catch((err) => {
           store.dispatch('FedLogOut').then(() => {
-            Message.error(err || 'Verification failed, please login again')
+            Message.error(err)
             next({ path: '/' })
           })
         })
       } else {
         // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓
         if (hasPermission(store.getters.roles, to.meta.roles)) {
+          const roles = store.getters.roles
+          store.dispatch('GenerateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表
+            // console.log('to2', to)
+            router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+            next()
+            // next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+          })
           next()
         } else {
           next({ path: '/401', replace: true, query: { noGoBack: true }})
@@ -59,5 +68,6 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach(() => {
+  // console.log('afterEach')
   NProgress.done() // finish progress bar
 })

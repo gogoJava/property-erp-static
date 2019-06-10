@@ -1,6 +1,6 @@
 <template>
   <div class="navbar">
-    <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container"/>
+    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar"/>
 
     <breadcrumb class="breadcrumb-container"/>
 
@@ -12,24 +12,25 @@
           <screenfull class="screenfull right-menu-item"/>
         </el-tooltip>
 
-        <el-tooltip :content="$t('navbar.size')" effect="dark" placement="bottom">
+        <!-- <el-tooltip :content="$t('navbar.size')" effect="dark" placement="bottom">
           <size-select class="international right-menu-item"/>
-        </el-tooltip>
+        </el-tooltip> -->
 
         <lang-select class="international right-menu-item"/>
 
-        <el-tooltip :content="$t('navbar.theme')" effect="dark" placement="bottom">
+        <!-- <el-tooltip :content="$t('navbar.theme')" effect="dark" placement="bottom">
           <theme-picker class="theme-switch right-menu-item"/>
-        </el-tooltip>
+        </el-tooltip> -->
       </template>
 
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <!-- <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
+          <span class="user-avatar">{{ $store.getters.name }}</span>
           <i class="el-icon-caret-bottom"/>
         </div>
         <el-dropdown-menu slot="dropdown">
-          <router-link to="/">
+          <!-- <router-link to="/">
             <el-dropdown-item>
               {{ $t('navbar.dashboard') }}
             </el-dropdown-item>
@@ -38,9 +39,12 @@
             <el-dropdown-item>
               {{ $t('navbar.github') }}
             </el-dropdown-item>
-          </a>
-          <el-dropdown-item divided>
+          </a> -->
+          <el-dropdown-item>
             <span style="display:block;" @click="logout">{{ $t('navbar.logOut') }}</span>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <span style="display:block;" @click="logout">{{ $t('navbar.updatePwd') }}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -119,6 +123,7 @@ export default {
     }
     .screenfull {
       height: 20px;
+      margin: 15px;
     }
     .international{
       vertical-align: top;
@@ -127,11 +132,15 @@ export default {
       vertical-align: 15px;
     }
     .avatar-container {
-      height: 50px;
-      margin-right: 30px;
+      // height: 50px;
+      margin-right: 50px;
+      position: relative;
+      top: -15px;
       .avatar-wrapper {
         margin-top: 5px;
         position: relative;
+        line-height: initial;
+        cursor: pointer;
         .user-avatar {
           cursor: pointer;
           width: 40px;
@@ -142,7 +151,7 @@ export default {
           cursor: pointer;
           position: absolute;
           right: -20px;
-          top: 25px;
+          // top: 25px;
           font-size: 12px;
         }
       }

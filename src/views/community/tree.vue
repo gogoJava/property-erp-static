@@ -315,7 +315,7 @@
           data
         } = await getUnitList({
           pageNo: 1,
-          pageSise: this.list.length,
+          pageSize: this.list.length,
           buildingId: this.buildingId
         }).catch(e => e)
         if (code !== 200) {

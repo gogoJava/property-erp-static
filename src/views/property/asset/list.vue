@@ -329,7 +329,17 @@
             required: true,
             message: 'sex is required',
             trigger: 'change'
-          }]
+          }],
+          assetMaintainRemindCycle: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ]
         },
         downloadLoading: false,
         password: null,

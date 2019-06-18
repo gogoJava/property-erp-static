@@ -93,7 +93,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('charge.recordLateDate')" prop="englishName">
+            <el-form-item :label="$t('charge.recordLateDate')" prop="recordLateDate">
               <el-input v-model="temp.recordLateDate" />
             </el-form-item>
           </el-col>
@@ -206,7 +206,28 @@
         },
         dialogStatus: '',
         dialogFormVisible: false,
-        rules: {}
+        rules: {
+          recordLateFee: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          recordLateDate: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ]
+        }
       }
     },
     watch: {

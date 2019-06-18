@@ -56,11 +56,11 @@
           <span>{{ scope.row.recordLateDate || '--' }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('charge.recordLateFee')" min-width="80px" align="center">
+      <!-- <el-table-column :label="$t('charge.recordLateFee')" min-width="80px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.recordLateFee || '--' }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
@@ -93,7 +93,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('charge.recordLateDate')" prop="englishName">
+            <el-form-item :label="$t('charge.recordLateDate')" prop="recordLateDate">
               <el-input v-model="temp.recordLateDate" />
             </el-form-item>
           </el-col>
@@ -207,7 +207,28 @@
         },
         dialogStatus: '',
         dialogFormVisible: false,
-        rules: {}
+        rules: {
+          recordLateFee: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          recordLateDate: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ]
+        }
       }
     },
     watch: {

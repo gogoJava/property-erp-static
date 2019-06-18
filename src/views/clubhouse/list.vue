@@ -364,7 +364,57 @@
             required: true,
             message: 'sex is required',
             trigger: 'change'
-          }]
+          }],
+          placeAdvanceOrderDay: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          placeFarthestOrderDay: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          placeUpperLimit: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          placeAttachCharge: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          placeCharge: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ]
         },
         downloadLoading: false,
         password: '',

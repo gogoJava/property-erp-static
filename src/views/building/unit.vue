@@ -142,7 +142,7 @@
       </div>
     </el-dialog>
     <el-dialog :visible.sync="dialogShow" width="75%">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" style="text-align: left;">
+      <el-form ref="dataForm" :model="temp" label-position="right" style="text-align: left;">
         <el-form-item label="业主">
           <el-select v-model="userIds" filterable multiple collapse-tags placeholder="请绑定住户">
             <el-option v-for="(item, index) in allProprietorList" :key="index" :value="item.userId" :label="item.username" />
@@ -319,7 +319,37 @@
             required: true,
             message: 'sex is required',
             trigger: 'change'
-          }]
+          }],
+          unitRelativeProportion: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          unitChildRelativeProportion: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          unitTitle: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ]
         },
         downloadLoading: false,
         password: null,

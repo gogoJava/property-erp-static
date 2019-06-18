@@ -1,6 +1,6 @@
 <template>
   <div class="community-create-view">
-    <el-form ref="form" :model="communityInfo" label-width="150px">
+    <el-form ref="form" :model="communityInfo" :rules="rules" label-width="150px">
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item :label="$t('community.communityNo')">
@@ -78,105 +78,76 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityArea')">
+          <el-form-item :label="$t('community.communityArea')" prop="communityArea">
             <el-input v-model="communityInfo.communityArea" :placeholder="$t('community.communityArea')"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityVerticalArea')">
+          <el-form-item :label="$t('community.communityVerticalArea')" prop="communityVerticalArea">
             <el-input v-model="communityInfo.communityVerticalArea" :placeholder="$t('community.communityVerticalArea')"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityCoverArea')">
+          <el-form-item :label="$t('community.communityCoverArea')" prop="communityCoverArea">
             <el-input v-model="communityInfo.communityCoverArea" :placeholder="$t('community.communityCoverArea')"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityNoCoverArea')">
+          <el-form-item :label="$t('community.communityNoCoverArea')" prop="communityNoCoverArea">
             <el-input v-model="communityInfo.communityNoCoverArea" :placeholder="$t('community.communityNoCoverArea')"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityShopsArea')">
+          <el-form-item :label="$t('community.communityShopsArea')" prop="communityShopsArea">
             <el-input v-model="communityInfo.communityShopsArea" :placeholder="$t('community.communityShopsArea')"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityShopsCount')">
+          <el-form-item :label="$t('community.communityShopsCount')" prop="communityShopsCount">
             <el-input v-model="communityInfo.communityShopsCount" :placeholder="$t('community.communityShopsCount')"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityHouseArea')">
+          <el-form-item :label="$t('community.communityHouseArea')" prop="communityHouseArea">
             <el-input v-model="communityInfo.communityHouseArea" :placeholder="$t('community.communityHouseArea')"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityRoomCount')">
+          <el-form-item :label="$t('community.communityRoomCount')" prop="communityRoomCount">
             <el-input v-model="communityInfo.communityRoomCount" :placeholder="$t('community.communityRoomCount')"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <!-- <el-col :span="12">
-          <el-form-item :label="$t('community.communityBuildingArea')">
-            <el-input v-model="communityInfo.communityBuildingArea" :placeholder="$t('community.communityBuildingArea')"/>
-          </el-form-item>
-        </el-col> -->
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityCommonArea')">
+          <el-form-item :label="$t('community.communityCommonArea')" prop="communityCommonArea">
             <el-input v-model="communityInfo.communityCommonArea" :placeholder="$t('community.communityCommonArea')"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityGreenarea')">
+          <el-form-item :label="$t('community.communityGreenarea')" prop="communityGreenarea">
             <el-input v-model="communityInfo.communityGreenarea" :placeholder="$t('community.communityGreenarea')"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityGarageArea')">
+          <el-form-item :label="$t('community.communityGarageArea')" prop="communityGarageArea">
             <el-input v-model="communityInfo.communityGarageArea" :placeholder="$t('community.communityGarageArea')"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item :label="$t('community.communityGarageCount')">
+          <el-form-item :label="$t('community.communityGarageCount')" prop="communityGarageCount">
             <el-input v-model="communityInfo.communityGarageCount" :placeholder="$t('community.communityGarageCount')"/>
           </el-form-item>
         </el-col>
       </el-row>
-      <!-- <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item :label="$t('community.communityGreenarea')">
-            <el-input v-model="communityInfo.communityGreenarea" :placeholder="$t('community.communityGreenarea')"/>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item :label="$t('community.communityRoadArea')">
-            <el-input v-model="communityInfo.communityRoadArea" :placeholder="$t('community.communityRoadArea')"/>
-          </el-form-item>
-        </el-col>
-      </el-row> -->
-      <!-- <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item :label="$t('community.communityLocY')">
-            <el-input v-model="communityInfo.communityLocY" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item :label="$t('community.communityLocX')">
-            <el-input v-model="communityInfo.communityLocX" />
-          </el-form-item>
-        </el-col>
-      </el-row> -->
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item :label="$t('community.communityRemark')">
@@ -259,6 +230,128 @@
           communityRoadArea: null, // 道路面积
           communityRoomCount: null, // 房间总数
           commonPdf: []
+        },
+        rules: {
+          communityArea: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          communityVerticalArea: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          communityCoverArea: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          communityNoCoverArea: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          communityShopsArea: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          communityShopsCount: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          communityHouseArea: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          communityRoomCount: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          communityCommonArea: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          communityGreenarea: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          communityGarageArea: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          communityGarageCount: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ]
         }
       }
     },

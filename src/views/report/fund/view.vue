@@ -107,13 +107,13 @@
         </el-row>
         <el-row>
           <el-col v-if="!temp.billingMode" :span="12">
-            <el-form-item :label="$t('chargeItem.describe')" prop="idCard">
+            <el-form-item :label="$t('chargeItem.describe')" prop="unitPrice">
               <!-- 金额用unitPrice字段 -->
               <el-input v-model="temp.unitPrice" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('chargeItem.additionalCost')" prop="englishName">
+            <el-form-item :label="$t('chargeItem.additionalCost')" prop="additionalCost">
               <el-input v-model="temp.additionalCost" />
             </el-form-item>
           </el-col>
@@ -217,7 +217,48 @@
         },
         dialogStatus: '',
         dialogFormVisible: false,
-        rules: {}
+        rules: {
+          unitPrice: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          additionalCost: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          lateFee: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          lateDate: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+.?[0-9]*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ]
+        }
       }
     },
     watch: {

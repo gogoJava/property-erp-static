@@ -310,7 +310,8 @@ export default {
     userWithCommunities: '關聯單位',
     bindCommunities: '綁定社區',
     advanceAmount: '預收金額',
-    owner: '是否為業主'
+    owner: '是否為業主',
+    title: '業權'
   },
   asset: {
     assetDescribe: '描述', // 描述

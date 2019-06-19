@@ -165,6 +165,11 @@
             <el-switch v-model="scope.row.owner" @change="ownerChange(scope.row)"/>
           </template>
         </el-table-column>
+        <el-table-column :label="$t('proprietor.title')" prop="id" align="center" min-width="120">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.title" size="mini"/>
+          </template>
+        </el-table-column>
         <el-table-column :label="$t('proprietor.sex')" prop="id" align="center" min-width="80">
           <template slot-scope="scope">
             <span>{{ scope.row.sex | sexFilter }}</span>
@@ -295,6 +300,7 @@
           unitType: null, // 单位类型1商铺2住宅3停车场
           unitTitle: null // 单位业权
         },
+        unitInfo: null,
         dialogFormVisible: false,
         dialogStatus: '',
         textMap: {
@@ -389,11 +395,18 @@
         const list = []
         this.allProprietorList.forEach(v => {
           if (this.userIds.some(item => item === v.userId)) {
+            // title: 业权
             const rr = this.proprietorList.find(info => info.userId === v.userId)
-            list.push({ ...v, owner: rr ? rr.owner : false })
+            list.push({ ...v, owner: rr ? rr.owner : false, title: 0 })
           }
         })
-        this.proprietorList = [...list]
+        const length = list.length
+        this.proprietorList = list.map((v, index) => {
+          const title = parseInt(this.unitInfo.unitTitle / length)
+          // 余数
+          const remainder = parseInt(this.unitInfo.unitTitle % length)
+          return { ...v, title: (title + ((remainder && remainder > index) ? 1 : 0)) }
+        })
       }
     },
     async created() {
@@ -540,6 +553,7 @@
         })
       },
       async bindUser(info) {
+        this.unitInfo = info
         this.userId = null
         this.unitId = info.unitId
         await this.queryProprietorList(this.unitId)
@@ -549,11 +563,11 @@
         let owner = false
         // let userId = ''
         const userUnitList = []
-        this.proprietorList.forEach(value => {
+        this.proprietorList.forEach((value) => {
           if (value.owner) {
             owner = value.owner
           }
-          userUnitList.push({ userId: value.userId, unitId: this.unitId, owner: value.owner })
+          userUnitList.push({ userId: value.userId, unitId: this.unitId, owner: value.owner, title: value.title })
         })
         if (!owner && this.proprietorList.length) return this.$notify({ title: '提示', message: '一定要选一个拥有业主', type: 'info', duration: 2000 })
         const response = await batchAddUserUnitId({ userUnitList, unitId: this.unitId }).catch(e => e)

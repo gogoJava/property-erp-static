@@ -310,7 +310,8 @@ export default {
     userWithCommunities: '关联单位',
     bindCommunities: '绑定社区',
     advanceAmount: '预收金额',
-    owner: '是否为业主'
+    owner: '是否为业主',
+    title: '业权'
   },
   asset: {
     assetDescribe: '描述', // 描述

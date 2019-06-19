@@ -310,7 +310,8 @@ export default {
     userWithCommunities: 'Associated unit',
     bindCommunities: 'Binding community',
     advanceAmount: 'Advance receipt amount',
-    owner: 'owner'
+    owner: 'owner',
+    title: 'Title'
   },
   asset: {
     assetDescribe: 'Description', // 描述

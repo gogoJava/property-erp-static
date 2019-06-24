@@ -64,7 +64,7 @@ export default {
     i18n: 'I18n',
     externalLink: 'External Link',
     community: 'Community',
-    communityTest: '社区Test',
+    communityTest: '社区',
     communityList: 'Community List',
     communityCreate: 'Create Community',
     administrator: 'Administrator',
@@ -163,7 +163,9 @@ export default {
     confirmPay: 'confirmed paid',
     linked: 'Association',
     bindUser: 'Bound owner',
-    download: 'download'
+    download: 'download',
+    importUnit: 'Import Unit',
+    importUser: 'Import User'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',

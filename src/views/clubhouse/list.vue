@@ -13,14 +13,14 @@
       </el-select>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
-      <el-table-column :label="$t('clubhouse.placeTraditionalName')" prop="id" align="center" min-width="160">
-        <template slot-scope="scope">
-          <span>{{ scope.row.placeTraditionalName }}</span>
-        </template>
-      </el-table-column>
       <el-table-column :label="$t('clubhouse.placeName')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.placeName || '' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('clubhouse.placeTraditionalName')" prop="id" align="center" min-width="160">
+        <template slot-scope="scope">
+          <span>{{ scope.row.placeTraditionalName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('clubhouse.placeEnglishName')" min-width="180px" align="center">
@@ -127,8 +127,8 @@
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="120px">
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('clubhouse.placeTraditionalName')" prop="placeTraditionalName">
-              <el-input v-model="temp.placeTraditionalName" />
+            <el-form-item :label="$t('clubhouse.placeName')" prop="placeName">
+              <el-input v-model="temp.placeName" />
             </el-form-item>
             <el-form-item :label="$t('clubhouse.placeEnglishName')" prop="placeEnglishName">
               <el-input v-model="temp.placeEnglishName" />
@@ -159,14 +159,14 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
+            <el-form-item :label="$t('clubhouse.placeTraditionalName')" prop="placeTraditionalName">
+              <el-input v-model="temp.placeTraditionalName" />
+            </el-form-item>
             <el-form-item :label="$t('clubhouse.placeFarthestOrderDay')" prop="placeFarthestOrderDay">
               <el-input v-model="temp.placeFarthestOrderDay" />
             </el-form-item>
             <el-form-item :label="$t('clubhouse.placeUpperLimit')" prop="placeUpperLimit">
               <el-input v-model="temp.placeUpperLimit" />
-            </el-form-item>
-            <el-form-item :label="$t('clubhouse.placeName')" prop="placeName">
-              <el-input v-model="temp.placeName" />
             </el-form-item>
             <el-form-item :label="$t('clubhouse.placeAttachCharge')" prop="placeAttachCharge">
               <el-input v-model="temp.placeAttachCharge" />
@@ -349,6 +349,7 @@
         pvData: [],
         communityList: [], // 社区列表
         rules: {
+          placeName: [{ required: true, message: '名字不能为空' }],
           type: [{
             required: true,
             message: 'type is required',
@@ -367,7 +368,7 @@
           }],
           placeAdvanceOrderDay: [
             { validator: (rule, value, callback) => {
-              const reg = /^[0-9]+.?[0-9]*$/
+              const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
               if (!reg.test(value)) {
                 callback(new Error('请输入数字'))
               } else {
@@ -377,7 +378,7 @@
           ],
           placeFarthestOrderDay: [
             { validator: (rule, value, callback) => {
-              const reg = /^[0-9]+.?[0-9]*$/
+              const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
               if (!reg.test(value)) {
                 callback(new Error('请输入数字'))
               } else {
@@ -387,7 +388,7 @@
           ],
           placeUpperLimit: [
             { validator: (rule, value, callback) => {
-              const reg = /^[0-9]+.?[0-9]*$/
+              const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
               if (!reg.test(value)) {
                 callback(new Error('请输入数字'))
               } else {
@@ -397,7 +398,7 @@
           ],
           placeAttachCharge: [
             { validator: (rule, value, callback) => {
-              const reg = /^[0-9]+.?[0-9]*$/
+              const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
               if (!reg.test(value)) {
                 callback(new Error('请输入数字'))
               } else {
@@ -407,7 +408,7 @@
           ],
           placeCharge: [
             { validator: (rule, value, callback) => {
-              const reg = /^[0-9]+.?[0-9]*$/
+              const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
               if (!reg.test(value)) {
                 callback(new Error('请输入数字'))
               } else {
@@ -508,6 +509,10 @@
         })
       },
       async createData() {
+        const isValidate = await new Promise(this.$refs.dataForm.validate)
+        if (!isValidate) {
+          return this.$notify({ title: '提示', message: '请填写正确的信息！', type: 'info', duration: 2000 })
+        }
         // this.temp.communityId = this.$store.getters.communityId
         this.temp.placeStartTime = this.placeStartTime ? this.$moment(this.placeStartTime).format('YYYY-MM-DD HH:mm:ss') : ''
         this.temp.placeEndTime = this.placeEndTime ? this.$moment(this.placeEndTime).format('YYYY-MM-DD HH:mm:ss') : ''
@@ -537,6 +542,10 @@
         })
       },
       async updateData() {
+        const isValidate = await new Promise(this.$refs.dataForm.validate)
+        if (!isValidate) {
+          return this.$notify({ title: '提示', message: '请填写正确的信息！', type: 'info', duration: 2000 })
+        }
         // this.temp.communityId = this.$store.getters.communityId
         this.temp.placeStartTime = this.placeStartTime ? this.$moment(this.placeStartTime).format('YYYY-MM-DD HH:mm:ss') : ''
         this.temp.placeEndTime = this.placeEndTime ? this.$moment(this.placeEndTime).format('YYYY-MM-DD HH:mm:ss') : ''

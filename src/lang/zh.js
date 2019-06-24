@@ -64,7 +64,7 @@ export default {
     i18n: '国际化',
     externalLink: '外链',
     community: '社区管理',
-    communityTest: '社区Test',
+    communityTest: '社区',
     communityList: '社区列表',
     communityCreate: '创建社区',
     administrator: '社区物业管理员',
@@ -163,7 +163,9 @@ export default {
     confirmPay: '确认收款',
     linked: '关联',
     bindUser: '绑定业主',
-    download: '下载'
+    download: '下载',
+    importUnit: '导入单元',
+    importUser: '导入业主'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',

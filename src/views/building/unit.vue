@@ -18,7 +18,9 @@
           :label="item.label"
           :value="item.value" />
       </el-select>
-      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
+      <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImportUnit()">{{ $t('table.importUnit') }}</el-button>
+      <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImportUnit()">导入文件模板</el-button>
+      <el-button size="mini" type="success" style="position: relative;top: 8px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('unit.unitPurpose')" min-width="150px" align="center">
@@ -328,7 +330,7 @@
           }],
           unitRelativeProportion: [
             { validator: (rule, value, callback) => {
-              const reg = /^[0-9]+.?[0-9]*$/
+              const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
               if (!reg.test(value)) {
                 callback(new Error('请输入数字'))
               } else {
@@ -338,7 +340,7 @@
           ],
           unitChildRelativeProportion: [
             { validator: (rule, value, callback) => {
-              const reg = /^[0-9]+.?[0-9]*$/
+              const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
               if (!reg.test(value)) {
                 callback(new Error('请输入数字'))
               } else {
@@ -348,7 +350,17 @@
           ],
           unitTitle: [
             { validator: (rule, value, callback) => {
-              const reg = /^[0-9]+.?[0-9]*$/
+              const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              } else {
+                callback()
+              }
+            }, trigger: ['blur', 'change'] }
+          ],
+          unitCoveredArea: [
+            { validator: (rule, value, callback) => {
+              const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
               if (!reg.test(value)) {
                 callback(new Error('请输入数字'))
               } else {
@@ -457,8 +469,16 @@
           this.$refs['dataForm'].clearValidate()
         })
       },
+      // 导入单元
+      handleImportUnit() {
+        console.log('handleImportUnit')
+      },
       async createData() {
         // this.temp.communityId = this.$store.getters.communityId
+        const isValidate = await new Promise(this.$refs.dataForm.validate)
+        if (!isValidate) {
+          return this.$notify({ title: '提示', message: '请填写正确的信息！', type: 'info', duration: 2000 })
+        }
         const response = await createUnit(this.temp).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
@@ -481,6 +501,10 @@
         })
       },
       async updateData() {
+        const isValidate = await new Promise(this.$refs.dataForm.validate)
+        if (!isValidate) {
+          return this.$notify({ title: '提示', message: '请填写正确的信息！', type: 'info', duration: 2000 })
+        }
         this.listLoading = true
         // this.temp.communityId = this.$store.getters.communityId
         const response = await updateUnit(this.temp).catch(e => e)

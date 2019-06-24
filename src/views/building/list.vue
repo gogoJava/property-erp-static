@@ -259,7 +259,7 @@
           }],
           floorLowNum: [
             { validator: (rule, value, callback) => {
-              const reg = /^[0-9]+.?[0-9]*$/
+              const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
               if (!reg.test(value)) {
                 callback(new Error('请输入数字'))
               } else {
@@ -269,7 +269,7 @@
           ],
           floorUpNum: [
             { validator: (rule, value, callback) => {
-              const reg = /^[0-9]+.?[0-9]*$/
+              const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
               if (!reg.test(value)) {
                 callback(new Error('请输入数字'))
               } else {
@@ -364,6 +364,10 @@
         })
       },
       async createData() {
+        const isValidate = await new Promise(this.$refs.dataForm.validate)
+        if (!isValidate) {
+          return this.$notify({ title: '提示', message: '请填写正确的信息！', type: 'info', duration: 2000 })
+        }
         // this.temp.communityId = this.$store.getters.communityId
         const response = await createBuilding(this.temp).catch(e => e)
         if (response.code !== 200) {
@@ -397,6 +401,10 @@
         })
       },
       async updateData() {
+        const isValidate = await new Promise(this.$refs.dataForm.validate)
+        if (!isValidate) {
+          return this.$notify({ title: '提示', message: '请填写正确的信息！', type: 'info', duration: 2000 })
+        }
         this.listLoading = true
         // this.temp.communityId = this.$store.getters.communityId
         const response = await updateBuilding(this.temp).catch(e => e)

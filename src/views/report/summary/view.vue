@@ -209,7 +209,7 @@
         rules: {
           recordLateFee: [
             { validator: (rule, value, callback) => {
-              const reg = /^[0-9]+.?[0-9]*$/
+              const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
               if (!reg.test(value)) {
                 callback(new Error('请输入数字'))
               } else {
@@ -219,7 +219,7 @@
           ],
           recordLateDate: [
             { validator: (rule, value, callback) => {
-              const reg = /^[0-9]+.?[0-9]*$/
+              const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
               if (!reg.test(value)) {
                 callback(new Error('请输入数字'))
               } else {
@@ -303,6 +303,10 @@
         })
       },
       async updateData() {
+        const isValidate = await new Promise(this.$refs.dataForm.validate)
+        if (!isValidate) {
+          return this.$notify({ title: '提示', message: '请填写正确的信息！', type: 'info', duration: 2000 })
+        }
         this.temp.recordDate = this.recordDate ? this.$moment(this.recordDate).format('YYYY/MM') : ''
         this.temp.recordTime = this.recordTime ? this.$moment(this.recordTime).format('YYYY-MM-DD HH:mm') : ''
         this.listLoading = true

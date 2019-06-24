@@ -332,7 +332,7 @@
           }],
           assetMaintainRemindCycle: [
             { validator: (rule, value, callback) => {
-              const reg = /^[0-9]+.?[0-9]*$/
+              const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
               if (!reg.test(value)) {
                 callback(new Error('请输入数字'))
               } else {
@@ -433,6 +433,10 @@
         })
       },
       async createData() {
+        const isValidate = await new Promise(this.$refs.dataForm.validate)
+        if (!isValidate) {
+          return this.$notify({ title: '提示', message: '请填写正确的信息！', type: 'info', duration: 2000 })
+        }
         this.temp.assetBuyDate = this.assetBuyDate ? this.$moment(this.assetBuyDate).format('YYYY-MM-DD') : ''
         this.temp.assetOverdueDate = this.assetOverdueDate ? this.$moment(this.assetOverdueDate).format('YYYY-MM-DD') : ''
         // this.temp.communityId = this.$store.getters.communityId
@@ -460,6 +464,10 @@
         })
       },
       async updateData() {
+        const isValidate = await new Promise(this.$refs.dataForm.validate)
+        if (!isValidate) {
+          return this.$notify({ title: '提示', message: '请填写正确的信息！', type: 'info', duration: 2000 })
+        }
         this.listLoading = true
         // this.temp.communityId = this.$store.getters.communityId
         this.temp.assetBuyDate = this.assetBuyDate ? this.$moment(this.assetBuyDate).format('YYYY-MM-DD') : ''

@@ -1,7 +1,7 @@
 <template>
   <div class="chart-container">
     <div style="padding: 15px;"><el-date-picker v-model="yearMonth" type="month" placeholder="选择年月" @change="loadData"/></div>
-    <chart height="100%" width="100%"/>
+    <chart :chart-data="chartData" height="100%" width="100%"/>
   </div>
 </template>
 
@@ -17,7 +17,8 @@ export default {
   data() {
       return {
         tableKey: 0,
-        yearMonth: ''
+        yearMonth: '',
+        chartData: []
       }
   },
   created() {
@@ -32,7 +33,7 @@ export default {
       if (this.$store.getters.isSuper) delete param.communityId
       if (this.yearMonth) delete param.yearMonth
       const res = await getPlaceStatistic(param).catch(e => e)
-      console.log('res', res)
+      this.chartData = [...res.data].reverse()
     }
   }
 }

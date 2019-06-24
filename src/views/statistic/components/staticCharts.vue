@@ -24,15 +24,30 @@ export default {
     height: {
       type: String,
       default: '200px'
+    },
+    chartData: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      yData: [],
+      xData: []
+    }
+  },
+  watch: {
+    chartData() {
+      this.chartData.forEach(element => {
+        this.xData.push(element.yearMonth)
+        this.yData.push(element.hours)
+      })
+      this.initChart()
     }
   },
   mounted() {
-    this.initChart()
+    // this.initChart()
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -44,17 +59,9 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(document.getElementById(this.id))
-      const xData = (function() {
-        const data = []
-        for (let i = 1; i < 13; i++) {
-          data.push(i + 'month')
-        }
-        return data
-      }())
       this.chart.setOption({
         backgroundColor: '#344b58',
         title: {
-          text: '使用统计',
           x: '20',
           top: '20',
           textStyle: {
@@ -90,10 +97,11 @@ export default {
           textStyle: {
             color: '#90979c'
           },
-          data: ['average']
+          data: ['场所使用统计']
         },
         calculable: true,
         xAxis: [{
+          name: '日期',
           type: 'category',
           axisLine: {
             lineStyle: {
@@ -113,9 +121,10 @@ export default {
             interval: 0
 
           },
-          data: xData
+          data: this.xData
         }],
         yAxis: [{
+          name: '使用时间(hours)',
           type: 'value',
           splitLine: {
             show: false
@@ -162,7 +171,7 @@ export default {
           end: 35
         }],
         series: [{
-          name: 'average',
+          name: '场所使用统计',
           type: 'line',
           stack: 'total',
           symbolSize: 10,
@@ -180,20 +189,7 @@ export default {
               }
             }
           },
-          data: [
-            1036,
-            3693,
-            2962,
-            3810,
-            2519,
-            1915,
-            1748,
-            4675,
-            6209,
-            4323,
-            2865,
-            4298
-          ]
+          data: this.yData
         }
         ]
       })

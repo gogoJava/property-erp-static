@@ -72,7 +72,6 @@
         this.emitInput(this.tempUrl)
       },
       async httpRequest(option) {
-        console.log('option', option)
         const loadingInstance = Loading.service({
           fullscreen: true,
           text: '上传文件中...'

@@ -2,9 +2,11 @@
   <div class="proprietor-container">
     <div class="filter-container">
       <el-input :placeholder="$t('proprietor.username') + ' ' + $t('proprietor.name')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
-      <!-- <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImportUser()">{{ $t('table.importUser') }}</el-button> -->
-      <import-user :community-id="communityId" style="position: relative;top: -4px;left: 15px;display: inline-block;"/>
-      <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 30px;" @click="handleDownUser()">下载文件模板</el-button>
+      <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleDownUser()">下载文件模板</el-button>
+      <!-- 超级管理员 -->
+      <el-button v-if="$store.getters.isSuper" size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImportUser()">{{ $t('table.importUser') }}</el-button>
+      <!-- 普通管理员 -->
+      <import-user v-if="!$store.getters.isSuper" :community-id="$store.getters.communityId" style="position: relative;top: -4px;left: 30px;display: inline-block;" @success="importUserSuccess"/>
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
@@ -213,6 +215,13 @@
     <el-dialog :title="$t('proprietor.userWithCommunities')" :visible.sync="unitShow" width="80%">
       <linked-unit v-if="unitShow" :user-id="userId" :all-units="allUnits" @refresh-data="unitShow = false" @refresh-unit-data="getAllList"/>
     </el-dialog>
+    <!-- 导入业主 -->
+    <el-dialog :title="$t('table.importUser')" :visible.sync="importUserShow">
+      <el-select v-model="communityId" placeholder="请选择要导入的社区" style="position: relative;top: -2px;">
+        <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
+      </el-select>
+      <import-user :community-id="communityId" style="position: relative;top: -4px;left: 15px;display: inline-block;" @success="importUserSuccess"/>
+    </el-dialog>
   </div>
 </template>
 
@@ -236,6 +245,7 @@
   import SingleImage from './singleImage'
   import LinkedUnit from './LinkedUnit'
   import ImportUser from './ImportUser'
+  import { downloadFile } from '@/utils/downFile'
 
   export default {
     name: 'Proprietor',
@@ -366,7 +376,8 @@
         communitys: [],
         userIds: '',
         allUnits: [],
-        communityId: ''
+        communityId: '',
+        importUserShow: false
       }
     },
     watch: {
@@ -422,18 +433,16 @@
         })
       },
       handleImportUser() {
-        console.log('handleImportUser')
+        this.communityId = ''
+        this.importUserShow = true
+      },
+      importUserSuccess() {
+        this.importUserShow = false
+        this.getList()
       },
       handleDownUser() {
-        // window.open('http://songsong.fun/static/css/app.738951f9.css')
-        const url = 'http://songsong.fun/static/css/app.738951f9.css'
-        const elt = document.createElement('a')
-        elt.setAttribute('href', url)
-        elt.setAttribute('download', 'file')
-        elt.style.display = 'none'
-        document.body.appendChild(elt)
-        elt.click()
-        document.body.removeChild(elt)
+        const url = 'http://songsong.fun/down/file/user_unit.xlsx.zip'
+        downloadFile(url)
       },
       async createData() {
         // this.temp.communityId = this.$store.getters.communityId

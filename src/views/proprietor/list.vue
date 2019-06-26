@@ -2,8 +2,9 @@
   <div class="proprietor-container">
     <div class="filter-container">
       <el-input :placeholder="$t('proprietor.username') + ' ' + $t('proprietor.name')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
-      <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImportUser()">{{ $t('table.importUser') }}</el-button>
-      <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImportUser()">导入文件模板</el-button>
+      <!-- <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImportUser()">{{ $t('table.importUser') }}</el-button> -->
+      <import-user :community-id="communityId" style="position: relative;top: -4px;left: 15px;display: inline-block;"/>
+      <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 30px;" @click="handleDownUser()">下载文件模板</el-button>
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
@@ -234,13 +235,15 @@
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import SingleImage from './singleImage'
   import LinkedUnit from './LinkedUnit'
+  import ImportUser from './ImportUser'
 
   export default {
     name: 'Proprietor',
     components: {
       Pagination,
       SingleImage,
-      LinkedUnit
+      LinkedUnit,
+      ImportUser
     },
     directives: {
       waves
@@ -362,7 +365,8 @@
         unitShow: false,
         communitys: [],
         userIds: '',
-        allUnits: []
+        allUnits: [],
+        communityId: ''
       }
     },
     watch: {
@@ -419,6 +423,17 @@
       },
       handleImportUser() {
         console.log('handleImportUser')
+      },
+      handleDownUser() {
+        // window.open('http://songsong.fun/static/css/app.738951f9.css')
+        const url = 'http://songsong.fun/static/css/app.738951f9.css'
+        const elt = document.createElement('a')
+        elt.setAttribute('href', url)
+        elt.setAttribute('download', 'file')
+        elt.style.display = 'none'
+        document.body.appendChild(elt)
+        elt.click()
+        document.body.removeChild(elt)
       },
       async createData() {
         // this.temp.communityId = this.$store.getters.communityId

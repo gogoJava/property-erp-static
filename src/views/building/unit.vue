@@ -18,8 +18,9 @@
           :label="item.label"
           :value="item.value" />
       </el-select>
-      <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImportUnit()">{{ $t('table.importUnit') }}</el-button>
-      <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImportUnit()">导入文件模板</el-button>
+      <!-- <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImportUnit()">{{ $t('table.importUnit') }}</el-button> -->
+      <import-unit :building-id="buildingId" style="position: relative;top: -4px;left: 15px;display: inline-block;"/>
+      <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 30px;" @click="handleDownUnit()">下载文件模板</el-button>
       <el-button size="mini" type="success" style="position: relative;top: 8px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
@@ -208,7 +209,8 @@
     updateUnit,
     delUnit,
     batchAddUserUnitId,
-    getUnitUserList
+    getUnitUserList,
+    uploadImportUnit
   } from '@/api/unit'
   import {
     getBuildingList
@@ -219,11 +221,13 @@
   import { getCommunityList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+  import ImportUnit from './ImportUnit'
 
   export default {
     name: 'Unit',
     components: {
-      Pagination
+      Pagination,
+      ImportUnit
     },
     directives: {
       waves
@@ -470,8 +474,16 @@
         })
       },
       // 导入单元
-      handleImportUnit() {
-        console.log('handleImportUnit')
+      async handleImportUnit() {
+        const { code, msg } = await uploadImportUnit({ buildingId: this.buildingId })
+        if (code !== 200) {
+          return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+        }
+        return this.$notify({ title: '成功', message: '导入文件成功！', type: 'success', duration: 2000 })
+      },
+      // 下载文件模板
+      handleDownUnit() {
+        console.log('handleDownUnit')
       },
       async createData() {
         // this.temp.communityId = this.$store.getters.communityId

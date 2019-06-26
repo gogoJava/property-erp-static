@@ -71,3 +71,15 @@ export function getUnitUserList(query) {
     params: query
   })
 }
+
+// 导入文件
+export function uploadImportUnit(params) {
+  return request({
+    url: '/back/unit/import',
+    method: 'post',
+    data: params,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+}

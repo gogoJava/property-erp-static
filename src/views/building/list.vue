@@ -40,11 +40,11 @@
           <span>{{ scope.row.floorLowNum }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('building.floorUpNum')" min-width="80px" align="center">
+      <!-- <el-table-column :label="$t('building.floorUpNum')" min-width="80px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.floorUpNum }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column :label="$t('building.fullAddress')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.fullAddress }}</span>
@@ -108,11 +108,11 @@
               <el-input v-model="temp.floorLowNum" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <!-- <el-col :span="12">
             <el-form-item :label="$t('building.floorUpNum')" prop="floorUpNum">
               <el-input v-model="temp.floorUpNum" />
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
         <el-row>
           <el-col :span="16">
@@ -123,16 +123,42 @@
         </el-row>
         <el-form-item v-if="!!temp.managementType" :label="$t('building.buildingChildList')" prop="buildingChildList">
           <el-row>
-            <el-col :span="8"><div>排序</div></el-col>
-            <el-col :span="8"><div>子部分之提示</div></el-col>
-            <el-col :span="8"><div>子部分之值</div></el-col>
+            <el-col v-show="false" :span="1"><div>排序</div></el-col>
+            <el-col :span="5"><div>名稱</div></el-col>
+            <el-col :span="4"><div>數量</div></el-col>
+            <el-col :span="5"><div>總面積</div></el-col>
+            <el-col :span="5"><div>用途</div></el-col>
+            <el-col :span="5"><div>千分比之相对价值</div></el-col>
           </el-row>
           <el-row v-for="(item, index) in temp.buildingChildList" :key="index">
-            <el-col :span="8"><el-input v-model="item.sort" placeholder="1" /></el-col>
-            <el-col :span="8"><el-input v-model="item.tips" placeholder="数量"/></el-col>
-            <el-col :span="8"><el-input v-model="item.value" placeholder="20"><el-button slot="append" icon="el-icon-minus" @click.native="cutChildList(index)"/></el-input></el-col>
+            <el-col v-show="false" :span="1"><el-input v-model="item.sort" placeholder="1" /></el-col>
+            <el-col :span="5"><el-input v-model="item.name" placeholder="名稱"/></el-col>
+            <el-col :span="4"><el-input v-model="item.num" placeholder="數量"/></el-col>
+            <el-col :span="5"><el-input v-model="item.area" placeholder="總面積"/></el-col>
+            <el-col :span="5">
+              <el-select v-model="temp.tips" placeholder="请选择用途">
+                <el-option value="商業" label="商業" />
+                <el-option value="輕型汽車/電單車" label="輕型汽車/電單車" />
+                <el-option value="住宅" label="住宅" />
+              </el-select>
+            </el-col>
+            <el-col :span="5"><el-input v-model="item.value" placeholder="20"><el-button slot="append" icon="el-icon-minus" @click.native="cutChildList(index)"/></el-input></el-col>
           </el-row>
           <el-row style="text-align: center;"><span style="cursor: pointer;font-size: 30px;" @click="addChildList">+</span></el-row>
+        </el-form-item>
+        <!-- 层数内容 -->
+        <el-form-item :label="$t('building.layersList')" prop="layersList">
+          <el-row>
+            <el-col v-show="false" :span="1"><div>排序</div></el-col>
+            <el-col :span="4"><div>层数</div></el-col>
+            <el-col :span="12"><div>内容</div></el-col>
+          </el-row>
+          <el-row v-for="(item, index) in temp.layersList" :key="index">
+            <el-col v-show="false" :span="1"><el-input v-model="item.sort" placeholder="1" /></el-col>
+            <el-col :span="4"><el-input v-model="item.name" placeholder="层数"/></el-col>
+            <el-col :span="12"><el-input v-model="item.value" placeholder="内容"><el-button slot="append" icon="el-icon-minus" @click.native="cutLayersChildList(index)"/></el-input></el-col>
+          </el-row>
+          <el-row style="text-align: center;"><span style="cursor: pointer;font-size: 30px;" @click="addLayersChildList">+</span></el-row>
         </el-form-item>
         <!-- 综合类型才有 -->
         <el-form-item v-if="temp.managementType" :label="$t('building.commonPdf')">
@@ -218,17 +244,18 @@
         statusOptions: ['published', 'draft', 'deleted'],
         showReviewer: false,
         temp: {
-          buildingDirection: '', // 楼宇方向
+          buildingDirection: '', // 建筑方向
           buildingId: '', // buildingId
-          buildingName: '', // 楼宇名字
-          buildingNo: '', // 楼宇编号
-          buildingStruct: '', // 楼宇结构
+          buildingName: '', // 建筑名字
+          buildingNo: '', // 建筑编号
+          buildingStruct: '', // 建筑结构
           communityId: '', // 社区ID
           floorLowNum: null, // 楼下几层
           floorUpNum: null, // 楼上几层
-          fullAddress: '', // 楼宇全址
+          fullAddress: '', // 建筑全址
           commonPdf: [],
           buildingChildList: [],
+          layersList: [], // 层数内容
           rosterPdf: [],
           managementType: null
         },
@@ -266,17 +293,17 @@
                 callback()
               }
             }, trigger: ['blur', 'change'] }
-          ],
-          floorUpNum: [
-            { validator: (rule, value, callback) => {
-              const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
-              if (!reg.test(value)) {
-                callback(new Error('请输入数字'))
-              } else {
-                callback()
-              }
-            }, trigger: ['blur', 'change'] }
           ]
+          // floorUpNum: [
+          //   { validator: (rule, value, callback) => {
+          //     const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
+          //     if (!reg.test(value)) {
+          //       callback(new Error('请输入数字'))
+          //     } else {
+          //       callback()
+          //     }
+          //   }, trigger: ['blur', 'change'] }
+          // ]
         },
         downloadLoading: false,
         password: null,
@@ -348,6 +375,7 @@
           type: '',
           commonPdf: [],
           buildingChildList: [],
+          layersList: [],
           rosterPdf: [],
           managementType: null
         }
@@ -390,6 +418,9 @@
         }
         if (!this.temp.buildingChildList) {
           this.temp.buildingChildList = []
+        }
+        if (!this.temp.layersList) {
+          this.temp.layersList = []
         }
         if (!this.temp.rosterPdf) {
           this.temp.rosterPdf = []
@@ -448,11 +479,27 @@
           childId: '',
           sort: null,
           tips: null,
+          name: '',
+          num: null,
+          area: null,
           value: null
         })
       },
       cutChildList(index) {
         this.temp.buildingChildList.splice(index, 1)
+      },
+      // 层数内容
+      addLayersChildList() {
+        this.temp.layersList.push({
+          buildingId: '',
+          childId: '',
+          sort: null,
+          val: null,
+          value: null
+        })
+      },
+      cutLayersChildList(index) {
+        this.temp.layersList.splice(index, 1)
       },
       async querBuildingDetail(buildingId) {
         const res = await getBuildingDetail({ buildingId }).catch(e => e)

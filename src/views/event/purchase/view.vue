@@ -27,7 +27,7 @@
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('event.community')" prop="communityId" align="center" min-width="120">
         <template slot-scope="scope">
-          <span>{{ scope.row.community.communityName }}</span>
+          <span>{{ scope.row.community ? scope.row.community.communityName : '--' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('event.eventType')" min-width="80px" align="center">
@@ -65,11 +65,11 @@
           <span>{{ scope.row.eventFinishDate ? $moment(scope.row.eventFinishDate).format('YYYY-MM-DD') : '--' }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('event.eventRemindCycle')" min-width="80px" align="center">
+      <!-- <el-table-column :label="$t('event.eventRemindCycle')" min-width="80px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.eventRemindCycle }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column :label="$t('event.eventRemark')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.eventRemark }}</span>
@@ -169,13 +169,13 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="temp.eventType === 2">
+        <!-- <el-row v-if="temp.eventType === 2">
           <el-col :span="12">
             <el-form-item :label="$t('event.eventRemindCycle')" prop="eventRemindCycle">
               <el-input v-model="temp.eventRemindCycle" />
             </el-form-item>
           </el-col>
-        </el-row>
+        </el-row> -->
         <!-- 事件类型是投诉的时候才有 -->
         <el-row v-if="temp.eventType === 3">
           <el-col :span="12">

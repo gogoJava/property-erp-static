@@ -245,19 +245,20 @@ export default {
   },
   // 建筑
   building: {
-    buildingDirection: '楼宇方向', // 楼宇方向
+    buildingDirection: '建筑方向', // 建筑方向
     buildingId: 'ID', // buildingId
-    buildingName: '楼宇名称', // 楼宇名称
-    buildingNo: '楼宇编号', // 楼宇编号
-    buildingStruct: '楼宇结构', // 楼宇结构
+    buildingName: '建筑名称', // 建筑名称
+    buildingNo: '建筑编号', // 建筑编号
+    buildingStruct: '建筑结构', // 建筑结构
     communityId: '社区', // 社区ID
     deleted: '是否注销', // 是否注销
-    floorLowNum: '楼下几层', // 楼下几层
+    floorLowNum: '层数', // 楼下几层
     floorUpNum: '楼上几层', // 楼上几层
-    fullAddress: '楼宇全址', // 楼宇全址
-    floorList: '楼宇楼层',
-    commonPdf: '楼宇之公共部分', // 楼宇之公共部分
-    buildingChildList: '楼宇子部分', // 楼宇子部分
+    fullAddress: '建筑全址', // 建筑全址
+    floorList: '建筑楼层',
+    commonPdf: '建筑之公共部分', // 建筑之公共部分
+    buildingChildList: '建筑子部分', // 建筑子部分
+    layersList: '层数内容',
     rosterPdf: '业主花名册文件',
     managementType: '管理类型' // 管理类型(0简单管理1综合管理)
   },
@@ -383,7 +384,7 @@ export default {
     adv: '广告',
     advId: 'ID', // ID
     building: '建筑',
-    buildingId: '楼宇id', // 楼宇id
+    buildingId: '建筑id', // 建筑id
     community: '社区', // 社区
     communityId: 'communityId', // communityId
     describe: '描述', // 描述
@@ -418,7 +419,7 @@ export default {
   },
   visitor: {
     building: '建筑',
-    buildingId: '楼宇id', // 楼宇id
+    buildingId: '建筑id', // 建筑id
     community: '社区', // 社区
     communityId: 'communityId', // communityId
     createTime: '创建时间', // createTime

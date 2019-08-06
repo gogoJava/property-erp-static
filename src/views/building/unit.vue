@@ -76,7 +76,8 @@
       </el-table-column>
       <el-table-column :label="$t('unit.unitChildRelativeProportion')" width="190px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.unitChildRelativeProportion }}</span>
+          <span v-if="communityType(scope.row)">{{ scope.row.unitChildRelativeProportion }}</span>
+          <span v-else>--</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="200" class-name="small-padding fixed-width" fixed="right">
@@ -132,7 +133,7 @@
         <el-form-item :label="$t('unit.unitRelativeProportion')" prop="unitRelativeProportion">
           <el-input v-model="temp.unitRelativeProportion" />
         </el-form-item>
-        <el-form-item :label="$t('unit.unitChildRelativeProportion')" prop="unitChildRelativeProportion">
+        <el-form-item v-if="!!temp.managementType" :label="$t('unit.unitChildRelativeProportion')" prop="unitChildRelativeProportion">
           <el-input v-model="temp.unitChildRelativeProportion" />
         </el-form-item>
         <el-form-item :label="$t('unit.unitTitle')" prop="unitTitle">
@@ -396,6 +397,10 @@
           { label: '住宅', value: 3 }
         ]
         return list
+      },
+      setectedCommunity() {
+        if (!this.temp.communityId) return null
+        return this.communityList.find(v => v.communityId === this.temp.communityId)
       }
     },
     watch: {
@@ -424,6 +429,9 @@
           const remainder = parseInt(this.unitInfo.unitTitle % length)
           return { ...v, title: (title + ((remainder && remainder > index) ? 1 : 0)) }
         })
+      },
+      'temp.communityId'() {
+        this.temp.managementType = this.setectedCommunity && this.setectedCommunity.communityManagementType
       }
     },
     async created() {
@@ -432,6 +440,11 @@
       // this.queryCommunityList()
     },
     methods: {
+      communityType(info) {
+        if (!info.communityId) return null
+        const obj = this.communityList.find(v => v.communityId === info.communityId)
+        return obj && obj.communityManagementType
+      },
       async getList() {
         this.listLoading = true
         const { code, msg, data } = await getUnitList({ ...this.listQuery, buildingId: this.buildingId }).catch(e => e)

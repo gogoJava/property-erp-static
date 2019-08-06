@@ -48,7 +48,7 @@
       </el-table-column>
       <el-table-column :label="$t('notice.community')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.community.communityName || '全部' }}</span>
+          <span>{{ scope.row.community ? scope.row.community.communityName : '全部' }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('notice.buildingId')" min-width="80px" align="center">

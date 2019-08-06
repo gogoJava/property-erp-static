@@ -173,7 +173,7 @@
         communityList: [],
         buildingList: [],
         temp: {
-          buildingId: '', // 楼宇id
+          buildingId: '', // 建筑id
           communityId: '', // communityId
           createTime: null, // createTime
           updateTime: null, // updateTime

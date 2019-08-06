@@ -228,7 +228,7 @@
               }
               return {
                 ...value,
-                label: value.buildingName + '(楼宇)',
+                label: value.buildingName + '(建筑)',
                 type: 2,
                 children: unitList
               }

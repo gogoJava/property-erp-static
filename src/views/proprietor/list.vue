@@ -52,7 +52,7 @@
       </el-table-column>
       <el-table-column :label="$t('proprietor.marriageSystem')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.marriageSystem }}</span>
+          <span>{{ marriageSystemFilter(scope.row.marriageSystem) }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('proprietor.idCard')" min-width="180px" align="center">
@@ -326,6 +326,7 @@
           communities: []
         },
         marriageSystemList: [
+          { label: '公司', value: 'S' },
           { label: '未婚', value: '未婚' },
           { label: '离婚', value: '离婚' },
           { label: '已婚A', value: '已婚A' },
@@ -391,6 +392,11 @@
       this.getAllList()
     },
     methods: {
+      marriageSystemFilter(value) {
+        const obj = this.marriageSystemList.find(item => item.value === value)
+        if (!obj) return '无'
+        return obj.label
+      },
       async getList() {
         this.listLoading = true
         const { code, msg, data } = await getProprietorList(this.listQuery).catch(e => e)

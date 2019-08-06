@@ -23,7 +23,7 @@
       },
       type: {
         type: Number,
-        default: 2 // 0社区pdf 1事件pdf 2楼宇pdf 3楼宇业主名册 4视频广告文件
+        default: 2 // 0社区pdf 1事件pdf 2建筑pdf 3建筑业主名册 4视频广告文件
       },
       action: {
         type: String,

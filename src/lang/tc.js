@@ -227,7 +227,7 @@ export default {
     communityRemark: '備註', // 備註
     communityRoadArea: '道路面積', // 道路面積
     communityRoomCount: '房間總數', // 房间总数
-    commonPdf: '樓宇之公共部分', // 社區之公共部分
+    commonPdf: '建築之公共部分', // 社區之公共部分
     communityShopsCount: '商舖數量'
   },
   // 管理员
@@ -245,19 +245,20 @@ export default {
   },
   // 建築
   building: {
-    buildingDirection: '樓宇方向', // 樓宇方向
+    buildingDirection: '建築方向', // 建築方向
     buildingId: 'ID', // buildingId
-    buildingName: '樓宇名稱', // 樓宇名稱
-    buildingNo: '樓宇編號', // 樓宇編號
-    buildingStruct: '樓宇結構', // 樓宇結構
+    buildingName: '建築名稱', // 建築名稱
+    buildingNo: '建築編號', // 建築編號
+    buildingStruct: '建築結構', // 建築結構
     communityId: '社區', // 社區ID
     deleted: '是否註銷', // 是否註銷
-    floorLowNum: '樓下幾層', // 樓下幾層
+    floorLowNum: '層數', // 樓下幾層
     floorUpNum: '樓上幾層', // 樓上幾層
-    fullAddress: '樓宇全址', // 樓宇全址
-    floorList: '樓宇樓層',
-    commonPdf: '樓宇之公共部分', // 楼宇之公共部分
-    buildingChildList: '樓宇子部分', // 楼宇子部分
+    fullAddress: '建築全址', // 建築全址
+    floorList: '建築樓層',
+    commonPdf: '建築之公共部分', // 楼宇之公共部分
+    buildingChildList: '建築子部分', // 楼宇子部分
+    layersList: '層數內容',
     rosterPdf: '業主花名冊文件',
     managementType: '管理類型' // 管理类型(0简单管理1综合管理)
   },
@@ -383,7 +384,7 @@ export default {
     adv: '廣告',
     advId: 'ID', // ID
     building: '建築',
-    buildingId: '樓宇id', // 樓宇id
+    buildingId: '建築id', // 建築id
     community: '社區', // 社區
     communityId: 'communityId', // communityId
     describe: '描述', // 描述
@@ -418,7 +419,7 @@ export default {
   },
   visitor: {
     building: '建築',
-    buildingId: '樓宇id', // 樓宇id
+    buildingId: '建築id', // 建築id
     community: '社區', // 社區
     communityId: 'communityId', // communityId
     createTime: '創建時間', // createTime

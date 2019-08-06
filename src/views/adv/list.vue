@@ -222,7 +222,7 @@
         showReviewer: false,
         temp: {
           advId: '', // ID
-          buildingId: '', // 楼宇id
+          buildingId: '', // 建筑id
           community: null, // 社区
           communityId: '', // communityId
           describe: '', // 描述
@@ -312,7 +312,7 @@
         this.announcementDate = []
         this.temp = {
           advId: '', // ID
-          buildingId: '', // 楼宇id
+          buildingId: '', // 建筑id
           community: null, // 社区
           communityId: '', // communityId
           describe: '', // 描述

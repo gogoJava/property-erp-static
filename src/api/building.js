@@ -46,7 +46,7 @@ export function delBuilding(params) {
   })
 }
 
-// 社区楼宇单元
+// 社区建筑单元
 export function getCommunityTree() {
   return request({
     url: '/back/building/communityWithBuildingAndUnit',

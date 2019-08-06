@@ -252,12 +252,13 @@ export default {
     buildingStruct: 'Building Structure', // 楼宇结构
     communityId: 'Community', // 社区ID
     deleted: 'Logout', // 是否注销
-    floorLowNum: 'Several Floors Downstairs', // 楼下几层
+    floorLowNum: 'Number of layers', // 楼下几层
     floorUpNum: 'Several Floors Upstairs', // 楼上几层
     fullAddress: 'Building Address', // 楼宇全址
     floorList: 'Building floor',
     commonPdf: 'Public part of the building', // 楼宇之公共部分
     buildingChildList: 'Building subsection', // 楼宇子部分
+    layersList: 'Layer content',
     rosterPdf: "Owner's roster document",
     managementType: 'Management type' // 管理类型(0简单管理1综合管理)
   },

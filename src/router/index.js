@@ -119,7 +119,7 @@ export const asyncRouterMap = [
       }
     ]
   },
-  // 物业管理员
+  // 社区
   {
     path: '/community/manage',
     component: Layout,

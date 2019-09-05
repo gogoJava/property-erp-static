@@ -3,7 +3,8 @@
     <div class="filter-container">
       <el-input :placeholder="$t('charge.unitItemId') + ' ' + $t('charge.userId')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-input :placeholder="$t('charge.unitNo')" v-model="listQuery.unitNo" style="width: 200px;position: relative;left: 30px;" class="filter-item" />
-      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleExport()">{{ $t('table.export') }}</el-button>
+      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleExport()">
+        {{ $t('table.export') }}</el-button>
       <el-button size="mini" type="primary" style="position: relative;right: 15px;top: -4px;float: right;" @click="confirmPay()">{{ $t('table.confirmPay') }}</el-button>
       <el-button type="primary" size="mini" style="position: relative;right: 15px;top: -4px;float: right;" @click="paymentNotice()">{{ $t('table.paymentNotice') }}</el-button>
     </div>
@@ -67,7 +68,8 @@
       <el-table-column :label="$t('table.actions')" align="center" width="260" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-          <el-button type="text" size="mini" @click="paymentNotice(scope.row)">{{ $t('table.paymentNotice') }}</el-button>
+          <el-button type="text" size="mini" @click="paymentNotice(scope.row)">{{ $t('table.paymentNotice') }}
+          </el-button>
           <el-button type="text" size="mini" @click="confirmPay(scope.row)">{{ $t('table.confirmPay') }}</el-button>
           <!-- <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
           </el-button> -->
@@ -132,7 +134,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item :label="$t('charge.recordTime')" prop="recordTime">
-              <el-date-picker v-model="recordTime" type="datetime" format="yyyy-MM-DD HH:mm" placeholder="选择日期"/>
+              <el-date-picker v-model="recordTime" type="datetime" format="yyyy-MM-DD HH:mm" placeholder="选择日期" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -143,46 +145,54 @@
       </div>
     </el-dialog>
     <!-- 付款通知书 -->
-    <el-dialog :visible.sync="dialogShow2" width="900px" top="30px" center class="print">
-      <div id="print-me" class="print_notice">
-        <div class="print_notice_title">澳门物业管理有限公司</div>
-        <div class="print_notice_title_en">Macau Property Management Co., Ltd.</div>
-        <div class="print_notice_no"><span v-for="(paymentNoticeInfo, index) in paymentNoticeInfoList" :key="index"><span v-if="index">、</span>MGMT2019-P-{{ paymentNoticeInfo.chargeItem.itemNo }}</span></div>
-        <el-row class="print_notice_content">
-          <el-col :span="8"><span v-if="paymentNoticeInfoList[0]">{{ paymentNoticeInfoList[0].community.communityName }}</span></el-col>
-          <el-col :span="8"><div class="print_notice_content_title">付款通知书</div></el-col>
-          <!-- <el-col :span="8"></el-col> -->
-        </el-row>
-        <el-row class="print_notice_content">
-          <!-- <el-col :span="8"><div class="">1</div></el-col> -->
-          <el-col :span="8" :offset="8"><div class="print_notice_content_title">Payment Notice</div></el-col>
-          <el-col :span="8"><div style="text-align: right">日期 Date {{ $moment().format('YYYY年MM月DD日') }}</div></el-col>
-        </el-row>
-        <div class="content_table">
-          <div class="content_table_top">
-            <div class="content_table_info">请缴付 Payment for 单位 unit <span v-for="(paymentNoticeInfo, index) in paymentNoticeInfoList" :key="index"><span v-if="index">、</span>{{ paymentNoticeInfo.unitNo }}</span> / 车位 Parking_____</div>
-            <div class="content_table_amount">金 AMOUNT 额</div>
-          </div>
-          <div v-for="(paymentNoticeInfo, index) in paymentNoticeInfoList" :key="index" class="content_table_item">
-            <div class="content_table_item_num">{{ index + 1 }}</div>
-            <div class="content_table_item_info">
-              <div class="content_table_item_msg">管理费 Management fee for</div>
-              <div class="content_table_item_msg">{{ paymentNoticeInfo.recordDate }} : ${{ paymentNoticeInfo.recordAmount.toFixed(2) }}  <span>({{ paymentNoticeInfo.chargeItem.itemName }})</span></div>
+    <el-dialog :visible.sync="dialogShow2" width="700px" top="30px" center class="print">
+      <el-button v-print="'#print-view'" type="primary">{{ $t('table.print') }}</el-button>
+      <div id="print-view">
+        <!-- A5纸张（210mmx148mm）（650px * 489px） -->
+        <div v-for="(paymentNoticeInfo, index) in paymentNoticeInfoList" :key="index" class="print_notice_print-me">
+          <div class="print_notice_title">澳门物业管理有限公司</div>
+          <div class="print_notice_title_en">Macau Property Management Co., Ltd.</div>
+          <div class="print_notice_no"><span>MGMT2019-P-{{ paymentNoticeInfo.chargeItem.itemNo }}</span></div>
+          <el-row class="print_notice_content">
+            <el-col :span="8"><span v-if="paymentNoticeInfo">{{ paymentNoticeInfo.community.communityName }}</span>
+            </el-col>
+            <el-col :span="8">
+              <div class="print_notice_content_title">付款通知书</div>
+            </el-col>
+          </el-row>
+          <el-row class="print_notice_content">
+            <el-col :span="8" :offset="8">
+              <div class="print_notice_content_title">Payment Notice</div>
+            </el-col>
+            <el-col :span="8">
+              <div style="text-align: right">日期 Date {{ $moment().format('YYYY年MM月DD日') }}</div>
+            </el-col>
+          </el-row>
+          <div class="content_table">
+            <div class="content_table_top">
+              <div class="content_table_info">请缴付 Payment for 单位 unit <span><span v-if="index">、</span>{{ paymentNoticeInfo.unitNo }}</span> / 车位 Parking_____</div>
+              <div class="content_table_amount">金 AMOUNT 额</div>
             </div>
-            <div class="content_table_item_amount"><span style="position: relative;top: 30px;">${{ paymentNoticeInfo.recordAmount.toFixed(2) }}</span></div>
+            <div class="content_table_item">
+              <div class="content_table_item_num">1</div>
+              <div class="content_table_item_info">
+                <div class="content_table_item_msg">管理费 Management fee for</div>
+                <div class="content_table_item_msg">{{ paymentNoticeInfo.recordDate }} : ${{ paymentNoticeInfo.recordAmount.toFixed(2) }}<span>({{ paymentNoticeInfo.chargeItem.itemName }})</span></div>
+              </div>
+              <div class="content_table_item_amount"><span style="position: relative;top: 30px;">${{ paymentNoticeInfo.recordAmount.toFixed(2) }}</span></div>
+            </div>
+            <div class="content_table_item">
+              <div class="content_table_item_info table_bottom">合共 TOTAL in MOP$</div>
+              <div class="content_table_item_amount"><span style="position: relative;top: 15px;">${{ paymentNoticeInfo.recordAmount.toFixed(2) }}</span></div>
+            </div>
           </div>
-          <div class="content_table_item">
-            <div class="content_table_item_info table_bottom">合共 TOTAL in MOP$</div>
-            <div class="content_table_item_amount"><span style="position: relative;top: 15px;">${{ totalPrice }}</span></div>
-          </div>
+          <div class="content_bottom_tip1">付款方式: 07:00 - 18:00 到地下管理处缴费（现金/支票）</div>
+          <div><span class="content_bottom_tip2">** 中国银行户口自动转账服务，如有需要直接到管理处办理 **</span></div>
         </div>
-        <div class="content_bottom_tip1">付款方式:  07:00 - 18:00 到地下管理处缴费（现金/支票）</div>
-        <div><span class="content_bottom_tip2">** 中国银行户口自动转账服务，如有需要直接到管理处办理 **</span></div>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogShow2 = false">{{ $t('table.cancel') }}</el-button>
-        <el-button v-print="'#print-me'" type="primary">{{ $t('table.print') }}</el-button>
-        <!-- <el-button type="primary" @click="printJS('print-me', 'html')">{{ $t('table.print') }}</el-button> -->
+        <el-button v-print="'#print-view'" type="primary">{{ $t('table.print') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -198,8 +208,12 @@
   import {
     getBuildingList
   } from '@/api/building'
-  import { getCommunityList } from '@/api/community'
-  import { chargeExport } from '@/api/file'
+  import {
+    getCommunityList
+  } from '@/api/community'
+  import {
+    chargeExport
+  } from '@/api/file'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import printJS from 'print-js'
 
@@ -258,26 +272,28 @@
         dialogStatus: '',
         dialogFormVisible: false,
         rules: {
-          recordLateFee: [
-            { validator: (rule, value, callback) => {
+          recordLateFee: [{
+            validator: (rule, value, callback) => {
               const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
               if (!reg.test(value)) {
                 callback(new Error('请输入数字'))
               } else {
                 callback()
               }
-            }, trigger: ['blur', 'change'] }
-          ],
-          recordLateDate: [
-            { validator: (rule, value, callback) => {
+            },
+            trigger: ['blur', 'change']
+          }],
+          recordLateDate: [{
+            validator: (rule, value, callback) => {
               const reg = /^[0-9]+\.{0,1}[0-9]{0,100}$/
               if (!reg.test(value)) {
                 callback(new Error('请输入数字'))
               } else {
                 callback()
               }
-            }, trigger: ['blur', 'change'] }
-          ]
+            },
+            trigger: ['blur', 'change']
+          }]
         },
         dialogShow2: false,
         recordIdList: [],
@@ -312,23 +328,38 @@
       printJS,
       async getList() {
         this.listLoading = true
-        const { code, msg, data } = await getChargeItemRecordList(this.listQuery).catch(e => e)
+        const {
+          code,
+          msg,
+          data
+        } = await getChargeItemRecordList(this.listQuery).catch(e => e)
         this.listLoading = false
         if (code !== 200) {
-          return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+          return this.$notify({
+            title: '失败',
+            message: msg,
+            type: 'error',
+            duration: 2000
+          })
         }
-        this.list = [... data.list]
+        this.list = [...data.list]
         this.total = data.total
       },
       // 获取社区列表
       async queryCommunityList() {
         if (!this.$store.getters.isSuper) return
-        const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
+        const response = await getCommunityList({
+          pageNo: 1,
+          pageSize: 99999
+        }).catch(e => e)
         this.communityList = response.data.list
       },
       // 获取建筑列表
       async queryBuildingList() {
-        const response = await getBuildingList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
+        const response = await getBuildingList({
+          pageNo: 1,
+          pageSize: 99999
+        }).catch(e => e)
         this.buildingList = response.data.list
       },
       resetTemp() {
@@ -371,7 +402,12 @@
       async updateData() {
         const isValidate = await new Promise(this.$refs.dataForm.validate)
         if (!isValidate) {
-          return this.$notify({ title: '提示', message: '请填写正确的信息！', type: 'info', duration: 2000 })
+          return this.$notify({
+            title: '提示',
+            message: '请填写正确的信息！',
+            type: 'info',
+            duration: 2000
+          })
         }
         this.temp.recordDate = this.recordDate ? this.$moment(this.recordDate).format('YYYY/MM') : ''
         this.temp.recordTime = this.recordTime ? this.$moment(this.recordTime).format('YYYY-MM-DD HH:mm') : ''
@@ -379,9 +415,19 @@
         const response = await updateChargeItemRecord(this.temp).catch(e => e)
         this.listLoading = false
         if (response.code !== 200) {
-          return this.$notify({ title: '修改失败', message: response.msg, type: 'error', duration: 2000 })
+          return this.$notify({
+            title: '修改失败',
+            message: response.msg,
+            type: 'error',
+            duration: 2000
+          })
         }
-        this.$notify({ title: '成功', message: '修改成功', type: 'success', duration: 2000 })
+        this.$notify({
+          title: '成功',
+          message: '修改成功',
+          type: 'success',
+          duration: 2000
+        })
         this.dialogFormVisible = false
         this.dialogUpdateVisible = false
         this.getList()
@@ -392,9 +438,19 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async() => {
-          const { code, msg } = await delChargeItemRecord({ chargeId: row.chargeId }).catch(e => e)
+          const {
+            code,
+            msg
+          } = await delChargeItemRecord({
+            chargeId: row.chargeId
+          }).catch(e => e)
           if (code !== 200) {
-            return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+            return this.$notify({
+              title: '失败',
+              message: msg,
+              type: 'error',
+              duration: 2000
+            })
           }
           this.$notify({
             title: '成功',
@@ -409,7 +465,9 @@
       async handleExport() {
         const content = await chargeExport(this.listQuery).catch(e => e)
         const link = document.createElement('a')
-        const blob = new Blob([content], { type: 'application/vnd.ms-excel' })
+        const blob = new Blob([content], {
+          type: 'application/vnd.ms-excel'
+        })
         link.style.display = 'none'
         link.href = URL.createObjectURL(blob)
         let num = ''
@@ -422,11 +480,18 @@
         document.body.removeChild(link)
       },
       paymentNotice(info) {
-        console.log('info', info)
+        // console.log('info', info)
         if (info) {
           this.paymentNoticeInfoList = [info]
         }
-        if (!this.paymentNoticeInfoList.length) return this.$notify({ title: '提示', message: '请选择要打印的选项！', type: 'info', duration: 2000 })
+        if (!this.paymentNoticeInfoList.length) {
+          return this.$notify({
+          title: '提示',
+          message: '请选择要打印的选项！',
+          type: 'info',
+          duration: 2000
+        })
+        }
         this.dialogShow2 = true
       },
       confirmPay(info) {
@@ -434,15 +499,30 @@
         if (info) {
           this.recordIdList = [info.recordId]
         }
-        if (!this.recordIdList.length) return this.$notify({ title: '提示', message: '请选择要收费的收费项目', type: 'info', duration: 2000 })
+        if (!this.recordIdList.length) {
+          return this.$notify({
+          title: '提示',
+          message: '请选择要收费的收费项目',
+          type: 'info',
+          duration: 2000
+        })
+        }
         this.$confirm('确定收费?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async() => {
-          const { code, msg } = await setChargeItemRecordConfirm(this.recordIdList).catch(e => e)
+          const {
+            code,
+            msg
+          } = await setChargeItemRecordConfirm(this.recordIdList).catch(e => e)
           if (code !== 200) {
-            return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+            return this.$notify({
+              title: '失败',
+              message: msg,
+              type: 'error',
+              duration: 2000
+            })
           }
           this.$notify({
             title: '成功',
@@ -465,34 +545,42 @@
 
 </script>
 <style lang="postcss" scoped>
- .charge-container {
+  .charge-container {
     padding: 30px;
   }
-  .print_notice {
+
+  .print_notice_print-me {
     text-align: center;
     font-size: 12px;
+    width: 650px;
+    height: 489px;
     /* width: 840px;
     height: 592px; */
   }
+
   .print_notice_title {
     font-size: 20px;
     font-weight: bold;
     line-height: 24px;
     padding-top: 15px;
   }
+
   .print_notice_title_en {
     font-size: 20px;
     font-weight: bold;
     line-height: 24px;
   }
+
   .print_notice_no {
     text-align: right;
     font-weight: bold;
     padding: 10px 0;
   }
+
   .print_notice_content_title {
     font-weight: 600;
   }
+
   .content_table {
     border: 1px solid #cdcdcd;
     margin-top: 15px;
@@ -500,12 +588,15 @@
     padding-top: 15px;
     position: relative;
   }
+
   .content_table_top {
     position: relative;
   }
+
   .content_table_info {
     padding: 15px;
   }
+
   .content_table_amount {
     padding: 5px 0;
     width: 150px;
@@ -516,10 +607,12 @@
     bottom: 0;
     text-align: center;
   }
+
   .content_table_item {
     position: relative;
     border-top: 1px solid #cdcdcd;
   }
+
   .content_table_item_amount {
     /* padding: 5px 15; */
     text-align: center;
@@ -530,32 +623,39 @@
     right: 0;
     bottom: 0;
   }
+
   .content_table_item_num {
     float: left;
     padding: 15px;
     border-right: 1px solid #cdcdcd;
     line-height: 48px;
   }
+
   .content_table_item_info {
     padding: 15px;
   }
+
   .content_table_item_msg {
     position: relative;
     left: 15px;
     line-height: 24px;
   }
+
   .table_bottom {
     font-weight: bold;
   }
+
   .content_bottom_tip1 {
     text-align: center;
     padding: 15px 0;
     font-weight: 600;
   }
+
   .content_bottom_tip2 {
     text-align: center;
     padding: 10px;
     color: #ffffff;
     background: #000;
   }
+
 </style>

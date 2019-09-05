@@ -1,7 +1,7 @@
 <template>
   <div class="proprietor-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('proprietor.username') + ' ' + $t('proprietor.name')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
+      <el-input :placeholder="$t('proprietor.username') + '、' + $t('proprietor.name') + '、' + $t('proprietor.englishName') + '、' + $t('proprietor.tel')" v-model="listQuery.keyword" style="width: 300px;" class="filter-item" />
       <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleDownUser()">下载文件模板</el-button>
       <!-- 超级管理员 -->
       <el-button v-if="$store.getters.isSuper" size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImportUser()">{{ $t('table.importUser') }}</el-button>
@@ -30,6 +30,11 @@
           <span>{{ scope.row.englishName }}</span>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('proprietor.tel')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.tel }}</span>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('proprietor.communityId')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.community.communityName }}</span>
@@ -43,11 +48,6 @@
       <el-table-column :label="$t('proprietor.sex')" min-width="80px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.sex | sexFilter }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('proprietor.tel')" min-width="180px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.tel }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('proprietor.marriageSystem')" min-width="80px" align="center">

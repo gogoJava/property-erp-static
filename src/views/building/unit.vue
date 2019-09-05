@@ -24,11 +24,6 @@
       <el-button size="mini" type="success" style="position: relative;top: 4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
-      <el-table-column :label="$t('unit.unitPurpose')" min-width="150px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.unitType | unitTypeFilter }}</span>
-        </template>
-      </el-table-column>
       <el-table-column :label="$t('unit.unitNo')" prop="id" align="center" min-width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.unitNo }}</span>
@@ -37,6 +32,16 @@
       <el-table-column :label="$t('unit.unitName')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.unitName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('unit.unitStatus')" min-width="100px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.unitStatus | unitStatusFilter }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('unit.unitPurpose')" min-width="150px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.unitType | unitTypeFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('unit.buildingId')" min-width="120px" align="center">
@@ -57,11 +62,6 @@
       <el-table-column :label="$t('unit.unitPosition')" min-width="80px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.unitPosition }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('unit.unitStatus')" min-width="100px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.unitStatus | unitStatusFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('unit.unitTitle')" min-width="100px" align="center">

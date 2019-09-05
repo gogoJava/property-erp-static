@@ -1,11 +1,100 @@
 <template>
   <div style="height: 100%;width: 100%;position: absolute;padding: 15px;">
-    <el-container style="height: 100%; border-right: 1px solid #eee">
+    <el-tabs type="border-card" style="height: 100%;">
+      <el-tab-pane v-for="(item, index) in treeData" :key="index" :label="item.communityName">
+        <el-tabs tab-position="left" style="height: 700px;">
+          <el-tab-pane :key="0" :label="item.communityName">
+            <div>显示表格信息？社区信息？</div>
+            <!-- <el-form ref="form" label-width="150px">
+              <el-row :gutter="20">
+                <el-col :span="12">
+                  <el-form-item :label="$t('community.communityName')">
+                    <div>：{{ item.communityName || '--' }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item :label="$t('community.communityAddress')">
+                    <div>：{{ item.communityAddress || '--' }}</div>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row :gutter="20">
+                <el-col :span="12">
+                  <el-form-item :label="$t('community.communityArea')">
+                    <div>：{{ item.communityArea || '--' }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item :label="$t('community.communityArea')">
+                    <div>：{{ item.communityArea || '--' }}</div>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row :gutter="20">
+                <el-col :span="12">
+                  <el-form-item :label="$t('community.communityManagementType')">
+                    <div>：{{ item.communityManagementType || '--' }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item :label="$t('community.communityRoomCount')">
+                    <div>：{{ item.communityRoomCount || '--' }}</div>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row :gutter="20">
+                <el-col :span="12">
+                  <el-form-item :label="$t('community.communityGarageCount')">
+                    <div>：{{ item.communityGarageCount || '--' }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item :label="$t('community.communityShopsCount')">
+                    <div>：{{ item.communityShopsCount || '--' }}</div>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form> -->
+            <!-- <div style="text-align: center;"><el-button size="mini" type="primary" @click="$router.push('/community/edit/' + item.communityId)">{{ $t('table.detail') }}</el-button></div> -->
+          </el-tab-pane>
+          <el-tab-pane v-for="(unitInfo, k) in item.unitList" :key="k + 1" :label="(unitInfo.unitName) + '（建筑）'">
+            <div>显示表格信息？建筑信息？</div>
+            <!-- <el-form v-if="unitInfo" ref="form" label-width="150px">
+              <el-row :gutter="20">
+                <el-col :span="12">
+                  <el-form-item :label="$t('building.buildingNo')">
+                    <div>：{{ unitInfo.buildingNo || '--' }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item :label="$t('building.buildingName')">
+                    <div>：{{ unitInfo.buildingName || '--' }}</div>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row :gutter="20">
+                <el-col :span="12">
+                  <el-form-item :label="$t('building.communityId')">
+                    <div>：{{ unitInfo.communityName || '--' }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item :label="$t('building.floorLowNum')">
+                    <div>：{{ unitInfo.floorLowNum || '--' }}</div>
+                  </el-form-item>
+                </el-col>
+              </el-row> -->
+            <!-- </el-form> -->
+            <!-- <div style="text-align: center;"><el-button size="mini" type="primary" @click="$router.push('/community/edit/' + item.communityId)">{{ $t('table.detail') }}</el-button></div> -->
+          </el-tab-pane>
+        </el-tabs>
+      </el-tab-pane>
+    </el-tabs>
+    <!-- <el-container style="height: 100%; border-right: 1px solid #eee">
       <el-aside width="200px" style="border-right: 1px solid #eee">
         <el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick" />
       </el-aside>
       <el-container style="padding: 0 15px;">
-        <!-- 建筑 -->
         <div style="width: 100%;overflow-y: auto;">
           <el-table v-if="showType === 1" :data="buildingList" row-key="label" border fit highlight-current-row>
             <el-table-column :label="$t('building.buildingNo')" prop="id" align="center" min-width="100">
@@ -53,16 +142,8 @@
                 <span>{{ scope.row.fullAddress }}</span>
               </template>
             </el-table-column>
-            <!-- <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
-              <template slot-scope="scope">
-                <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-                <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
-                </el-button>
-              </template>
-            </el-table-column> -->
           </el-table>
           <el-table v-if="showType === 2" :data="unitList" row-key="label" border fit highlight-current-row>
-            <!-- 单位 -->
             <el-table-column :label="$t('unit.unitPurpose')" min-width="150px" align="center">
               <template slot-scope="scope">
                 <span>{{ scope.row.unitType | unitTypeFilter }}</span>
@@ -118,18 +199,10 @@
                 <span>{{ scope.row.unitChildRelativeProportion }}</span>
               </template>
             </el-table-column>
-            <!-- <el-table-column :label="$t('table.actions')" align="center" width="200" class-name="small-padding fixed-width" fixed="right">
-              <template slot-scope="scope">
-                <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-                <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
-                </el-button>
-                <el-button type="text" size="mini" @click="bindUser(scope.row)">{{ $t('table.bindUser') }}</el-button>
-              </template>
-            </el-table-column> -->
           </el-table>
         </div>
       </el-container>
-    </el-container>
+    </el-container> -->
   </div>
 </template>
 
@@ -210,7 +283,7 @@
     },
     computed: {
       treeData() {
-        // console.log('resData', this.resData)
+        console.log('resData', this.resData)
         return this.resData.map(item => {
           let children = []
           if (item.buildingWithUnits) {

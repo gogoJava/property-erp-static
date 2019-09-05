@@ -3,6 +3,37 @@
     <div class="filter-container">
       <el-input :placeholder="$t('notice.noticeTitle')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.buildingId') }}:</span>
+      <el-select v-model="buildingId" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="item in buildingList"
+          :key="item.buildingId"
+          :label="item.buildingName"
+          :value="item.buildingId" />
+      </el-select>
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('notice.community') }}:</span>
+      <el-select v-model="listQuery.communityId" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="item in communityList"
+          :key="item.communityId"
+          :label="item.communityName"
+          :value="item.communityId" />
+      </el-select>
+    </div>
+    <div class="filter-container">
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('notice.noticeType') }}:</span>
+      <el-select v-model="noticeType" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option :value="7" label="全部" />
+        <el-option :value="0" label="通告" />
+        <el-option :value="1" label="节日提醒" />
+        <el-option :value="2" label="注意事项" />
+        <el-option :value="3" label="政府文件" />
+        <el-option :value="4" label="外判公司须知" />
+        <el-option :value="5" label="工程" />
+        <el-option :value="6" label="办理手续" />
+      </el-select>
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('notice.announcementDate') }}:</span>
+      <el-date-picker v-model="searchDate" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" style="position: relative;top: -4px;padding-left: 15px;"/>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('notice.noticeTitle')" prop="id" align="center" min-width="120">
@@ -35,15 +66,15 @@
           <span>{{ scope.row.noticeTraditionalDetails }}</span>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('notice.announcementDate')" min-width="270px" align="center">
+        <template slot-scope="scope">
+          <span>{{ $moment(scope.row.startTime).format('YYYY-MM-DD HH:mm') }} -- {{ $moment(scope.row.endTime).format('YYYY-MM-DD HH:mm') }}</span>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('notice.noticeImage')" min-width="180px" align="center">
         <template slot-scope="scope">
           <img v-for="(item, index) of scope.row.noticeImage" :key="index" :src="(imgPrefix + item.imageUrl)" class="clubhouse-img">
           <span v-if="!scope.row.noticeImage.length">无</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('notice.createTime')" min-width="180px" align="center">
-        <template slot-scope="scope">
-          <span>{{ $moment(scope.row.createTime).format('YYYY-MM-DD HH:mm') }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('notice.community')" min-width="80px" align="center">
@@ -211,7 +242,8 @@
         listQuery: {
           pageNo: 1,
           pageSize: 10,
-          keyword: ''
+          keyword: '',
+          communityId: ''
         },
         communityList: [{ communityId: '', communityName: '全部' }],
         buildingList: [{ buildingId: '', buildingName: '全部' }],
@@ -233,18 +265,33 @@
           entTime: ''
         },
         announcementDate: [],
+        searchDate: [],
         textMap: {
           update: 'Edit',
           create: 'Create'
         },
         dialogStatus: '',
         dialogFormVisible: false,
+        buildingId: '',
+        noticeType: 7, // 全部
         rules: {},
         imgPrefix: 'http://songsong.fun/file' // 图片前缀
       }
     },
     watch: {
       'listQuery.keyword'() {
+        this.getList()
+      },
+      'listQuery.communityId'() {
+        this.getList()
+      },
+      buildingId() {
+        this.getList()
+      },
+      noticeType() {
+        this.getList()
+      },
+      searchDate() {
         this.getList()
       }
     },
@@ -256,7 +303,21 @@
     methods: {
       async getList() {
         this.listLoading = true
-        const { code, msg, data } = await getNoticeList(this.listQuery).catch(e => e)
+        const startTime = this.searchDate && this.searchDate[0] ? this.$moment(this.searchDate[0]).format('YYYY-MM-DD HH:mm:ss') : ''
+        const endTime = this.searchDate && this.searchDate[1] ? this.$moment(this.searchDate[1]).format('YYYY-MM-DD HH:mm:ss') : ''
+        const param = {
+          ...this.listQuery,
+          buildingId: this.buildingId,
+          noticeType: this.noticeType,
+          startTime,
+          endTime
+        }
+        if (this.noticeType === 7) delete param.noticeType
+        if (!startTime) delete param.startTime
+        if (!endTime) delete param.endTime
+        if (!this.buildingId) delete param.buildingId
+        if (!param.communityId) delete param.communityId
+        const { code, msg, data } = await getNoticeList(param).catch(e => e)
         this.listLoading = false
         if (code !== 200) {
           return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })

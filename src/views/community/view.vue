@@ -36,11 +36,11 @@
           <span>{{ scope.row.communityArea }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('community.communityArea')" prop="communityArea" align="center">
+      <!-- <el-table-column :label="$t('community.communityArea')" prop="communityArea" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.communityArea }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column :label="$t('community.communityCoverArea')" prop="communityCoverArea" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.communityCoverArea }}</span>

@@ -133,30 +133,32 @@
           <el-row v-for="(item, index) in temp.buildingChildList" :key="index">
             <el-col v-show="false" :span="1"><el-input v-model="item.sort" placeholder="1" /></el-col>
             <el-col :span="5"><el-input v-model="item.name" placeholder="名稱"/></el-col>
-            <el-col :span="4"><el-input v-model="item.num" placeholder="數量"/></el-col>
+            <el-col :span="4"><el-input v-model="item.amount" placeholder="數量"/></el-col>
             <el-col :span="5"><el-input v-model="item.area" placeholder="總面積"/></el-col>
             <el-col :span="5">
-              <el-select v-model="temp.tips" placeholder="请选择用途">
+              <el-select v-model="item.purpose" placeholder="请选择用途">
                 <el-option value="商業" label="商業" />
                 <el-option value="輕型汽車/電單車" label="輕型汽車/電單車" />
                 <el-option value="住宅" label="住宅" />
               </el-select>
             </el-col>
-            <el-col :span="5"><el-input v-model="item.value" placeholder="20"><el-button slot="append" icon="el-icon-minus" @click.native="cutChildList(index)"/></el-input></el-col>
+            <el-col :span="5"><el-input v-model="item.perthousand" placeholder="20"><el-button slot="append" icon="el-icon-minus" @click.native="cutChildList(index)"/></el-input></el-col>
           </el-row>
           <el-row style="text-align: center;"><span style="cursor: pointer;font-size: 30px;" @click="addChildList">+</span></el-row>
         </el-form-item>
         <!-- 层数内容 -->
-        <el-form-item :label="$t('building.layersList')" prop="layersList">
+        <el-form-item :label="$t('building.floorList')" prop="floorList">
           <el-row>
             <el-col v-show="false" :span="1"><div>排序</div></el-col>
-            <el-col :span="4"><div>层数</div></el-col>
-            <el-col :span="12"><div>内容</div></el-col>
+            <el-col :span="4"><div>楼层名称</div></el-col>
+            <el-col :span="4"><div>楼层平面图</div></el-col>
+            <el-col :span="12"><div>楼层用途</div></el-col>
           </el-row>
-          <el-row v-for="(item, index) in temp.layersList" :key="index">
-            <el-col v-show="false" :span="1"><el-input v-model="item.sort" placeholder="1" /></el-col>
-            <el-col :span="4"><el-input v-model="item.name" placeholder="层数"/></el-col>
-            <el-col :span="12"><el-input v-model="item.value" placeholder="内容"><el-button slot="append" icon="el-icon-minus" @click.native="cutLayersChildList(index)"/></el-input></el-col>
+          <el-row v-for="(item, index) in temp.floorList" :key="index">
+            <el-col v-show="false" :span="1"><el-input v-model="item.floorSort" placeholder="1" /></el-col>
+            <el-col :span="4"><el-input v-model="item.floorName" placeholder="楼层名称"/></el-col>
+            <el-col :span="4"><single-image :value.sync="item.floorIchnographyList" :type="7"/></el-col>
+            <el-col :span="12"><el-input v-model="item.floorPurpose" placeholder="楼层用途"><el-button slot="append" icon="el-icon-minus" @click.native="cutLayersChildList(index)"/></el-input></el-col>
           </el-row>
           <el-row style="text-align: center;"><span style="cursor: pointer;font-size: 30px;" @click="addLayersChildList">+</span></el-row>
         </el-form-item>
@@ -255,7 +257,7 @@
           fullAddress: '', // 建筑全址
           commonPdf: [],
           buildingChildList: [],
-          layersList: [], // 层数内容
+          floorList: [], // 层数内容
           rosterPdf: [],
           managementType: null
         },
@@ -375,7 +377,7 @@
           type: '',
           commonPdf: [],
           buildingChildList: [],
-          layersList: [],
+          floorList: [],
           rosterPdf: [],
           managementType: null
         }
@@ -419,8 +421,8 @@
         if (!this.temp.buildingChildList) {
           this.temp.buildingChildList = []
         }
-        if (!this.temp.layersList) {
-          this.temp.layersList = []
+        if (!this.temp.floorList) {
+          this.temp.floorList = []
         }
         if (!this.temp.rosterPdf) {
           this.temp.rosterPdf = []
@@ -475,14 +477,14 @@
       },
       addChildList() {
         this.temp.buildingChildList.push({
-          buildingId: '',
+          buildingId: this.buildingId,
           childId: '',
-          sort: null,
-          tips: null,
+          sort: this.temp.buildingChildList.length,
+          perthousand: null,
           name: '',
-          num: null,
+          amount: null,
           area: null,
-          value: null
+          purpose: null
         })
       },
       cutChildList(index) {
@@ -490,16 +492,17 @@
       },
       // 层数内容
       addLayersChildList() {
-        this.temp.layersList.push({
-          buildingId: '',
+        this.temp.floorList.push({
+          buildingId: this.buildingId,
           childId: '',
-          sort: null,
-          val: null,
-          value: null
+          floorIchnographyList: [],
+          floorSort: this.temp.floorList.length,
+          floorPurpose: null,
+          floorName: null
         })
       },
       cutLayersChildList(index) {
-        this.temp.layersList.splice(index, 1)
+        this.temp.floorList.splice(index, 1)
       },
       async querBuildingDetail(buildingId) {
         const res = await getBuildingDetail({ buildingId }).catch(e => e)

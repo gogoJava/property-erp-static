@@ -1,11 +1,20 @@
 <template>
   <div class="unit-container">
     <el-row style="position: relative;top: -30px;">
+      <span>社区 : </span>
+      <el-select v-model="communityName" filterable collapse-tags placeholder="请选择社区">
+        <el-option v-for="(item, index) in communityListData" :key="index" :value="item.communityName" :label="item.communityName" />
+      </el-select>
+      <span>建筑 : </span>
+      <el-select v-model="buildingName" filterable collapse-tags placeholder="请绑定建筑">
+        <el-option v-for="(item, index) in buildingListData" :key="index" :value="item.buildingName" :label="item.buildingName" />
+      </el-select>
+    </el-row>
+    <el-row style="position: relative;top: -15px;">
       <span>{{ $t('unit.unitId') }} : </span>
       <el-select v-model="unitIds" filterable multiple collapse-tags placeholder="请绑定单元">
-        <el-option v-for="(item, index) in allUnits" :key="index" :value="item.unitId" :label="item.unitName" />
+        <el-option v-for="(item, index) in allUnitList" :key="index" :value="item.unitId" :label="item.unitName" />
       </el-select>
-      <!-- <el-button type="primary" style="position: relative;left: 30px;" @click="testTwo">{{ $t('proprietor.userWithCommunities') }}</el-button> -->
     </el-row>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('unit.unitNo')" prop="id" align="center" min-width="100">
@@ -107,6 +116,14 @@
       allUnits: {
         type: Array,
         default: () => { [] }
+      },
+      communityList: {
+        type: Array,
+        default: () => { [] }
+      },
+      buildingList: {
+        type: Array,
+        default: () => { [] }
       }
     },
     data() {
@@ -120,12 +137,40 @@
           pageSize: 99999,
           keyword: ''
         },
-        unitIds: []
+        unitIds: [],
+        communityName: '全部',
+        buildingName: '全部'
+      }
+    },
+    computed: {
+      allUnitList() {
+        return this.allUnits.filter(v => {
+          if (this.communityName === '全部' && this.buildingName === '全部') return v
+          if (this.communityName === '全部') {
+            if (this.buildingName !== '全部' && v.building.buildingName.search(this.buildingName) !== -1) return v
+          }
+          if (this.communityName !== '全部') {
+            if (v.community.communityName.search(this.communityName) !== -1) {
+              if (this.buildingName === '全部') return v
+              if (this.buildingName !== '全部' && v.building.buildingName.search(this.buildingName) !== -1) return v
+            }
+          }
+        })
+      },
+      communityListData() {
+        return [...[{ communityName: '全部' }], ...this.communityList]
+      },
+      buildingListData() {
+        if (this.communityName === '全部') return this.buildingList
+        return this.buildingList.filter((v, index) => !index || v.community.communityName === this.communityName)
       }
     },
     watch: {
       unitIds() {
         this.list = this.allUnits.filter(v => this.unitIds.some(item => item === v.unitId))
+      },
+      communityName() {
+        this.buildingName = '全部'
       }
     },
     async created() {
@@ -147,13 +192,6 @@
       },
       async testTwo() {
         const userUnitList = []
-        // this.proprietorList.forEach(value => {
-        //   if (value.owner) {
-        //     owner = value.owner
-        //   }
-        //   userUnitList.push({ userId: value.userId, unitId: this.unitId, owner: value.owner })
-        // })
-        // const data = []
         this.list.forEach(element => {
           const obj = { userId: this.userId, unitId: element.unitId, owner: !element.owner }
           if (element.owner) delete obj.owner

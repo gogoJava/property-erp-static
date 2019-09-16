@@ -20,3 +20,13 @@ export function chargeExport(query) {
     responseType: 'blob'
   })
 }
+
+// 资产导出
+export function assetExport(query) {
+  return request({
+    url: '/back/excel/assetExport',
+    method: 'get',
+    params: query,
+    responseType: 'blob'
+  })
+}

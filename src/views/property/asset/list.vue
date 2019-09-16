@@ -3,6 +3,7 @@
     <div class="filter-container">
       <el-input :placeholder="$t('asset.assetNo') + ' ' + $t('asset.assetName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
+      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;right: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button>
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('asset.assetStatus') }}:</span>
       <el-select v-model="listQuery.assetStatus" :placeholder="$t('asset.assetStatus')" style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
@@ -75,16 +76,16 @@
           <span>{{ scope.row.assetBuyDate ? $moment(scope.row.assetBuyDate).format('YYYY-MM-DD HH:mm') : '--' }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column :label="$t('asset.assetType')" min-width="180px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.assetType }}</span>
-        </template>
-      </el-table-column> -->
       <el-table-column :label="$t('asset.community')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.community.communityName }}</span>
         </template>
       </el-table-column>
+      <!-- <el-table-column :label="$t('asset.assetType')" min-width="180px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.assetType }}</span>
+        </template>
+      </el-table-column> -->
       <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
@@ -99,9 +100,19 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="70%" top="30px">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="140px" style="margin:0 30px;">
         <el-row>
-          <el-col :span="16">
+          <el-col :span="12">
             <el-form-item :label="$t('asset.assetNo')" prop="assetNo">
               <el-input v-model="temp.assetNo" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('asset.assetStatus')" prop="assetStatus">
+              <el-select v-model="temp.assetStatus" placeholder="请选择状态">
+                <el-option :key="1" :value="0" label="使用中" />
+                <el-option :key="2" :value="1" label="货存" />
+                <el-option :key="3" :value="2" label="损坏" />
+                <el-option :key="4" :value="3" label="弃置" />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -158,18 +169,15 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('asset.assetStatus')" prop="assetStatus">
-              <el-select v-model="temp.assetStatus" placeholder="请选择状态">
-                <el-option :key="1" :value="0" label="使用中" />
-                <el-option :key="2" :value="1" label="货存" />
-                <el-option :key="3" :value="2" label="损坏" />
-                <el-option :key="4" :value="3" label="弃置" />
+            <el-form-item :label="$t('asset.buildingId')" prop="buildingId">
+              <el-select v-model="temp.buildingId" filterable placeholder="请选择">
+                <el-option v-for="(item, index) in buildingList" :key="index" :value="item.buildingId" :label="item.buildingName" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col v-if="$store.getters.isSuper" :span="12">
             <el-form-item :label="$t('asset.community')" prop="communityId">
-              <el-select v-model="temp.communityId" placeholder="请绑定社区">
+              <el-select v-model="temp.communityId" filterable placeholder="请绑定社区">
                 <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
               </el-select>
             </el-form-item>
@@ -211,6 +219,12 @@
     delAsset
   } from '@/api/asset'
   import { getCommunityList } from '@/api/community'
+  import {
+    getBuildingList
+  } from '@/api/building'
+  import {
+    assetExport
+  } from '@/api/file'
   import waves from '@/directive/waves' // Waves directive
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import SingleImage from './singleImage'
@@ -272,6 +286,7 @@
           assetOverdueDate: '',
           assetStatus: ''
         },
+        buildingList: [{ buildingId: '', buildingName: '全部' }],
         importanceOptions: [1, 2, 3],
         sortOptions: [{
           label: 'ID Ascending',
@@ -295,6 +310,7 @@
           assetTraditionalPosition: '', // 位置信息（繁体）
           assetType: '', // 资产类型：电器、公共设备
           communityId: '', // 社区ID
+          buildingId: '',
           assetMaintain: true,
           assetMaintainRemindCycle: null,
           assetBuyDate: null,
@@ -376,6 +392,7 @@
     created() {
       this.getList()
       this.queryCommunityList()
+      this.queryBuildingList()
     },
     methods: {
       async getList() {
@@ -506,6 +523,29 @@
         if (!this.$store.getters.isSuper) return
         const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
+      },
+      // 获取建筑列表
+      async queryBuildingList() {
+        const response = await getBuildingList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
+        this.buildingList = [...this.buildingList, ...response.data.list]
+      },
+      // 导出
+      async handleExport() {
+        const content = await assetExport(this.listQuery).catch(e => e)
+        const link = document.createElement('a')
+        const blob = new Blob([content], {
+          type: 'application/vnd.ms-excel'
+        })
+        link.style.display = 'none'
+        link.href = URL.createObjectURL(blob)
+        let num = ''
+        for (let i = 0; i < 10; i++) {
+          num += Math.ceil(Math.random() * 10)
+        }
+        link.setAttribute('download', 'excel_' + num + '.xlsx')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
       }
     }
   }

@@ -330,6 +330,7 @@ export default {
     assetType: '资产类型', // 资产类型：电器、公共设备
     community: '社区',
     communityId: '社区ID', // 社区ID
+    buildingId: '建筑', // buildingId
     assetMaintain: '保养',
     assetMaintainRemindCycle: '保养周期',
     assetBuyDate: '购入日期',

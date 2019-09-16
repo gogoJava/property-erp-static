@@ -181,6 +181,11 @@
               <el-input v-model="temp.email" />
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('proprietor.userWithCommunities')" prop="email">
+              <span v-for="(item, index) in unitListData" :key="index"><span v-if="index">、</span>{{ item.unitName }}</span>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
@@ -213,7 +218,7 @@
     </el-dialog>
     <!-- 关联单元 -->
     <el-dialog :title="$t('proprietor.userWithCommunities')" :visible.sync="unitShow" width="80%">
-      <linked-unit v-if="unitShow" :user-id="userId" :all-units="allUnits" @refresh-data="unitShow = false" @refresh-unit-data="getAllList"/>
+      <linked-unit v-if="unitShow" :user-id="userId" :all-units="allUnits" :community-list="communityList" :building-list="buildingList" @refresh-data="unitShow = false" @refresh-unit-data="getAllList"/>
     </el-dialog>
     <!-- 导入业主 -->
     <el-dialog :title="$t('table.importUser')" :visible.sync="importUserShow">
@@ -239,6 +244,9 @@
   import {
     getUnitList
   } from '@/api/unit'
+  import {
+    getBuildingList
+  } from '@/api/building'
   import { getCommunityList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -378,7 +386,9 @@
         userIds: '',
         allUnits: [],
         communityId: '',
-        importUserShow: false
+        importUserShow: false,
+        buildingList: [{ buildingId: '', buildingName: '全部' }],
+        unitListData: [] // 绑定单位
       }
     },
     watch: {
@@ -390,6 +400,7 @@
       this.getList()
       this.queryCommunityList()
       this.getAllList()
+      this.queryBuildingList()
     },
     methods: {
       marriageSystemFilter(value) {
@@ -485,6 +496,7 @@
       },
       async handleUpdate(row) {
         this.userId = row.userId
+        this.queryUnitList()
         this.temp = Object.assign({}, row) // copy obj
         this.temp.password = ''
         await this.getDetail(this.userId)
@@ -617,6 +629,23 @@
           ...this.temp,
           communities
         }
+      },
+      // 获取建筑列表
+      async queryBuildingList() {
+        const response = await getBuildingList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
+        this.buildingList = [...this.buildingList, ...response.data.list]
+      },
+      async queryUnitList() {
+        this.unitListData = []
+        const { code, msg, data } = await getUnitList({ pageNo: 1, pageSize: 99999, userId: this.userId }).catch(e => e)
+        if (code !== 200) {
+          return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+        }
+        // this.list = data.list || []
+        // this.total = data.total
+        data.list.forEach(element => {
+          this.unitListData.push(element)
+        })
       }
     }
   }

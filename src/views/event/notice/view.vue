@@ -2,6 +2,7 @@
   <div class="notice-container">
     <div class="filter-container">
       <el-input :placeholder="$t('notice.noticeTitle')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
+      <!-- <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button> -->
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.buildingId') }}:</span>
       <el-select v-model="buildingId" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
@@ -208,6 +209,9 @@
   import {
     getBuildingList
   } from '@/api/building'
+  import {
+    eventExport
+  } from '@/api/file'
   import { getCommunityList } from '@/api/community'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import SingleImage from './singleImage'
@@ -428,6 +432,27 @@
           })
           this.getList()
         }).catch(() => {})
+      },
+      // 导出
+      async handleExport() {
+        const param = { ...this.listQuery, buildingId: this.buildingId }
+        if (!param.unitType) delete param.unitType
+        if (!param.keyword) delete param.keyword
+        const content = await eventExport(param).catch(e => e)
+        const link = document.createElement('a')
+        const blob = new Blob([content], {
+          type: 'application/vnd.ms-excel'
+        })
+        link.style.display = 'none'
+        link.href = URL.createObjectURL(blob)
+        let num = ''
+        for (let i = 0; i < 10; i++) {
+          num += Math.ceil(Math.random() * 10)
+        }
+        link.setAttribute('download', 'excel_' + num + '.xlsx')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
       }
     }
   }

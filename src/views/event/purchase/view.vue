@@ -11,8 +11,8 @@
         <el-option :value="2" label="保养" />
         <el-option :value="4" label="损坏" />
       </el-select>
-      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('event.eventStatus') }}:</span>
-      <el-select v-model="listQuery.eventStatus" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
+      <!-- <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('event.eventStatus') }}:</span> -->
+      <!-- <el-select v-model="listQuery.eventStatus" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
         <el-option value="" label="全部" />
         <el-option :value="0" label="跟进中" />
         <el-option :value="1" label="报价中" />
@@ -22,7 +22,8 @@
         <el-option :value="5" label="工程进行中" />
         <el-option :value="6" label="待大会表决" />
         <el-option :value="7" label="完成" />
-      </el-select>
+      </el-select> -->
+      <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('event.community')" prop="communityId" align="center" min-width="120">
@@ -35,9 +36,10 @@
           <span>{{ scope.row.eventType | eventTypeFilter }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('event.eventStatus')" min-width="80px" align="center">
+      <el-table-column :label="$t('event.eventStatus')" min-width="160px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.eventStatus | eventStatusFilter }}</span>
+          <span>{{ eventStatusFilter(scope.row.eventType, scope.row.eventStatus) }}</span>
+          <!-- <span v-else>{{ scope.row.eventStatus.split(',').forEach(v => eventStatusFilter(scope.row.eventType, v)) }}</span> -->
         </template>
       </el-table-column>
       <el-table-column :label="$t('event.eventChannel')" min-width="80px" align="center">
@@ -126,35 +128,37 @@
         </el-row>
         <el-row v-if="$store.getters.isSuper">
           <el-col :span="12">
-            <el-form-item :label="$t('event.community')" prop="communityId">
-              <el-select v-model="temp.communityId" placeholder="请绑定社区">
-                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
+            <el-form-item :label="$t('event.eventType')" prop="eventType">
+              <el-select v-model="temp.eventType" placeholder="请选择">
+                <el-option value="1" label="采购" />
+                <el-option value="2" label="保养" />
+                <el-option value="3" label="投诉" />
+                <el-option value="4" label="损坏" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('event.eventStatus')" prop="eventStatus">
-              <el-select v-model="temp.eventStatus" placeholder="请选择">
-                <el-option :value="0" label="跟进中" />
+              <el-select v-if="temp.eventType === '2' || temp.eventType === '3'" v-model="temp.eventStatus" placeholder="请选择">
+                <el-option v-for="(item, index) in eventStatusData" :key="index" :value="item" :label="item" />
+                <!-- <el-option :value="0" label="跟进中" />
                 <el-option :value="1" label="报价中" />
                 <el-option :value="2" label="接获投诉" />
                 <el-option :value="3" label="与管理机关讨论中" />
                 <el-option :value="4" label="待定" />
                 <el-option :value="5" label="工程进行中" />
                 <el-option :value="6" label="待大会表决" />
-                <el-option :value="7" label="完成" />
+                <el-option :value="7" label="完成" /> -->
               </el-select>
+              <el-cascader v-else v-model="temp.eventStatusList" :options="eventStatusData" :props="{ checkStrictly: true }" change-on-select clearable />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('event.eventType')" prop="eventType">
-              <el-select v-model="temp.eventType" placeholder="请选择">
-                <el-option :value="1" label="采购" />
-                <el-option :value="2" label="保养" />
-                <el-option :value="3" label="投诉" />
-                <el-option :value="4" label="损坏" />
+            <el-form-item :label="$t('event.community')" prop="communityId">
+              <el-select v-model="temp.communityId" placeholder="请绑定社区">
+                <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -252,6 +256,9 @@
     updateEvent,
     delEvent
   } from '@/api/event'
+  import {
+    eventExport
+  } from '@/api/file'
   import { getCommunityList } from '@/api/community'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import SingleImage from './singleImage'
@@ -264,20 +271,20 @@
     },
     filters: {
       // 事件进度0开始1待定2完成
-      eventStatusFilter(status) {
-        // 事件进度0跟进中1报价中2接获投诉3与管理机关讨论中4待定5工程进行中6待开大会表决7完成
-        const statusMap = {
-          0: '跟进中',
-          1: '报价中',
-          2: '接获投诉',
-          3: '与管理机关讨论中',
-          4: '待定',
-          5: '工程进行中',
-          6: '待开大会表决',
-          7: '完成'
-        }
-        return statusMap[status]
-      },
+      // eventStatusFilter(status) {
+      //   // 事件进度0跟进中1报价中2接获投诉3与管理机关讨论中4待定5工程进行中6待开大会表决7完成
+      //   const statusMap = {
+      //     0: '跟进中',
+      //     1: '报价中',
+      //     2: '接获投诉',
+      //     3: '与管理机关讨论中',
+      //     4: '待定',
+      //     5: '工程进行中',
+      //     6: '待开大会表决',
+      //     7: '完成'
+      //   }
+      //   return statusMap[status]
+      // },
       // 事件类型1采购2保养3其他
       eventTypeFilter(type) {
         const typeMap = {
@@ -308,8 +315,8 @@
           pageNo: 1,
           pageSize: 10,
           keyword: '',
-          eventType: 0,
-          eventStatus: ''
+          eventType: 0
+          // eventStatus: ''
         },
         communityList: [],
         buildingList: [],
@@ -324,7 +331,8 @@
           eventFinishDate: null, // 完成时间
           eventRemark: '', // 备注
           eventSolve: '', // 解决方案
-          eventStatus: 0, // 事件进度0开始1待定2完成
+          eventStatus: '', // 事件进度0开始1待定2完成
+          eventStatusList: [],
           eventType: 1, // 事件类型1采购2保养3其他
           eventRemindCycle: null,
           eventChannel: null,
@@ -346,6 +354,27 @@
         rules: {}
       }
     },
+    computed: {
+      eventStatusData() {
+        // console.log(typeof this.temp.eventType, this.temp.eventType)
+        // 1:采购、2:保养、3：投诉、4:损坏
+        const list = {
+          1: [{ value: '1', label: '接受/发现', children: [{ value: '2', label: '确认事件', children: [{ value: '3', label: '跟进中', children: [
+            { value: '4', label: '派工作到清洁跟进/派工作到工程部跟进/派工作到外派跟进', children: [{ value: '5', label: '检查', children: [{ value: '6', label: '完成' }] }] },
+            { value: '7', label: '报价中', children: [{ value: '8', label: '管理机关讨论', children: [{ value: '9', label: '待定', children: [{ value: '10', label: '发出通告', children: [{ value: '11', label: '工程跟进中', children: [{ value: '12', label: '工程验收', children: [{ value: '13', label: '完成' }] }] }] }] }] }] },
+            { value: '14', label: '报价中', children: [{ value: '15', label: '所有人大会', children: [{ value: '16', label: '发出通告', children: [{ value: '17', label: '工程进行中', children: [{ value: '18', label: '工程验收', children: [{ value: '19', label: '完成' }] }] }] }] }] }
+          ] }] }] }],
+          2: ['推动到行政', '报价中', '采购中', '到货', '在建筑物存货', '完成'],
+          3: ['发出提示', '安排时间', '发出通告', '完成'],
+          4: [{ value: '20', label: '接受/发现', children: [{ value: '21', label: '确认事件', children: [{ value: '22', label: '跟进中', children: [
+            { value: '23', label: '派工作到清洁跟进/派工作到工程部跟进/派工作到外派跟进', children: [{ value: '24', label: '检查', children: [{ value: '25', label: '完成' }] }] },
+            { value: '26', label: '报价中', children: [{ value: '27', label: '管理机关讨论', children: [{ value: '28', label: '待定', children: [{ value: '29', label: '发出通告', children: [{ value: '30', label: '工程跟进中', children: [{ value: '31', label: '工程验收', children: [{ value: '32', label: '完成' }] }] }] }] }] }] },
+            { value: '33', label: '报价中', children: [{ value: '34', label: '所有人大会', children: [{ value: '35', label: '发出通告', children: [{ value: '36', label: '工程进行中', children: [{ value: '37', label: '工程验收', children: [{ value: '38', label: '完成' }] }] }] }] }] }
+          ] }] }] }]
+        }
+        return list[this.temp.eventType]
+      }
+    },
     watch: {
       'listQuery.keyword'() {
         this.getList()
@@ -362,6 +391,58 @@
       this.queryCommunityList()
     },
     methods: {
+      eventStatusFilter(eventType, status) {
+        if (eventType === '2' || eventType === '3') {
+          return status
+        }
+        // console.log('status', typeof status, status)
+        const valueMap = {
+          '1': '接受/发现',
+          '2': '确认事件',
+          '3': '跟进中',
+          '4': '派工作到清洁跟进/派工作到工程部跟进/派工作到外派跟进',
+          '5': '检查',
+          '6': '完成',
+          '7': '报价中',
+          '8': '管理机关讨论',
+          '9': '待定',
+          '10': '发出通告',
+          '11': '工程进行中',
+          '12': '工程验收',
+          '13': '完成',
+          '14': '报价中',
+          '15': '所有人大会',
+          '16': '发出通告',
+          '17': '工程进行中',
+          '18': '工程验收',
+          '19': '完成',
+          '20': '接受/发现',
+          '21': '确认事件',
+          '22': '跟进中',
+          '23': '派工作到清洁跟进/派工作到工程部跟进/派工作到外派跟进',
+          '24': '检查',
+          '25': '完成',
+          '26': '报价中',
+          '27': '管理机关讨论',
+          '28': '待定',
+          '29': '发出通告',
+          '30': '工程进行中',
+          '31': '工程验收',
+          '32': '完成',
+          '33': '报价中',
+          '34': '所有人大会',
+          '35': '发出通告',
+          '36': '工程进行中',
+          '37': '工程验收',
+          '38': '完成'
+        }
+        let msg = ''
+        status.split(',').forEach((v, index) => {
+          if (index) msg = msg + ' -> '
+          if (valueMap[v]) msg = msg + valueMap[v]
+        })
+        return msg || '无'
+      },
       async getList() {
         this.listLoading = true
         const param = { ...this.listQuery }
@@ -394,7 +475,8 @@
           eventFinishDate: null, // 完成时间
           eventRemark: '', // 备注
           eventSolve: '', // 解决方案
-          eventStatus: 0, // 事件进度0开始1待定2完成
+          eventStatus: '', // 事件进度0开始1待定2完成
+          eventStatusList: [],
           eventType: 1, // 事件类型1采购2保养3其他
           eventRemindCycle: null,
           eventChannel: null,
@@ -420,6 +502,9 @@
         // this.temp.communityId = this.$store.getters.communityId
         this.temp.eventDate = this.eventDate ? this.$moment(this.eventDate).format('YYYY-MM-DD') : ''
         this.temp.eventFinishDate = this.eventFinishDate ? this.$moment(this.eventFinishDate).format('YYYY-MM-DD') : ''
+        if (this.temp.eventType === '2' || this.temp.eventType === '3') {
+          this.temp.eventStatus = this.temp.eventStatusList.join(',')
+        }
         const response = await createEvent(this.temp).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
@@ -437,6 +522,9 @@
         this.temp = Object.assign({}, row) // copy obj
         this.eventDate = this.temp.eventDate ? this.$moment(this.temp.eventDate) : ''
         this.eventFinishDate = this.temp.eventFinishDate ? this.$moment(this.temp.eventFinishDate) : ''
+        if (this.temp.eventType === '1' || this.temp.eventType === '4') {
+          this.temp.eventStatusList = this.temp.eventStatus.split(',')
+        }
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -447,6 +535,9 @@
         // this.temp.communityId = this.$store.getters.communityId
         this.temp.eventDate = this.eventDate ? this.$moment(this.eventDate).format('YYYY-MM-DD') : ''
         this.temp.eventFinishDate = this.eventFinishDate ? this.$moment(this.eventFinishDate).format('YYYY-MM-DD') : ''
+        if (this.temp.eventType === '1' || this.temp.eventType === '4') {
+          this.temp.eventStatus = this.temp.eventStatusList.join(',')
+        }
         this.listLoading = true
         const response = await updateEvent(this.temp).catch(e => e)
         this.listLoading = false
@@ -476,6 +567,28 @@
           })
           this.getList()
         }).catch(() => {})
+      },
+      // 导出
+      async handleExport() {
+        const param = { ...this.listQuery, buildingId: this.buildingId }
+        if (!param.eventStatus && param.eventStatus !== 0) delete param.eventStatus
+        if (!param.eventType) delete param.eventType
+        if (!param.keyword) delete param.keyword
+        const content = await eventExport(param).catch(e => e)
+        const link = document.createElement('a')
+        const blob = new Blob([content], {
+          type: 'application/vnd.ms-excel'
+        })
+        link.style.display = 'none'
+        link.href = URL.createObjectURL(blob)
+        let num = ''
+        for (let i = 0; i < 10; i++) {
+          num += Math.ceil(Math.random() * 10)
+        }
+        link.setAttribute('download', 'excel_' + num + '.xlsx')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
       }
     }
   }

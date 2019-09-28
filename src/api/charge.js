@@ -90,3 +90,12 @@ export function setChargeItemRecordConfirm(params) {
     data: params
   })
 }
+
+// 单元收费列表
+export function getChargeUnitChargeList(query) {
+  return request({
+    url: '/back/chargeItemRecord/unitChargeList',
+    method: 'get',
+    params: query
+  })
+}

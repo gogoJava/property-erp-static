@@ -77,6 +77,7 @@ export default {
     propertyEvent: '物業事件',
     propertyReport: '物業報表',
     arrears: '欠費查詢',
+    fell: '物业收費',
     receivedInquiry: '已收款查詢',
     prepaidInquiry: '預支付查詢',
     costSummary: '費用匯總',
@@ -266,6 +267,7 @@ export default {
   unit: {
     unitChildRelativeProportion: '分層建築物之子部分相對比(百分之一)', // 分層建築物之子部分相對比(千分之一)
     buildingId: '建築', // buildingId
+    childId: '建築子部分', // childId
     community: '社區',
     unitCoveredArea: '覆蓋面積大小(單位平方米)', // 覆蓋面積大小(單位平方米)
     unitName: '單位名字', // 单元名字

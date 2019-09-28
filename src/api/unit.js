@@ -83,3 +83,13 @@ export function uploadImportUnit(params) {
     }
   })
 }
+
+// 单元导出
+export function unitExport(query) {
+  return request({
+    url: '/back/unit/export',
+    method: 'get',
+    params: query,
+    responseType: 'blob'
+  })
+}

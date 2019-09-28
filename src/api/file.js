@@ -30,3 +30,23 @@ export function assetExport(query) {
     responseType: 'blob'
   })
 }
+
+// 定场记录导出
+export function placeRecordExport(query) {
+  return request({
+    url: '/back/excel/placeRecordExport',
+    method: 'get',
+    params: query,
+    responseType: 'blob'
+  })
+}
+
+// 事件导出
+export function eventExport(query) {
+  return request({
+    url: '/back/excel/eventExport',
+    method: 'get',
+    params: query,
+    responseType: 'blob'
+  })
+}

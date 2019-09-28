@@ -275,6 +275,12 @@ export const asyncRouterMap = [
         component: () => import('@/views/report/charge/view.vue'),
         name: 'unitChargeList',
         meta: { title: 'unitChargeList', icon: 'list' }
+      },
+      {
+        path: 'fell',
+        component: () => import('@/views/report/fell/view.vue'),
+        name: 'Fell',
+        meta: { title: 'fell', icon: 'list' }
       }
     ]
   },

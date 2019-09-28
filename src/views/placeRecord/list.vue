@@ -2,7 +2,8 @@
   <div class="placeRecord-container">
     <div class="filter-container">
       <el-input :placeholder="$t('placeRecord.place')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
-      <!-- <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button> -->
+      <!-- <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button> -->
+      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleExport()">{{ $t('table.export') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
       <el-table-column :label="$t('placeRecord.place')" type="expand" min-width="200">
@@ -172,6 +173,9 @@
   import {
     parseTime
   } from '@/utils'
+  import {
+    placeRecordExport
+  } from '@/api/file'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import SingleImage from './singleImage'
 
@@ -458,23 +462,6 @@
           this.$refs['dataForm'].clearValidate()
         })
       },
-      // async createData() {
-      //   // this.temp.communityId = this.$store.getters.communityId
-      //   this.temp.placeStartTime = this.placeStartTime ? this.$moment(this.placeStartTime).format('YYYY-MM-DD HH:mm:ss') : ''
-      //   this.temp.placeEndTime = this.placeEndTime ? this.$moment(this.placeEndTime).format('YYYY-MM-DD HH:mm:ss') : ''
-      //   const response = await addplaceRecord(this.temp).catch(e => e)
-      //   if (response.code !== 200) {
-      //     return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
-      //   }
-      //   this.dialogFormVisible = false
-      //   this.$notify({
-      //     title: '成功',
-      //     message: '创建成功',
-      //     type: 'success',
-      //     duration: 2000
-      //   })
-      //   this.getList()
-      // },
       handleUpdate(row) {
         this.temp.images = []
         this.placeStartTime = this.temp.placeStartTime ? this.$moment(this.temp.placeStartTime) : ''
@@ -553,6 +540,26 @@
             return v[j]
           }
         }))
+      },
+      // 导出
+      async handleExport() {
+        const param = { ...this.listQuery, buildingId: this.buildingId }
+        if (!param.keyword) delete param.keyword
+        const content = await placeRecordExport(param).catch(e => e)
+        const link = document.createElement('a')
+        const blob = new Blob([content], {
+          type: 'application/vnd.ms-excel'
+        })
+        link.style.display = 'none'
+        link.href = URL.createObjectURL(blob)
+        let num = ''
+        for (let i = 0; i < 10; i++) {
+          num += Math.ceil(Math.random() * 10)
+        }
+        link.setAttribute('download', 'excel_' + num + '.xlsx')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
       }
     }
   }

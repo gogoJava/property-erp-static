@@ -77,6 +77,7 @@ export default {
     propertyEvent: 'Property Event',
     propertyReport: 'Property Report',
     arrears: 'Arrears',
+    fell: 'Property charge',
     receivedInquiry: 'Received Inquiry',
     prepaidInquiry: 'Prepaid Inquiry',
     costSummary: 'Cost Summary',
@@ -266,6 +267,7 @@ export default {
   unit: {
     unitChildRelativeProportion: 'Relative Parts Of A Hierarchical Building(One percent)', // 分层建筑物之子部分相对比(千分之一)
     buildingId: 'Building', // buildingId
+    childId: 'Building subsection', // childId
     community: 'Community',
     unitCoveredArea: 'Coverage Area(Unit Square Meter)', // 覆盖面积大小(单位平方米)
     unitName: 'Unit Name', // 单元名字

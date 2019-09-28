@@ -10,6 +10,7 @@
                   <div>社区信息</div>
                   <el-button type="text" size="mini" @click="$router.push('/community/edit/' + communityInfo.communityId)">{{ $t('table.edit') }}</el-button>
                   <el-button type="text" size="mini" @click="$router.push('/community/create')">{{ $t('table.add') }}</el-button>
+                  <div><el-button size="mini" type="text" @click="handleCommunityDelete(communityInfo,'deleted')">{{ $t('table.delete') }}</el-button></div>
                 </div>
               </el-col>
               <el-col v-if="communityInfo" :span="21">
@@ -35,6 +36,7 @@
                     <div>建筑信息</div>
                     <el-button type="text" size="mini" @click="handleBuildUpdate()">{{ $t('table.edit') }}</el-button>
                     <el-button type="text" size="mini" @click="handleCreate()">{{ $t('table.add') }}</el-button>
+                    <div><el-button size="mini" type="text" @click="handleBuildDelete(buildingDetail,'deleted')">{{ $t('table.delete') }}</el-button></div>
                   </div>
                 </el-col>
                 <el-col v-if="buildingDetail" :span="20">
@@ -89,10 +91,11 @@
                   <span>{{ scope.row.unitTitle }}</span>
                 </template>
               </el-table-column>
-              <el-table-column :label="$t('table.actions')" align="center" min-width="160" class-name="small-padding fixed-width" fixed="right">
+              <el-table-column :label="$t('table.actions')" align="center" min-width="200" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
                   <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
                   <el-button type="text" size="mini" @click="bindUser(scope.row)">{{ $t('table.bindUser') }}</el-button>
+                  <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -125,6 +128,12 @@
         </el-form-item>
         <el-form-item :label="$t('unit.buildingId')" prop="buildingId">
           <el-select v-model="buildingId" placeholder="请绑定建筑" disabled>
+            <el-option v-for="(item, index) in buildingList" :key="index" :value="item.buildingId" :label="item.buildingName" />
+          </el-select>
+        </el-form-item>
+        <!-- 综合类型的时候有建筑子部分 -->
+        <el-form-item v-if="managementType === 1" :label="$t('unit.childId')" prop="buildingId">
+          <el-select v-model="temp.childId" placeholder="请绑定建筑子部分">
             <el-option v-for="(item, index) in buildingList" :key="index" :value="item.buildingId" :label="item.buildingName" />
           </el-select>
         </el-form-item>
@@ -328,18 +337,20 @@
     getBuildingList,
     getBuildingDetail,
     createBuilding,
-    updateBuilding
+    updateBuilding,
+    delBuilding
   } from '@/api/building'
   import {
     getUnitList,
     updateUnit,
     batchAddUserUnitId,
-    getUnitUserList
+    getUnitUserList,
+    delUnit
   } from '@/api/unit'
   import {
     getProprietorList
   } from '@/api/proprietor'
-  import { queryCommunityDetail } from '@/api/community'
+  import { queryCommunityDetail, delCommunity } from '@/api/community'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import SingleImage from './singleImage'
   // import { ElTree } from 'element-ui'
@@ -402,6 +413,7 @@
         unitList: [],
         communityId: '',
         buildingId: '',
+        managementType: null,
         listLoading: true,
         defaultProps: {
           children: 'children',
@@ -425,6 +437,7 @@
         temp: {
           unitChildRelativeProportion: null, // 分层建筑物之子部分相对比(千分之一)
           buildingId: '', // buildingId
+          childId: '',
           unitCoveredArea: null, // 覆盖面积大小(单位平方米)
           unitName: '', // 单元名字
           unitFullAddress: '', // 全址
@@ -636,12 +649,16 @@
         this.querBuildingDetail(buildingId)
         this.buildingId = buildingId
         this.queryUnitList()
+        const obj = this.buildingList.find(v => v.buildingId === this.buildingId)
+        this.managementType = obj ? obj.managementType : null
       },
       buildTabClick(e) {
         const buildingId = this.treeData[this.communityIndex].buildingWithUnits[e.index] ? this.treeData[this.communityIndex].buildingWithUnits[e.index].buildingId : ''
         this.querBuildingDetail(buildingId)
         this.buildingId = buildingId
         this.queryUnitList()
+        const obj = this.buildingList.find(v => v.buildingId === this.buildingId)
+        this.managementType = obj ? obj.managementType : null
       },
       // 获取社区详情
       async getCommunityDetail(communityId) {
@@ -683,6 +700,8 @@
         this.querBuildingDetail(this.treeData[0].buildingWithUnits[0].buildingId)
         this.buildingId = this.treeData[0].buildingWithUnits[0].buildingId
         this.queryUnitList()
+        const obj = this.buildingList.find(v => v.buildingId === this.buildingId)
+        this.managementType = obj ? obj.managementType : null
         this.listLoading = false
       },
       async queryBuildingList() {
@@ -916,6 +935,63 @@
           area: null,
           purpose: null
         })
+      },
+      handleCommunityDelete(row) {
+        this.$confirm('确定删除社区【' + row.communityName + '】?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async() => {
+          const { code, msg } = await delCommunity({ communityId: row.communityId }).catch(e => e)
+          if (code !== 200) {
+            return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+          }
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.loadData()
+        }).catch(() => {})
+      },
+      handleBuildDelete(row) {
+        this.$confirm('确定删除建筑【' + row.buildingName + '】?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async() => {
+          const { code, msg } = await delBuilding({ buildingId: row.buildingId }).catch(e => e)
+          if (code !== 200) {
+            return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+          }
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.loadData()
+        }).catch(() => {})
+      },
+      handleDelete(row) {
+        this.$confirm('确定删除单位【' + row.unitName + '】?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async() => {
+          const { code, msg } = await delUnit({ unitId: row.unitId }).catch(e => e)
+          if (code !== 200) {
+            return this.$notify({ title: '失败2', message: msg, type: 'error', duration: 2000 })
+          }
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.queryUnitList()
+        }).catch(() => {})
       }
     }
   }

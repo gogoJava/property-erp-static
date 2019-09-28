@@ -20,6 +20,7 @@
       </el-select>
       <!-- <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImportUnit()">{{ $t('table.importUnit') }}</el-button> -->
       <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleDownUnit()">下载文件模板</el-button>
+      <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button>
       <import-unit :building-id="buildingId" style="position: relative;top: -4px;left: 30px;display: inline-block;" @success="getList"/>
       <el-button size="mini" type="success" style="position: relative;top: 4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
@@ -119,6 +120,12 @@
             <el-option v-for="(item, index) in buildingList" :key="index" :value="item.buildingId" :label="item.buildingName" />
           </el-select>
         </el-form-item>
+        <!-- 综合类型的时候有建筑子部分 -->
+        <el-form-item v-if="managementType === 1" :label="$t('unit.childId')" prop="buildingId">
+          <el-select v-model="temp.childId" placeholder="请绑定建筑子部分">
+            <el-option v-for="(item, index) in buildingList" :key="index" :value="item.buildingId" :label="item.buildingName" />
+          </el-select>
+        </el-form-item>
         <el-form-item :label="$t('unit.unitPosition')" prop="unitPosition">
           <el-input v-model="temp.unitPosition" />
         </el-form-item>
@@ -211,7 +218,8 @@
     delUnit,
     batchAddUserUnitId,
     getUnitUserList,
-    uploadImportUnit
+    uploadImportUnit,
+    unitExport
   } from '@/api/unit'
   import {
     getBuildingList
@@ -296,6 +304,7 @@
         temp: {
           unitChildRelativeProportion: null, // 分层建筑物之子部分相对比(千分之一)
           buildingId: '', // buildingId
+          childId: '', //
           unitCoveredArea: null, // 覆盖面积大小(单位平方米)
           unitName: '', // 单元名字
           unitFullAddress: '', // 全址
@@ -308,6 +317,7 @@
           unitType: null, // 单位类型1商铺2住宅3停车场
           unitTitle: null // 单位业权
         },
+        managementType: null,
         unitInfo: null,
         dialogFormVisible: false,
         dialogStatus: '',
@@ -406,6 +416,7 @@
     watch: {
       buildingId() {
         this.getList()
+        this.managementType = this.buildingList.find(v => v.buildingId === this.buildingId).managementType
       },
       'listQuery.keyword'() {
         this.getList()
@@ -466,6 +477,7 @@
         this.temp = {
           unitChildRelativeProportion: null, // 分层建筑物之子部分相对比(千分之一)
           buildingId: this.buildingId, // buildingId
+          childId: '',
           unitCoveredArea: null, // 覆盖面积大小(单位平方米)
           unitName: '', // 单元名字
           unitFullAddress: '', // 全址
@@ -643,6 +655,27 @@
         this.proprietorList = this.proprietorList.map(v => {
           return { ...v, owner: v.owner ? (info.userId === v.userId) : false }
         })
+      },
+      // 导出
+      async handleExport() {
+        const param = { ...this.listQuery, buildingId: this.buildingId }
+        if (!param.unitType) delete param.unitType
+        if (!param.keyword) delete param.keyword
+        const content = await unitExport(param).catch(e => e)
+        const link = document.createElement('a')
+        const blob = new Blob([content], {
+          type: 'application/vnd.ms-excel'
+        })
+        link.style.display = 'none'
+        link.href = URL.createObjectURL(blob)
+        let num = ''
+        for (let i = 0; i < 10; i++) {
+          num += Math.ceil(Math.random() * 10)
+        }
+        link.setAttribute('download', 'excel_' + num + '.xlsx')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
       }
     }
   }

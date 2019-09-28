@@ -45,3 +45,13 @@ export function getProprietorDetail(query) {
     params: query
   })
 }
+
+// 业主导出
+export function userExport(query) {
+  return request({
+    url: '/back/user/export',
+    method: 'get',
+    params: query,
+    responseType: 'blob'
+  })
+}

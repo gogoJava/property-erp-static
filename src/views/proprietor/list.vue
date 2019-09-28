@@ -3,6 +3,7 @@
     <div class="filter-container">
       <el-input :placeholder="$t('proprietor.username') + '、' + $t('proprietor.name') + '、' + $t('proprietor.englishName') + '、' + $t('proprietor.tel')" v-model="listQuery.keyword" style="width: 300px;" class="filter-item" />
       <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleDownUser()">下载文件模板</el-button>
+      <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button>
       <!-- 超级管理员 -->
       <el-button v-if="$store.getters.isSuper" size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImportUser()">{{ $t('table.importUser') }}</el-button>
       <!-- 普通管理员 -->
@@ -236,7 +237,8 @@
     createProprietor,
     updateProprietor,
     delProprietor,
-    getProprietorDetail
+    getProprietorDetail,
+    userExport
   } from '@/api/proprietor'
   import {
     addAdvance
@@ -646,6 +648,26 @@
         data.list.forEach(element => {
           this.unitListData.push(element)
         })
+      },
+      // 导出
+      async handleExport() {
+        const param = { ...this.listQuery, buildingId: this.buildingId }
+        if (!param.keyword) delete param.keyword
+        const content = await userExport(param).catch(e => e)
+        const link = document.createElement('a')
+        const blob = new Blob([content], {
+          type: 'application/vnd.ms-excel'
+        })
+        link.style.display = 'none'
+        link.href = URL.createObjectURL(blob)
+        let num = ''
+        for (let i = 0; i < 10; i++) {
+          num += Math.ceil(Math.random() * 10)
+        }
+        link.setAttribute('download', 'excel_' + num + '.xlsx')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
       }
     }
   }

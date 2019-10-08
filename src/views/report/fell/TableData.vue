@@ -1,22 +1,6 @@
 <template>
-  <div class="charge-container">
-    <div class="filter-container">
-      <el-select v-model="listQuery.communityId" :placeholder="$t('clubhouse.community')" filterable clearable style="position: relative;top: -4px;padding-left: 15px;">
-        <el-option
-          v-for="item in communityList"
-          :key="item.communityId"
-          :label="item.communityName"
-          :value="item.communityId" />
-      </el-select>
-    </div>
-    <el-tabs v-model="recordType" type="border-card">
-      <el-tab-pane name="0" label="物业费"><table-data-form v-loading="listLoading" :list="list" :list2="list2" :x-date-list="xDateList" /></el-tab-pane>
-      <el-tab-pane name="1" label="基金收费"><table-data-form v-loading="listLoading" :list="list" :list2="list2" :x-date-list="xDateList" /></el-tab-pane>
-      <el-tab-pane name="2" label="定场收费"><table-data-form v-loading="listLoading" :list="list" :list2="list2" :x-date-list="xDateList" /></el-tab-pane>
-      <el-tab-pane name="3" label="其它收费"><table-data-form v-loading="listLoading" :list="list" :list2="list2" :x-date-list="xDateList" /></el-tab-pane>
-    </el-tabs>
-    <!-- table 1 -->
-    <!-- <el-table v-loading="listLoading" :key="tableKey" :data="list" :summary-method="getSummaries" show-summary height="400" border fit highlight-current-row style="width: 100%;">
+  <div>
+    <el-table :key="tableKey" :data="list" :summary-method="getSummaries" show-summary height="400" border fit highlight-current-row style="width: 100%;">
       <el-table-column label="单位号" prop="id" align="center" min-width="80">
         <template slot-scope="scope">
           <span>{{ scope.row.unitName || '--' }}</span>
@@ -50,7 +34,8 @@
         </el-table-column>
       </el-table-column>
     </el-table>
-    <el-table v-loading="listLoading" :data="list2" :summary-method="getSummaries2" show-summary height="400" border fit highlight-current-row style="width: 100%; margin-top: 15px;">
+    <!-- table 2 -->
+    <el-table :data="list2" :summary-method="getSummaries2" show-summary height="400" border fit highlight-current-row style="width: 100%; margin-top: 15px;">
       <el-table-column label="每月共收" prop="id" align="center" min-width="120">
         <template slot-scope="scope">
           <span>{{ scope.row.sum }}</span>
@@ -66,36 +51,38 @@
           <span>{{ scope.row[item] || 0 }}</span>
         </template>
       </el-table-column>
-    </el-table> -->
+    </el-table>
   </div>
 </template>
 
 <script>
-  import {
-    getChargeUnitChargeList
-  } from '@/api/charge'
-  import {
-    getBuildingList
-  } from '@/api/building'
-  import {
-    getCommunityList
-  } from '@/api/community'
-  import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+  // import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import printJS from 'print-js'
-  import TableDataForm from './TableData'
 
   export default {
     name: 'Charge',
     components: {
-      Pagination,
-      TableDataForm
+    },
+    props: {
+      list: {
+        type: Array,
+        default: () => { [] }
+      },
+      list2: {
+        type: Array,
+        default: () => { [] }
+      },
+      xDateList: {
+        type: Array,
+        default: () => { [] }
+      }
     },
     data() {
       return {
         tableKey: 0,
         tableKey2: 0,
-        list: null,
-        list2: null,
+        // list: null,
+        // list2: null,
         total: 0,
         listLoading: true,
         listQuery: {
@@ -103,7 +90,7 @@
           pageSize: 10,
           communityId: ''
         },
-        xDateList: [],
+        // xDateList: [],
         communityList: [],
         buildingList: [],
         recordTime: '',
@@ -158,141 +145,17 @@
         // paymentNoticeInfo: null,
         paymentNoticeInfoList: [],
         communityName: '',
-        recordType: '0' // 记录类型0物业费1基金收费2订场收费3其他收费
+        recordType: 0 // 记录类型0物业费1基金收费2订场收费3其他收费
       }
     },
     computed: {
-      totalPrice() {
-        let total = 0
-        this.paymentNoticeInfoList.forEach(paymentNoticeInfo => {
-          total = total + paymentNoticeInfo.recordAmount
-        })
-        return total.toFixed(2)
-      }
     },
     watch: {
-      'listQuery.communityId'() {
-        this.queryChargeUnitChargeList()
-      },
-      recordType() {
-        this.queryChargeUnitChargeList()
-      }
     },
     created() {
-      // this.queryChargeUnitChargeList()
-      this.queryCommunityList()
-      // this.queryBuildingList()
     },
     methods: {
       printJS,
-      async queryChargeUnitChargeList() {
-        const param = {
-          conmunityId: this.listQuery.communityId || '',
-          recordType: (this.recordType - 0) // 记录类型0物业费1基金收费2订场收费3其他收费
-        }
-        this.listLoading = true
-        const { code, msg, data } = await getChargeUnitChargeList(param).catch(e => e)
-        this.listLoading = false
-        if (code !== 200) {
-          return this.$notify({
-            title: '查询失败',
-            message: msg,
-            type: 'error',
-            duration: 2000
-          })
-        }
-        // console.log('data', data)
-        let yList2 = []
-        this.list = data.xUnitList.map(v => {
-          const colList = data.chargeVoList.filter(value => value.yUnit === v)
-          const obj = {}
-          let sum = 0
-          colList.forEach(el => {
-            obj[el.xDate + 'v1Date'] = el.v1Date
-            obj[el.xDate + 'v2Money'] = el.v2Money
-            sum = sum + Number(el.v2Money)
-          })
-          // 222222
-          data.chargeVoList.forEach((item, index) => {
-            yList2.push(item.v1Date)
-          })
-          const objdata = {}
-          yList2 = yList2.reduce(function(item, next) {
-            objdata[next] ? '' : objdata[next] = true && item.push(next)
-            return item
-          }, []).sort()
-          // console.log('obj', Object.keys(obj).length)
-          return {
-            ...obj,
-            unitName: v,
-            count: Object.keys(obj).length / 2,
-            sum: sum.toFixed(2),
-            price: (sum / (Object.keys(obj).length / 2)).toFixed(2)
-          }
-        })
-        this.xDateList = data.xDateList
-        this.list2 = yList2.map(v => {
-          // colList.forEach(el => {
-          //   obj[el.xDate + 'v1Date'] = el.v1Date
-          // })
-          const obj = {}
-          this.xDateList.forEach(el => {
-            obj[el] = 0
-            // obj[el.xDate + 'v2Money'] = el.v2Money
-            // sum = sum + Number(el.v2Money)
-          })
-          let sum = 0
-          data.chargeVoList.forEach((item, index) => {
-            if (v === item.v1Date) {
-              obj[item.xDate] = obj[item.xDate] + Number(item.v2Money)
-              sum = sum + Number(item.v2Money)
-            }
-          })
-          // console.log('obj', obj)
-          return {
-            ...obj,
-            dataYName: v,
-            sum: sum.toFixed(2)
-          }
-        })
-      },
-      // 获取社区列表
-      async queryCommunityList() {
-        if (!this.$store.getters.isSuper) return
-        const response = await getCommunityList({
-          pageNo: 1,
-          pageSize: 99999
-        }).catch(e => e)
-        this.communityList = response.data.list
-        this.listQuery.communityId = response.data.list.length ? this.communityList[0].communityId : null
-      },
-      // 获取建筑列表
-      async queryBuildingList() {
-        const response = await getBuildingList({
-          pageNo: 1,
-          pageSize: 99999
-        }).catch(e => e)
-        this.buildingList = response.data.list
-      },
-      resetTemp() {
-        this.recordDate = ''
-        this.recordTime = ''
-        this.temp = {
-          recordActualAmount: '', // 实际收取金额
-          recordAmount: '', // 收费金额
-          recordDate: '', // 收费记录年月份(2019-01)
-          recordId: '', // recordId
-          recordLateDate: '', // 滞纳金天数
-          recordLateFee: '', // 滞纳金额
-          recordRemark: '', // 备注
-          recordStatus: null, // 状态0欠费1已付2预支付
-          recordTime: '', // 收费时间
-          unitItemId: '', // 单位收费项目
-          userId: '', // 住户
-          chargeItem: {},
-          user: {}
-        }
-      },
       getSummaries(param) {
         const { columns, data } = param
         const sums = []

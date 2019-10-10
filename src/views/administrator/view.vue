@@ -2,6 +2,14 @@
   <div class="administrator-container">
     <div class="filter-container">
       <el-input :placeholder="$t('administrator.name')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('clubhouse.community') }}:</span>
+      <el-select v-model="listQuery.communityId" :placeholder="$t('clubhouse.community')" filterable style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="item in communityList2"
+          :key="item.communityId"
+          :label="item.communityName"
+          :value="item.communityId" />
+      </el-select>
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
@@ -203,7 +211,8 @@
         listQuery: {
           pageNo: 1,
           pageSize: 10,
-          keyword: ''
+          keyword: '',
+          communityId: ''
         },
         importanceOptions: [1, 2, 3],
         sortOptions: [{
@@ -237,6 +246,7 @@
         dialogPvVisible: false,
         pvData: [],
         communityList: [], // 社区列表
+        communityList2: [{ communityId: '', communityName: '全部' }],
         rules: {
           type: [{
             required: true,
@@ -270,6 +280,9 @@
     watch: {
       'listQuery.keyword'() {
         this.getList()
+      },
+      'listQuery.communityId'() {
+        this.getList()
       }
     },
     created() {
@@ -280,7 +293,11 @@
     methods: {
       async getList() {
         this.listLoading = true
-        const response = await getAdministratorList(this.listQuery).catch(e => e)
+        const param = {
+          ...this.listQuery
+        }
+        if (!param.communityId) delete param.communityId
+        const response = await getAdministratorList(param).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({
           title: '查询失败',
@@ -297,6 +314,7 @@
       async queryCommunityList() {
         const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
+        this.communityList2 = [...this.communityList2, ...response.data.list]
       },
       // 获取社区列表
       async queryRoleList() {

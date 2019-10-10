@@ -36,3 +36,21 @@ export function getPlaceStatistic(query) {
     params: query
   })
 }
+
+// 列入物业收费
+export function creChargeItemRecord(query) {
+  return request({
+    url: '/back/placeRecord/creChargeItemRecord',
+    method: 'get',
+    params: query
+  })
+}
+
+// 查看物业收费
+export function getChargeItemRecord(query) {
+  return request({
+    url: '/back/placeRecord/getChargeItemRecord',
+    method: 'get',
+    params: query
+  })
+}

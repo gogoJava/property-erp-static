@@ -3,6 +3,22 @@
     <div class="filter-container">
       <el-input :placeholder="$t('adv.title')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('notice.community') }}:</span>
+      <el-select v-model="listQuery.communityId" placeholder="请选择" filterable style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="item in communityList"
+          :key="item.communityId"
+          :label="item.communityName"
+          :value="item.communityId" />
+      </el-select>
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.buildingId') }}:</span>
+      <el-select v-model="buildingId" placeholder="请选择" filterable style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="item in buildingList"
+          :key="item.buildingId"
+          :label="item.buildingName"
+          :value="item.buildingId" />
+      </el-select>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
       <el-table-column :label="$t('adv.community')" prop="id" align="center" min-width="120">
@@ -208,8 +224,10 @@
         listQuery: {
           page: 1,
           limit: 10,
-          keyword: ''
+          keyword: '',
+          communityId: ''
         },
+        buildingId: '',
         importanceOptions: [1, 2, 3],
         sortOptions: [{
           label: 'ID Ascending',
@@ -274,6 +292,12 @@
     watch: {
       'listQuery.keyword'() {
         this.getList()
+      },
+      'listQuery.communityId'() {
+        this.getList()
+      },
+      buildingId() {
+        this.getList()
       }
     },
     created() {
@@ -284,7 +308,13 @@
     methods: {
       async getList() {
         this.listLoading = true
-        const { code, msg, data } = await getAdvList(this.listQuery).catch(e => e)
+        const param = {
+          ...this.listQuery,
+          buildingId: this.buildingId
+        }
+        if (!param.communityId) delete param.communityId
+        if (!param.buildingId) delete param.buildingId
+        const { code, msg, data } = await getAdvList(param).catch(e => e)
         this.listLoading = false
         if (code !== 200) {
           return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
@@ -426,7 +456,7 @@
       },
       // 上传图片成功
       handleAvatarSuccess(res, file) {
-        console.log('handleAvatarSuccess')
+        // console.log('handleAvatarSuccess')
         this.temp.portrait = URL.createObjectURL(file.raw)
       },
       beforeAvatarUpload(file) {

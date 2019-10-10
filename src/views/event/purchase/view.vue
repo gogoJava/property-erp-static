@@ -11,6 +11,14 @@
         <el-option :value="2" label="保养" />
         <el-option :value="4" label="损坏" />
       </el-select>
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('notice.community') }}:</span>
+      <el-select v-model="listQuery.communityId" placeholder="请选择" filterable style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="item in communityList2"
+          :key="item.communityId"
+          :label="item.communityName"
+          :value="item.communityId" />
+      </el-select>
       <!-- <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('event.eventStatus') }}:</span> -->
       <!-- <el-select v-model="listQuery.eventStatus" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
         <el-option value="" label="全部" />
@@ -315,10 +323,12 @@
           pageNo: 1,
           pageSize: 10,
           keyword: '',
-          eventType: 0
+          eventType: 0,
+          communityId: ''
           // eventStatus: ''
         },
         communityList: [],
+        communityList2: [{ communityId: '', communityName: '全部' }],
         buildingList: [],
         eventDate: '',
         eventFinishDate: '',
@@ -383,6 +393,9 @@
         this.getList()
       },
       'listQuery.eventStatus'() {
+        this.getList()
+      },
+      'listQuery.communityId'() {
         this.getList()
       }
     },
@@ -449,6 +462,7 @@
         if (this.listQuery.eventType === 0) {
           delete param.eventType
         }
+        if (!param.communityId) delete param.communityId
         const { code, msg, data } = await getEventList(param).catch(e => e)
         this.listLoading = false
         if (code !== 200) {
@@ -462,6 +476,7 @@
         if (!this.$store.getters.isSuper) return
         const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
+        this.communityList2 = [...this.communityList2, ...response.data.list]
       },
       resetTemp() {
         this.eventDate = ''

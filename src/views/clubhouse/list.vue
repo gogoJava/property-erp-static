@@ -4,7 +4,7 @@
       <el-input :placeholder="$t('clubhouse.placeTraditionalName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('clubhouse.community') }}:</span>
-      <el-select v-model="listQuery.communityId" :placeholder="$t('clubhouse.community')" clearable style="position: relative;top: -4px;padding-left: 15px;">
+      <el-select v-model="listQuery.communityId" :placeholder="$t('clubhouse.community')" filterable clearable style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
           v-for="item in communityList"
           :key="item.communityId"

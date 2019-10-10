@@ -4,6 +4,14 @@
       <el-input :placeholder="$t('placeRecord.place')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <!-- <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button> -->
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleExport()">{{ $t('table.export') }}</el-button>
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('notice.community') }}:</span>
+      <el-select v-model="listQuery.communityId" placeholder="请选择" filterable style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="item in communityList"
+          :key="item.communityId"
+          :label="item.communityName"
+          :value="item.communityId" />
+      </el-select>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
       <el-table-column :label="$t('placeRecord.place')" type="expand" min-width="200">
@@ -92,8 +100,10 @@
           <span>{{ scope.row.updateTime ? $moment(scope.row.updateTime).format('YYYY-MM-DD HH:mm') : '--' }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="160" class-name="small-padding fixed-width" fixed="right">
+      <el-table-column :label="$t('table.actions')" align="center" width="320" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
+          <span class="btn-text" @click="addChargeRecord(scope.row)">列入物业收费</span>
+          <span class="btn-text" @click="queryChargeRecord(scope.row)">物业收费记录</span>
           <span class="btn-text" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</span>
           <span class="btn-text" @click="handleDelete(scope.row)">{{ $t('table.delete') }}</span>
         </template>
@@ -159,6 +169,68 @@
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
+    <!-- 物业收费记录详情 -->
+    <el-dialog :visible.sync="dialogFormVisible2" title="物业收费记录" width="70%" top="30px">
+      <el-form ref="dataForm2" :model="temp2" label-position="right" label-width="130px" style="margin:0 50px;">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('charge.unitItemId')" prop="username">
+              <el-input v-model="temp2.chargeItem.itemName" disabled/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('charge.userId')" prop="name">
+              <el-input v-model="temp2.user.name" disabled/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('charge.recordDate')" prop="idCard">
+              <el-date-picker v-model="recordDate" type="date" format="yyyy/MM" placeholder="选择日期" disabled />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('charge.recordLateDate')" prop="recordLateDate">
+              <el-input v-model="temp2.recordLateDate" disabled/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('charge.recordStatus')" prop="sex">
+              <el-select v-model="temp2.recordStatus" placeholder="请选择" disabled>
+                <!-- 状态0欠费1已付2预支付 -->
+                <el-option :value="0" label="欠费" />
+                <el-option :value="1" label="已付款" />
+                <el-option :value="2" label="预支付" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item :label="$t('charge.recordLateFee')" prop="recordLateFee">
+              <el-input v-model="temp2.recordLateFee" disabled/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item :label="$t('charge.recordRemark')" prop="recordRemark">
+              <el-input v-model="temp2.recordRemark" disabled/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item :label="$t('charge.recordTime')" prop="recordTime">
+              <el-date-picker v-model="recordTime" type="datetime" format="yyyy-MM-DD HH:mm" placeholder="选择日期" disabled/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -166,7 +238,9 @@
   import {
     getPlaceRecordList,
     delPlaceRecord,
-    updatePlaceRecord
+    updatePlaceRecord,
+    creChargeItemRecord,
+    getChargeItemRecord
   } from '@/api/place'
   import { getCommunityList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
@@ -269,7 +343,8 @@
         listQuery: {
           pageNo: 1,
           pageSize: 10,
-          keyword: ''
+          keyword: '',
+          communityId: ''
         },
         importanceOptions: [1, 2, 3],
         sortOptions: [{
@@ -307,8 +382,26 @@
           orderStartTime: '',
           orderEndTime: ''
         },
+        temp2: {
+          recordActualAmount: '', // 实际收取金额
+          recordAmount: '', // 收费金额
+          recordDate: '', // 收费记录年月份(2019-01)
+          recordId: '', // recordId
+          recordLateDate: '', // 滞纳金天数
+          recordLateFee: '', // 滞纳金额
+          recordRemark: '', // 备注
+          recordStatus: null, // 状态0欠费1已付2预支付
+          recordTime: '', // 收费时间
+          unitItemId: '', // 单位收费项目
+          userId: '', // 住户
+          chargeItem: {},
+          user: {}
+        },
+        recordTime: '',
+        recordDate: '',
         dialogFormVisible: false,
         dialogUpdateVisible: false,
+        dialogFormVisible2: false,
         dialogStatus: '',
         textMap: {
           update: 'Edit',
@@ -316,7 +409,8 @@
         },
         dialogPvVisible: false,
         pvData: [],
-        communityList: [], // 社区列表
+        // communityList: [], // 社区列表
+        communityList: [{ communityId: '', communityName: '全部' }],
         rules: {
           type: [{
             required: true,
@@ -383,6 +477,9 @@
     watch: {
       'listQuery.keyword'() {
         this.getList()
+      },
+      'listQuery.communityId'() {
+        this.getList()
       }
     },
     created() {
@@ -392,7 +489,11 @@
     methods: {
       async getList() {
         this.listLoading = true
-        const response = await getPlaceRecordList(this.listQuery).catch(e => e)
+        const param = {
+          ...this.listQuery
+        }
+        if (!param.communityId) delete param.communityId
+        const response = await getPlaceRecordList(param).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({
           title: '查询失败',
@@ -409,7 +510,8 @@
       async queryCommunityList() {
         if (!this.$store.getters.isSuper) return
         const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
-        this.communityList = response.data.list
+        // this.communityList = response.data.list
+        this.communityList = [...this.communityList, ...response.data.list]
     },
       handleModifyStatus(row, status) {
         this.$message({
@@ -560,6 +662,28 @@
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
+      },
+      // 加入物业收费
+      async addChargeRecord(info) {
+        const { code, msg } = await creChargeItemRecord({ placeRecordId: info.recordId }).catch(e => e)
+        if (code !== 200) {
+          return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+        }
+        this.$notify({ title: '成功', message: '列入成功', type: 'success', duration: 2000 })
+        // this.getList()
+      },
+      // 查询定场收费记录
+      async queryChargeRecord(info) {
+        const { code, msg, data } = await getChargeItemRecord({ placeRecordId: info.recordId }).catch(e => e)
+        if (code !== 200) {
+          return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+        }
+        if (!data) return this.$confirm('没有物业收费记录!', { showCancelButton: false })
+        // console.log('定场收费记录=>', res)
+        this.temp2 = Object.assign({}, data) // copy obj
+        this.recordDate = this.temp2.recordDate ? this.$moment(this.temp2.recordDate) : ''
+        this.recordTime = this.temp2.recordTime ? this.$moment(this.temp2.recordTime) : ''
+        this.dialogFormVisible2 = true
       }
     }
   }

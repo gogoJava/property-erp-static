@@ -2,6 +2,14 @@
   <div class="proprietor-container">
     <div class="filter-container">
       <el-input :placeholder="$t('proprietor.username') + '、' + $t('proprietor.name') + '、' + $t('proprietor.englishName') + '、' + $t('proprietor.tel')" v-model="listQuery.keyword" style="width: 300px;" class="filter-item" />
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('clubhouse.community') }}:</span>
+      <el-select v-model="listQuery.communityId" :placeholder="$t('clubhouse.community')" filterable style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="item in communityList2"
+          :key="item.communityId"
+          :label="item.communityName"
+          :value="item.communityId" />
+      </el-select>
       <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleDownUser()">下载文件模板</el-button>
       <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button>
       <!-- 超级管理员 -->
@@ -301,7 +309,8 @@
         listQuery: {
           pageNo: 1,
           pageSize: 10,
-          keyword: ''
+          keyword: '',
+          communityId: ''
         },
         importanceOptions: [1, 2, 3],
         sortOptions: [{
@@ -380,6 +389,7 @@
         downloadLoading: false,
         password: null,
         communityList: [],
+        communityList2: [{ communityId: '', communityName: '全部' }],
         advanceAmount: null, // 预收费
         userId: null, // 预收费用户id
         imgPrefix: 'http://songsong.fun/file', // 图片前缀
@@ -395,6 +405,9 @@
     },
     watch: {
       'listQuery.keyword'() {
+        this.getList()
+      },
+      'listQuery.communityId'() {
         this.getList()
       }
     },
@@ -412,7 +425,11 @@
       },
       async getList() {
         this.listLoading = true
-        const { code, msg, data } = await getProprietorList(this.listQuery).catch(e => e)
+        const param = {
+          ...this.listQuery
+        }
+        if (!param.communityId) delete param.communityId
+        const { code, msg, data } = await getProprietorList(param).catch(e => e)
         this.listLoading = false
         if (code !== 200) {
           return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
@@ -589,6 +606,7 @@
         if (!this.$store.getters.isSuper) return
         const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
+        this.communityList2 = [...this.communityList2, ...response.data.list]
       },
       // 上传图片成功
       handleAvatarSuccess(res, file) {

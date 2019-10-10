@@ -1,25 +1,25 @@
 <template>
   <div class="notice-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('notice.noticeTitle')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <!-- <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button> -->
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
-      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.buildingId') }}:</span>
-      <el-select v-model="buildingId" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
-        <el-option
-          v-for="item in buildingList"
-          :key="item.buildingId"
-          :label="item.buildingName"
-          :value="item.buildingId" />
-      </el-select>
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('notice.community') }}:</span>
-      <el-select v-model="listQuery.communityId" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
+      <el-select v-model="listQuery.communityId" filterable placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
           v-for="item in communityList"
           :key="item.communityId"
           :label="item.communityName"
           :value="item.communityId" />
       </el-select>
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.buildingId') }}:</span>
+      <el-select v-model="buildingId" filterable placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="item in buildingList"
+          :key="item.buildingId"
+          :label="item.buildingName"
+          :value="item.buildingId" />
+      </el-select>
+      <el-input :placeholder="$t('notice.noticeTitle')" v-model="listQuery.keyword" style="width: 200px;margin-left: 15px;" class="filter-item" />
     </div>
     <div class="filter-container">
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('notice.noticeType') }}:</span>

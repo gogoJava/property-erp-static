@@ -2,6 +2,22 @@
   <div class="visitor-container">
     <div class="filter-container">
       <el-input :placeholder="$t('visitor.visitorName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('notice.community') }}:</span>
+      <el-select v-model="listQuery.communityId" placeholder="请选择" filterable style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="item in communityList"
+          :key="item.communityId"
+          :label="item.communityName"
+          :value="item.communityId" />
+      </el-select>
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.buildingId') }}:</span>
+      <el-select v-model="buildingId" placeholder="请选择" filterable style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="item in buildingList"
+          :key="item.buildingId"
+          :label="item.buildingName"
+          :value="item.buildingId" />
+      </el-select>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('visitor.visitorName')" prop="id" align="center" min-width="120">
@@ -49,13 +65,6 @@
           <img v-for="(item, index) of scope.row.visitorImage" :key="index" :src="(imgPrefix + item.imageUrl)" class="clubhouse-img">
         </template>
       </el-table-column>
-      <!-- <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
-        <template slot-scope="scope">
-          <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-          <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}
-          </el-button>
-        </template>
-      </el-table-column> -->
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
@@ -168,10 +177,12 @@
         listQuery: {
           pageNo: 1,
           pageSize: 10,
-          keyword: ''
+          keyword: '',
+          communityId: ''
         },
-        communityList: [],
-        buildingList: [],
+        buildingId: '',
+        communityList: [{ communityId: '', communityName: '全部' }],
+        buildingList: [{ buildingId: '', buildingName: '全部' }],
         temp: {
           buildingId: '', // 建筑id
           communityId: '', // communityId
@@ -196,6 +207,12 @@
     watch: {
       'listQuery.keyword'() {
         this.getList()
+      },
+      'listQuery.communityId'() {
+        this.getList()
+      },
+      buildingId() {
+        this.getList()
       }
     },
     created() {
@@ -204,7 +221,13 @@
     methods: {
       async getList() {
         this.listLoading = true
-        const { code, msg, data } = await getVisitorList(this.listQuery).catch(e => e)
+        const param = {
+          ...this.listQuery,
+          buildingId: this.buildingId
+        }
+        if (!param.communityId) delete param.communityId
+        if (!param.buildingId) delete param.buildingId
+        const { code, msg, data } = await getVisitorList(param).catch(e => e)
         this.listLoading = false
         if (code !== 200) {
           return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
@@ -215,12 +238,12 @@
       // 获取社区列表
       async queryCommunityList() {
         const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
-        this.communityList = response.data.list
+        this.communityList = [...this.communityList, ...response.data.list]
       },
       // 获取建筑列表
       async queryBuildingList() {
         const response = await getBuildingList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
-        this.buildingList = response.data.list
+        this.buildingList = [...this.buildingList, ...response.data.list]
       }
     }
   }

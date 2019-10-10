@@ -14,6 +14,22 @@
       </el-select>
       <el-input :placeholder="$t('asset.assetMaintainRemindCycle')" v-model="listQuery.assetMaintainRemindCycle" style="width: 200px;position: relative;padding-left: 15px;" class="filter-item" />
       <el-date-picker v-model="listQuery.assetOverdueDate" :placeholder="$t('asset.assetOverdueDate')" type="date" value-format="yyyy-MM-dd" format="yyyy-MM-dd" style="position: relative;top: -4px;left: 15px;"/>
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('notice.community') }}:</span>
+      <el-select v-model="listQuery.communityId" filterable placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="item in communityList2"
+          :key="item.communityId"
+          :label="item.communityName"
+          :value="item.communityId" />
+      </el-select>
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.buildingId') }}:</span>
+      <el-select v-model="buildingId" filterable placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="item in buildingList"
+          :key="item.buildingId"
+          :label="item.buildingName"
+          :value="item.buildingId" />
+      </el-select>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
       <el-table-column :label="$t('asset.assetNo')" prop="assetNo" align="center" min-width="80">
@@ -284,8 +300,10 @@
           keyword: '',
           assetMaintainRemindCycle: '',
           assetOverdueDate: '',
-          assetStatus: ''
+          assetStatus: '',
+          communityId: ''
         },
+        buildingId: '',
         buildingList: [{ buildingId: '', buildingName: '全部' }],
         importanceOptions: [1, 2, 3],
         sortOptions: [{
@@ -359,7 +377,8 @@
         },
         downloadLoading: false,
         password: null,
-        communityList: []
+        communityList: [],
+        communityList2: [{ communityId: '', communityName: '全部' }]
       }
     },
     computed: {
@@ -387,6 +406,12 @@
       },
       'listQuery.assetOverdueDate'() {
         this.getList()
+      },
+      'listQuery.communityId'() {
+        this.getList()
+      },
+      buildingId() {
+        this.getList()
       }
     },
     created() {
@@ -397,7 +422,13 @@
     methods: {
       async getList() {
         this.listLoading = true
-        const { code, msg, data } = await getAssetList(this.listQuery).catch(e => e)
+        const param = {
+          ...this.listQuery,
+          buildingId: this.buildingId
+        }
+        if (!param.communityId) delete param.communityId
+        if (!param.buildingId) delete param.buildingId
+        const { code, msg, data } = await getAssetList(param).catch(e => e)
         this.listLoading = false
         if (code !== 200) {
           return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
@@ -523,6 +554,7 @@
         if (!this.$store.getters.isSuper) return
         const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
+        this.communityList2 = [...this.communityList2, ...response.data.list]
       },
       // 获取建筑列表
       async queryBuildingList() {

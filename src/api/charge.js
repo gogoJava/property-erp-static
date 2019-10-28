@@ -46,6 +46,15 @@ export function updChargeItem(params) {
   })
 }
 
+// 导入
+export function importChargeItem(params) {
+  return request({
+    url: '/back/chargeItemRecord/import',
+    method: 'post',
+    data: params
+  })
+}
+
 // 删除收费项目
 export function delChargeItem(query) {
   return request({
@@ -97,5 +106,14 @@ export function getChargeUnitChargeList(query) {
     url: '/back/chargeItemRecord/unitChargeList',
     method: 'get',
     params: query
+  })
+}
+
+// 修改
+export function saveRecord(params) {
+  return request({
+    url: '/back/chargeItemRecord/save',
+    method: 'post',
+    data: params
   })
 }

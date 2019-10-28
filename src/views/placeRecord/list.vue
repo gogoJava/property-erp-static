@@ -1,9 +1,6 @@
 <template>
   <div class="placeRecord-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('placeRecord.place')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
-      <!-- <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button> -->
-      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleExport()">{{ $t('table.export') }}</el-button>
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('notice.community') }}:</span>
       <el-select v-model="listQuery.communityId" placeholder="请选择" filterable style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
@@ -12,6 +9,9 @@
           :label="item.communityName"
           :value="item.communityId" />
       </el-select>
+      <el-input :placeholder="$t('placeRecord.place')" v-model="listQuery.keyword" style="width: 200px;margin-left: 15px;" class="filter-item" />
+      <!-- <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button> -->
+      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleExport()">{{ $t('table.export') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
       <el-table-column :label="$t('placeRecord.place')" type="expand" min-width="200">

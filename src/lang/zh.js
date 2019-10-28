@@ -166,6 +166,7 @@ export default {
     bindUser: '绑定业主',
     download: '下载',
     importUnit: '导入单元',
+    import: '导入',
     importUser: '导入业主'
   },
   errorLog: {

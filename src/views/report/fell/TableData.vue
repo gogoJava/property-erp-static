@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-table :key="tableKey" :data="list" :summary-method="getSummaries" show-summary height="400" border fit highlight-current-row style="width: 100%;">
+    <el-table ref="list001" :key="tableKey" :data="list" :summary-method="getSummaries" show-summary height="400" border fit highlight-current-row style="width: 100%;">
       <el-table-column label="单位号" prop="id" align="center" min-width="80">
         <template slot-scope="scope">
           <span>{{ scope.row.unitName || '--' }}</span>
@@ -29,7 +29,7 @@
         </el-table-column>
         <el-table-column label="金额">
           <template slot-scope="scope">
-            <span>{{ scope.row[item + 'v2Money'] }}</span>
+            <span @click="editData(scope.row[item + 'data'], scope.row, (item + 'v2Money'))">{{ scope.row[item + 'v2Money'] }}</span>
           </template>
         </el-table-column>
       </el-table-column>
@@ -52,12 +52,27 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 修改 -->
+    <el-dialog :visible.sync="dialogVisible" title="提示">
+      <el-form :model="formData">
+        <el-form-item label="金额">
+          <el-input v-model="formData.v2Money"/>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="dialogVisible = false">取消</el-button>
+        <el-button size="mini" type="primary" @click="updateData">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   // import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import printJS from 'print-js'
+  import {
+    saveRecord
+  } from '@/api/charge'
 
   export default {
     name: 'Charge',
@@ -75,10 +90,26 @@
       xDateList: {
         type: Array,
         default: () => { [] }
+      },
+      communityId: {
+        type: String,
+        default: ''
+      },
+      recordType: {
+        type: Number,
+        default: 0
       }
     },
     data() {
       return {
+        dialogVisible: false,
+        formData: {
+          id: null,
+          v2Money: null,
+          v1Date: null,
+          xDate: null,
+          yUnit: null
+        },
         tableKey: 0,
         tableKey2: 0,
         // list: null,
@@ -145,7 +176,9 @@
         // paymentNoticeInfo: null,
         paymentNoticeInfoList: [],
         communityName: '',
-        recordType: 0 // 记录类型0物业费1基金收费2订场收费3其他收费
+        row: null,
+        editInfo: null,
+        v2Money: null
       }
     },
     computed: {
@@ -171,7 +204,7 @@
           }
           // 单价总数
           if (index === 2) {
-            if (data.length) sums[index] = data.map(item => Number(item.price)).reduce((prev, cur) => { return (prev || 0) + (cur || 0) })
+            if (data.length) sums[index] = (data.map(item => Number(item.price)).reduce((prev, cur) => { return (prev || 0) + (cur || 0) })).toFixed(2)
             return
           }
           // 已收款
@@ -228,8 +261,38 @@
             return
           }
         })
-
         return sums
+      },
+      editData(data, row, v2Money) {
+        // this.row = data
+        // console.log('editData', row[v2Money])
+        this.formData = {
+          id: data.id,
+          v1Date: data.v1Date,
+          v2Money: row[v2Money],
+          xDate: data.xDate,
+          yUnit: data.yUnit
+        }
+        this.editInfo = row
+        this.v2Money = v2Money
+        this.dialogVisible = true
+      },
+      async updateData() {
+        const param = {
+          communityId: this.communityId,
+          recordType: this.recordType,
+          unitChargeVos: [{ ...this.formData }]
+        }
+        this.listLoading = true
+        const response = await saveRecord(param).catch(e => e)
+        this.listLoading = false
+        this.dialogVisible = false
+        if (response.code !== 200) {
+          return this.$notify({ title: '修改失败', message: response.msg, type: 'error', duration: 2000 })
+        }
+        this.editInfo[this.v2Money] = this.formData.v2Money
+        this.$notify({ title: '成功', message: '修改成功', type: 'success', duration: 3000 })
+        // this.$refs.list001.doLayout()
       }
     }
   }

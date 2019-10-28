@@ -1,8 +1,6 @@
 <template>
   <div class="adv-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('adv.title')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
-      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('notice.community') }}:</span>
       <el-select v-model="listQuery.communityId" placeholder="请选择" filterable style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
@@ -19,6 +17,8 @@
           :label="item.buildingName"
           :value="item.buildingId" />
       </el-select>
+      <el-input :placeholder="$t('adv.title')" v-model="listQuery.keyword" style="width: 200px;margin-left: 15px;" class="filter-item" />
+      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
       <el-table-column :label="$t('adv.community')" prop="id" align="center" min-width="120">

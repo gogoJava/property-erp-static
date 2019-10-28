@@ -1,7 +1,6 @@
 <template>
   <div class="visitor-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('visitor.visitorName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('notice.community') }}:</span>
       <el-select v-model="listQuery.communityId" placeholder="请选择" filterable style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
@@ -18,6 +17,7 @@
           :label="item.buildingName"
           :value="item.buildingId" />
       </el-select>
+      <el-input :placeholder="$t('visitor.visitorName')" v-model="listQuery.keyword" style="width: 200px;margin-left: 15px;" class="filter-item" />
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('visitor.visitorName')" prop="id" align="center" min-width="120">

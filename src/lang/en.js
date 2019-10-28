@@ -166,6 +166,7 @@ export default {
     bindUser: 'Bound owner',
     download: 'download',
     importUnit: 'Import Unit',
+    import: 'Import',
     importUser: 'Import User'
   },
   errorLog: {

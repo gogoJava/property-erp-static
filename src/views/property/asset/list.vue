@@ -1,19 +1,6 @@
 <template>
   <div class="asset-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('asset.assetNo') + ' ' + $t('asset.assetName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
-      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
-      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;right: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button>
-      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('asset.assetStatus') }}:</span>
-      <el-select v-model="listQuery.assetStatus" :placeholder="$t('asset.assetStatus')" style="position: relative;top: -4px;padding-left: 15px;">
-        <el-option
-          v-for="(item, index) in assetStatusList"
-          :key="index"
-          :label="item.label"
-          :value="item.value" />
-      </el-select>
-      <el-input :placeholder="$t('asset.assetMaintainRemindCycle')" v-model="listQuery.assetMaintainRemindCycle" style="width: 200px;position: relative;padding-left: 15px;" class="filter-item" />
-      <el-date-picker v-model="listQuery.assetOverdueDate" :placeholder="$t('asset.assetOverdueDate')" type="date" value-format="yyyy-MM-dd" format="yyyy-MM-dd" style="position: relative;top: -4px;left: 15px;"/>
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('notice.community') }}:</span>
       <el-select v-model="listQuery.communityId" filterable placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
@@ -30,6 +17,21 @@
           :label="item.buildingName"
           :value="item.buildingId" />
       </el-select>
+      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
+      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;right: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button>
+    </div>
+    <div class="filter-container">
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('asset.assetStatus') }}:</span>
+      <el-select v-model="listQuery.assetStatus" :placeholder="$t('asset.assetStatus')" style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option
+          v-for="(item, index) in assetStatusList"
+          :key="index"
+          :label="item.label"
+          :value="item.value" />
+      </el-select>
+      <el-input :placeholder="$t('asset.assetNo') + ' ' + $t('asset.assetName')" v-model="listQuery.keyword" style="width: 200px;margin-left: 15px;" class="filter-item" />
+      <el-input :placeholder="$t('asset.assetMaintainRemindCycle')" v-model="listQuery.assetMaintainRemindCycle" style="width: 200px;position: relative;padding-left: 15px;" class="filter-item" />
+      <el-date-picker v-model="listQuery.assetOverdueDate" :placeholder="$t('asset.assetOverdueDate')" type="date" value-format="yyyy-MM-dd" format="yyyy-MM-dd" style="position: relative;top: -4px;left: 15px;"/>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
       <el-table-column :label="$t('asset.assetNo')" prop="assetNo" align="center" min-width="80">

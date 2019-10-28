@@ -166,6 +166,7 @@ export default {
     bindUser: '綁定業主',
     download: '下載',
     importUnit: '導入單元',
+    import: '導入',
     importUser: '導入業主'
   },
   errorLog: {

@@ -1,16 +1,6 @@
 <template>
   <div class="event-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('event.eventContent')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
-      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
-      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('event.eventType') }}:</span>
-      <el-select v-model="listQuery.eventType" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
-        <el-option :value="0" label="全部" />
-        <el-option :value="3" label="投诉" />
-        <el-option :value="1" label="采购" />
-        <el-option :value="2" label="保养" />
-        <el-option :value="4" label="损坏" />
-      </el-select>
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('notice.community') }}:</span>
       <el-select v-model="listQuery.communityId" placeholder="请选择" filterable style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
@@ -19,6 +9,16 @@
           :label="item.communityName"
           :value="item.communityId" />
       </el-select>
+      <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('event.eventType') }}:</span>
+      <el-select v-model="listQuery.eventType" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
+        <el-option :value="0" label="全部" />
+        <el-option :value="3" label="投诉" />
+        <el-option :value="1" label="采购" />
+        <el-option :value="2" label="保养" />
+        <el-option :value="4" label="损坏" />
+      </el-select>
+      <el-input :placeholder="$t('event.eventContent')" v-model="listQuery.keyword" style="width: 200px;margin-left: 15px;" class="filter-item" />
+      <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
       <!-- <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('event.eventStatus') }}:</span> -->
       <!-- <el-select v-model="listQuery.eventStatus" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
         <el-option value="" label="全部" />

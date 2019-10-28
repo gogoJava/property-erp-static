@@ -1,7 +1,6 @@
 <template>
   <div class="unit-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('unit.unitName')" v-model="listQuery.keyword" style="width: 200px;" class="filter-item" />
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.buildingId') }}:</span>
       <el-select v-model="buildingId" placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
@@ -18,6 +17,7 @@
           :label="item.label"
           :value="item.value" />
       </el-select>
+      <el-input :placeholder="$t('unit.unitName')" v-model="listQuery.keyword" style="width: 200px;margin-left: 15px;" class="filter-item" />
       <!-- <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImportUnit()">{{ $t('table.importUnit') }}</el-button> -->
       <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleDownUnit()">下载文件模板</el-button>
       <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button>

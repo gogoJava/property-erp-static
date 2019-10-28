@@ -1,7 +1,6 @@
 <template>
   <div class="proprietor-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('proprietor.username') + '、' + $t('proprietor.name') + '、' + $t('proprietor.englishName') + '、' + $t('proprietor.tel')" v-model="listQuery.keyword" style="width: 300px;" class="filter-item" />
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('clubhouse.community') }}:</span>
       <el-select v-model="listQuery.communityId" :placeholder="$t('clubhouse.community')" filterable style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
@@ -10,6 +9,7 @@
           :label="item.communityName"
           :value="item.communityId" />
       </el-select>
+      <el-input :placeholder="$t('proprietor.username') + '、' + $t('proprietor.name') + '、' + $t('proprietor.englishName') + '、' + $t('proprietor.tel')" v-model="listQuery.keyword" style="width: 300px;margin-left: 15px;" class="filter-item" />
       <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleDownUser()">下载文件模板</el-button>
       <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button>
       <!-- 超级管理员 -->

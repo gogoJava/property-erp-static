@@ -1,7 +1,7 @@
 <template>
   <div class="import-user">
     <el-upload :action="action" :http-request="httpRequest" multiple>
-      <el-button size="mini" type="primary">{{ $t('table.importUser') }}</el-button>
+      <el-button size="mini" type="primary">{{ $t('table.import') }}</el-button>
     </el-upload>
   </div>
 </template>

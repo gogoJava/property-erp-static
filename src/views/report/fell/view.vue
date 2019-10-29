@@ -71,7 +71,7 @@
       </el-table-column>
     </el-table> -->
     <!-- 导入 -->
-    <el-dialog :title="$t('table.importUser')" :visible.sync="importUserShow">
+    <el-dialog :title="$t('table.import')" :visible.sync="importUserShow">
       <el-select v-model="communityId" placeholder="请选择要导入的社区" style="position: relative;top: -2px;">
         <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
       </el-select>

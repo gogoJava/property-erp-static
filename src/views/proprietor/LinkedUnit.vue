@@ -52,6 +52,11 @@
           <span>{{ scope.row.unitType | unitTypefilter }}</span>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('unit.unitTitle')" min-width="120px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.unitTitle }}</span>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('unit.owner')" min-width="120px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.owner ? '有' : '无' }}</span>

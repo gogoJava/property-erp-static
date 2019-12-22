@@ -173,7 +173,7 @@ export default {
     .el-input {
       display: inline-block;
       height: 47px;
-      width: 85%;
+      width: 81%;
       input {
         background: transparent;
         border: 0px;
@@ -204,6 +204,8 @@ $dark_gray:#889aa4;
 $light_gray:#eee;
 
 .login-container {
+  background: url("../../assets/bg/login-bg.png") 0 0 no-repeat;
+  background-size: 100% 100%;
   min-height: 100%;
   width: 100%;
   background-color: $bg;
@@ -227,10 +229,10 @@ $light_gray:#eee;
     }
   }
   .svg-container {
-    padding: 6px 5px 6px 15px;
+    padding: 6px 15px 6px 15px;
     color: $dark_gray;
     vertical-align: middle;
-    width: 30px;
+    // width: 40px;
     display: inline-block;
   }
   .title-container {

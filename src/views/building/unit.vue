@@ -178,7 +178,7 @@
         </el-table-column>
         <el-table-column :label="$t('proprietor.title')" prop="id" align="center" min-width="120">
           <template slot-scope="scope">
-            <el-input v-model.number="scope.row.title" size="mini"/>
+            <el-input v-model.number="scope.row.title" :disabled="!scope.row.owner" size="mini"/>
           </template>
         </el-table-column>
         <el-table-column :label="$t('proprietor.sex')" prop="id" align="center" min-width="80">
@@ -433,12 +433,13 @@
             list.push({ ...v, owner: rr ? rr.owner : false, title: 0 })
           }
         })
-        const length = list.length
+        // const length = list.length
         this.proprietorList = list.map((v, index) => {
-          const title = parseInt(this.unitInfo.unitTitle / length)
+          return { ...v, title: null }
+          // const title = parseInt(this.unitInfo.unitTitle / length)
           // 余数
-          const remainder = parseInt(this.unitInfo.unitTitle % length)
-          return { ...v, title: (title + ((remainder && remainder > index) ? 1 : 0)) }
+          // const remainder = parseInt(this.unitInfo.unitTitle % length)
+          // return { ...v, title: (title + ((remainder && remainder > index) ? 1 : 0)) }
         })
       },
       'temp.communityId'() {
@@ -626,12 +627,15 @@
         let owner = false
         // let userId = ''
         const userUnitList = []
+        let unitTitleTotal = 0
         this.proprietorList.forEach((value) => {
+          unitTitleTotal = unitTitleTotal + (value.title || 0)
           if (value.owner) {
             owner = value.owner
           }
           userUnitList.push({ userId: value.userId, unitId: this.unitId, owner: value.owner, title: value.title })
         })
+        if (unitTitleTotal > this.unitInfo.unitTitle) return this.$notify({ title: '提示', message: '总业权不能超过该单位业权' + this.unitInfo.unitTitle, type: 'info', duration: 2000 })
         if (!owner && this.proprietorList.length) return this.$notify({ title: '提示', message: '一定要选一个拥有业主', type: 'info', duration: 2000 })
         const response = await batchAddUserUnitId({ userUnitList, unitId: this.unitId }).catch(e => e)
         if (response.code !== 200) {
@@ -652,9 +656,9 @@
         this.userIds = this.userIds.filter(v => v !== info.userId)
       },
       ownerChange(info) {
-        this.proprietorList = this.proprietorList.map(v => {
-          return { ...v, owner: v.owner ? (info.userId === v.userId) : false }
-        })
+        // this.proprietorList = this.proprietorList.map(v => {
+        //   return { ...v, owner: v.owner ? (info.userId === v.userId) : false }
+        // })
       },
       // 导出
       async handleExport() {

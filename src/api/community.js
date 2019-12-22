@@ -45,3 +45,22 @@ export function updateCommunityDetail(params) {
     data: params
   })
 }
+
+// 获取社区子部分
+export function queryCommunityChildList(query) {
+  return request({
+    url: '/back/community/childList',
+    method: 'get',
+    params: query
+  })
+}
+
+// 获取社区子部分
+export function queryBuildPartOfCommunity(query) {
+  return request({
+    url: '/back/community/buildPartOfCommunity',
+    method: 'get',
+    params: query
+  })
+}
+

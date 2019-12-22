@@ -230,7 +230,8 @@ export default {
     communityRoadArea: 'Road Area', // 道路面积
     communityRoomCount: 'Rooms Number', // 房间总数
     commonPdf: 'Public Part Of The Community', // 社区之公共部分
-    communityShopsCount: 'Number of shops'
+    communityShopsCount: 'Number of shops',
+    communityChildList: 'Community subsection'
   },
   // 管理员
   administrator: {
@@ -262,11 +263,14 @@ export default {
     buildingChildList: 'Building subsection', // 楼宇子部分
     layersList: 'Layer content',
     rosterPdf: "Owner's roster document",
-    managementType: 'Management type' // 管理类型(0简单管理1综合管理)
+    managementType: 'Management type', // 管理类型(0简单管理1综合管理)
+    houseNum: 'Number of houses',
+    parkingNum: 'Number of parking spaces',
+    communityChildId: 'Community subsection'
   },
   // 单位
   unit: {
-    unitChildRelativeProportion: 'Relative Parts Of A Hierarchical Building(One percent)', // 分层建筑物之子部分相对比(千分之一)
+    unitChildRelativeProportion: 'Relative Parts Of A Hierarchical Building(One thousandth)', // 分层建筑物之子部分相对比(千分之一)
     buildingId: 'Building', // buildingId
     childId: 'Building subsection', // childId
     community: 'Community',

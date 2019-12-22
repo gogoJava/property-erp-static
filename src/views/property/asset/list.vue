@@ -34,12 +34,12 @@
       <el-date-picker v-model="listQuery.assetOverdueDate" :placeholder="$t('asset.assetOverdueDate')" type="date" value-format="yyyy-MM-dd" format="yyyy-MM-dd" style="position: relative;top: -4px;left: 15px;"/>
     </div>
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
-      <el-table-column :label="$t('asset.assetNo')" prop="assetNo" align="center" min-width="80">
+      <el-table-column :label="$t('asset.assetNo')" prop="assetNo" align="center" min-width="150">
         <template slot-scope="scope">
           <span>{{ scope.row.assetNo }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('asset.assetDescribe')" prop="assetDescribe" align="center" min-width="120">
+      <el-table-column :label="$t('asset.assetDescribe')" prop="assetDescribe" align="center" min-width="130">
         <template slot-scope="scope">
           <span>{{ scope.row.assetDescribe }}</span>
         </template>
@@ -59,7 +59,7 @@
           <span>{{ scope.row.assetEnglishName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('asset.assetStatus')" min-width="180px" align="center">
+      <el-table-column :label="$t('asset.assetStatus')" min-width="120px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.assetStatus | assetStatusFilter }}</span>
         </template>

@@ -176,6 +176,33 @@
         </el-col>
       </el-row>
       <el-row>
+        <el-form-item :label="$t('community.communityChildList')" prop="communityChildList">
+          <el-row>
+            <el-col v-show="false" :span="1"><div>排序</div></el-col>
+            <el-col :span="5"><div>名稱</div></el-col>
+            <el-col :span="4"><div>數量</div></el-col>
+            <el-col :span="5"><div>面積</div></el-col>
+            <el-col :span="5"><div>用途</div></el-col>
+            <el-col :span="5"><div>千分比之相对价值</div></el-col>
+          </el-row>
+          <el-row v-for="(item, index) in communityInfo.communityChildList" :key="index">
+            <el-col v-show="false" :span="1"><el-input v-model="item.sort" placeholder="1" /></el-col>
+            <el-col :span="5"><el-input v-model="item.name" placeholder="名稱"/></el-col>
+            <el-col :span="4"><el-input v-model="item.amount" placeholder="數量"/></el-col>
+            <el-col :span="5"><el-input v-model="item.area" placeholder="總面積"/></el-col>
+            <el-col :span="5">
+              <el-select v-model="item.purpose" placeholder="请选择用途">
+                <el-option value="商業" label="商業" />
+                <el-option value="輕型汽車/電單車" label="輕型汽車/電單車" />
+                <el-option value="住宅" label="住宅" />
+              </el-select>
+            </el-col>
+            <el-col :span="5"><el-input v-model="item.perthousand" placeholder="20"><el-button slot="append" icon="el-icon-minus" @click.native="cutChildList(index)"/></el-input></el-col>
+          </el-row>
+          <el-row style="text-align: center;"><span style="cursor: pointer;font-size: 30px;" @click="addChildList">+</span></el-row>
+        </el-form-item>
+      </el-row>
+      <el-row>
         <el-col style="text-align: center;padding-top: 30px;">
           <el-form-item>
             <el-button @click="$router.back()">取消</el-button>
@@ -229,7 +256,8 @@
           communityRemark: null, // 备注
           communityRoadArea: null, // 道路面积
           communityRoomCount: null, // 房间总数
-          commonPdf: []
+          commonPdf: [],
+          communityChildList: []
         },
         rules: {
           communityArea: [
@@ -378,6 +406,21 @@
           duration: 2000
         })
         this.$router.push('/community/list')
+      },
+      addChildList() {
+        this.communityInfo.communityChildList.push({
+          communityId: this.communityInfo.id,
+          communityChildId: '',
+          sort: this.communityInfo.communityChildList.length,
+          perthousand: null,
+          name: '',
+          amount: null,
+          area: null,
+          purpose: null
+        })
+      },
+      cutChildList(index) {
+        this.communityInfo.communityChildList.splice(index, 1)
       }
     }
   }

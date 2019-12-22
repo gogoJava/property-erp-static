@@ -371,15 +371,15 @@
         const list = {
           1: [{ value: '1', label: '接受/发现', children: [{ value: '2', label: '确认事件', children: [{ value: '3', label: '跟进中', children: [
             { value: '4', label: '派工作到清洁跟进/派工作到工程部跟进/派工作到外派跟进', children: [{ value: '5', label: '检查', children: [{ value: '6', label: '完成' }] }] },
-            { value: '7', label: '报价中', children: [{ value: '8', label: '管理机关讨论', children: [{ value: '9', label: '待定', children: [{ value: '10', label: '发出通告', children: [{ value: '11', label: '工程跟进中', children: [{ value: '12', label: '工程验收', children: [{ value: '13', label: '完成' }] }] }] }] }] }] },
-            { value: '14', label: '报价中', children: [{ value: '15', label: '所有人大会', children: [{ value: '16', label: '发出通告', children: [{ value: '17', label: '工程进行中', children: [{ value: '18', label: '工程验收', children: [{ value: '19', label: '完成' }] }] }] }] }] }
+            { value: '7', label: '报价中(管理机关讨论)', children: [{ value: '8', label: '管理机关讨论', children: [{ value: '9', label: '待定', children: [{ value: '10', label: '发出通告', children: [{ value: '11', label: '工程跟进中', children: [{ value: '12', label: '工程验收', children: [{ value: '13', label: '完成' }] }] }] }] }] }] },
+            { value: '14', label: '报价中(所有人大会)', children: [{ value: '15', label: '所有人大会', children: [{ value: '16', label: '发出通告', children: [{ value: '17', label: '工程进行中', children: [{ value: '18', label: '工程验收', children: [{ value: '19', label: '完成' }] }] }] }] }] }
           ] }] }] }],
           2: ['推动到行政', '报价中', '采购中', '到货', '在建筑物存货', '完成'],
           3: ['发出提示', '安排时间', '发出通告', '完成'],
           4: [{ value: '20', label: '接受/发现', children: [{ value: '21', label: '确认事件', children: [{ value: '22', label: '跟进中', children: [
             { value: '23', label: '派工作到清洁跟进/派工作到工程部跟进/派工作到外派跟进', children: [{ value: '24', label: '检查', children: [{ value: '25', label: '完成' }] }] },
-            { value: '26', label: '报价中', children: [{ value: '27', label: '管理机关讨论', children: [{ value: '28', label: '待定', children: [{ value: '29', label: '发出通告', children: [{ value: '30', label: '工程跟进中', children: [{ value: '31', label: '工程验收', children: [{ value: '32', label: '完成' }] }] }] }] }] }] },
-            { value: '33', label: '报价中', children: [{ value: '34', label: '所有人大会', children: [{ value: '35', label: '发出通告', children: [{ value: '36', label: '工程进行中', children: [{ value: '37', label: '工程验收', children: [{ value: '38', label: '完成' }] }] }] }] }] }
+            { value: '26', label: '报价中(管理机关讨论)', children: [{ value: '27', label: '管理机关讨论', children: [{ value: '28', label: '待定', children: [{ value: '29', label: '发出通告', children: [{ value: '30', label: '工程跟进中', children: [{ value: '31', label: '工程验收', children: [{ value: '32', label: '完成' }] }] }] }] }] }] },
+            { value: '33', label: '报价中(所有人大会)', children: [{ value: '34', label: '所有人大会', children: [{ value: '35', label: '发出通告', children: [{ value: '36', label: '工程进行中', children: [{ value: '37', label: '工程验收', children: [{ value: '38', label: '完成' }] }] }] }] }] }
           ] }] }] }]
         }
         return list[this.temp.eventType]
@@ -416,14 +416,14 @@
           '4': '派工作到清洁跟进/派工作到工程部跟进/派工作到外派跟进',
           '5': '检查',
           '6': '完成',
-          '7': '报价中',
+          '7': '报价中(管理机关讨论)',
           '8': '管理机关讨论',
           '9': '待定',
           '10': '发出通告',
           '11': '工程进行中',
           '12': '工程验收',
           '13': '完成',
-          '14': '报价中',
+          '14': '报价中(所有人大会)',
           '15': '所有人大会',
           '16': '发出通告',
           '17': '工程进行中',
@@ -435,14 +435,14 @@
           '23': '派工作到清洁跟进/派工作到工程部跟进/派工作到外派跟进',
           '24': '检查',
           '25': '完成',
-          '26': '报价中',
+          '26': '报价中(管理机关讨论)',
           '27': '管理机关讨论',
           '28': '待定',
           '29': '发出通告',
           '30': '工程进行中',
           '31': '工程验收',
           '32': '完成',
-          '33': '报价中',
+          '33': '报价中(所有人大会)',
           '34': '所有人大会',
           '35': '发出通告',
           '36': '工程进行中',

@@ -40,11 +40,16 @@
           <span>{{ scope.row.floorLowNum }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column :label="$t('building.floorUpNum')" min-width="80px" align="center">
+      <el-table-column :label="$t('building.houseNum')" min-width="80px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.floorUpNum }}</span>
+          <span>{{ scope.row.houseNum }}</span>
         </template>
-      </el-table-column> -->
+      </el-table-column>
+      <el-table-column :label="$t('building.parkingNum')" min-width="80px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.parkingNum }}</span>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('building.fullAddress')" min-width="180px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.fullAddress }}</span>
@@ -108,11 +113,26 @@
               <el-input v-model="temp.floorLowNum" />
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="12">
-            <el-form-item :label="$t('building.floorUpNum')" prop="floorUpNum">
-              <el-input v-model="temp.floorUpNum" />
+          <el-col :span="12">
+            <el-form-item :label="$t('building.communityChildId')" prop="communityChildId">
+              <!-- <el-input v-model="temp.communityChildId" /> -->
+              <el-select v-model="temp.communityChildId" placeholder="请绑定类型">
+                <el-option v-for="(item, index) in communityChildList" :key="index" :value="item.communityId" :label="item.name" />
+              </el-select>
             </el-form-item>
-          </el-col> -->
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('building.houseNum')" prop="houseNum">
+              <el-input v-model="temp.houseNum" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('building.parkingNum')" prop="parkingNum">
+              <el-input v-model="temp.parkingNum" />
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="16">
@@ -186,7 +206,7 @@
     delBuilding,
     getBuildingDetail
   } from '@/api/building'
-  import { getCommunityList } from '@/api/community'
+  import { getCommunityList, queryCommunityChildList } from '@/api/community'
   import waves from '@/directive/waves' // Waves directive
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import SingleImage from './singleImage'
@@ -253,13 +273,15 @@
           buildingStruct: '', // 建筑结构
           communityId: '', // 社区ID
           floorLowNum: null, // 楼下几层
-          floorUpNum: null, // 楼上几层
+          houseNum: null, // 楼上几层
+          parkingNum: null,
           fullAddress: '', // 建筑全址
           commonPdf: [],
           buildingChildList: [],
           floorList: [], // 层数内容
           rosterPdf: [],
-          managementType: null
+          managementType: null,
+          communityChildId: null
         },
         dialogFormVisible: false,
         dialogStatus: '',
@@ -313,7 +335,8 @@
         typeList: [
           { label: '简单管理', value: 0 },
           { label: '综合管理', value: 1 }
-        ]
+        ],
+        communityChildList: []
       }
     },
     computed: {
@@ -333,6 +356,7 @@
       },
       'temp.communityId'() {
         this.temp.managementType = this.setectedCommunity && this.setectedCommunity.communityManagementType
+        this.getBuildPartOfCommunity()
       }
     },
     created() {
@@ -507,6 +531,14 @@
       async querBuildingDetail(buildingId) {
         const res = await getBuildingDetail({ buildingId }).catch(e => e)
         return res.data
+      },
+      // 获取社区子部分
+      async getBuildPartOfCommunity() {
+        const { code, msg, data } = await queryCommunityChildList({ communityId: this.temp.communityId }).catch(e => e)
+        if (code !== 200) {
+          return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+        }
+        this.communityChildList = data || []
       }
     }
   }

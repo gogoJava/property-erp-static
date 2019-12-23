@@ -155,8 +155,8 @@
     <el-dialog :visible.sync="dialogShow" width="75%">
       <el-form ref="dataForm" :model="temp" label-position="right" style="text-align: left;">
         <el-form-item label="业主">
-          <el-select v-model="userIds" filterable multiple collapse-tags placeholder="请绑定住户">
-            <el-option v-for="(item, index) in allProprietorList" :key="index" :value="item.userId" :label="item.username" />
+          <el-select v-model="userIds" :remote-method="remoteMethod" :placeholder="$t('proprietor.username') + '、' + $t('proprietor.englishName')" remote filterable multiple collapse-tags reserve-keyword style="width: 250px;">
+            <el-option v-for="(item, index) in allProprietorList" :key="index" :value="item.userId" :label="item.username + '（ '+ item.englishName + '）'" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -593,14 +593,17 @@
       //   const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
       //   this.communityList = response.data.list
       // },
-      async queryAllProprietorList() {
+      async queryAllProprietorList(keyword) {
         this.listLoading = true
-        const { code, msg, data } = await getProprietorList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
+        const { code, msg, data } = await getProprietorList({ pageNo: 1, pageSize: 99999, keyword }).catch(e => e)
         this.listLoading = false
         if (code !== 200) {
           return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
         }
         this.allProprietorList = [... data.list]
+      },
+      remoteMethod(query) {
+        this.queryAllProprietorList(query)
       },
       async queryProprietorList(unitId) {
         const { code, msg, data } = await getUnitUserList({ unitId }).catch(e => e)

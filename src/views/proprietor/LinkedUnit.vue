@@ -1,6 +1,6 @@
 <template>
   <div class="unit-container">
-    <el-row style="position: relative;top: -30px;">
+    <!-- <el-row style="position: relative;top: -30px;">
       <span>社区 : </span>
       <el-select v-model="communityName" filterable collapse-tags placeholder="请选择社区">
         <el-option v-for="(item, index) in communityListData" :key="index" :value="item.communityName" :label="item.communityName" />
@@ -15,7 +15,7 @@
       <el-select v-model="unitIds" filterable multiple collapse-tags placeholder="请绑定单元">
         <el-option v-for="(item, index) in allUnitList" :key="index" :value="item.unitId" :label="item.unitName" />
       </el-select>
-    </el-row>
+    </el-row> -->
     <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :label="$t('unit.unitNo')" prop="id" align="center" min-width="100">
         <template slot-scope="scope">
@@ -62,16 +62,16 @@
           <span>{{ scope.row.owner ? '有' : '无' }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="60">
+      <!-- <el-table-column :label="$t('table.actions')" align="center" width="60">
         <template slot-scope="scope">
           <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }}</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
-    <div style="padding-top: 15px;text-align: right;">
+    <!-- <div style="padding-top: 15px;text-align: right;">
       <el-button @click="cancel">{{ $t('table.cancel') }}</el-button>
       <el-button type="primary" @click="testTwo">{{ $t('proprietor.userWithCommunities') }}</el-button>
-    </div>
+    </div> -->
   </div>
 </template>
 

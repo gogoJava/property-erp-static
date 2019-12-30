@@ -16,6 +16,10 @@
       communityId: {
         type: String,
         default: ''
+      },
+      importType: {
+        type: String,
+        default: ''
       }
     },
     data() {
@@ -37,6 +41,7 @@
     },
     methods: {
       async httpRequest(option) {
+        if (!this.importType) return this.$notify({ title: '提示', message: '请选择导入类型！', type: 'info', duration: 2000 })
         if (!this.communityId) return this.$notify({ title: '提示', message: '请选择社区！', type: 'info', duration: 2000 })
         const loadingInstance = Loading.service({
           fullscreen: true,
@@ -47,7 +52,7 @@
         formData.append(option.filename, option.file)
         const options = {
          // 设置axios的参数
-         url: 'http://songsong.fun/backstage/back/chargeItemRecord/import?communityId=' + this.communityId,
+         url: 'http://songsong.fun/backstage/back/chargeItemRecord/import?communityId=' + this.communityId + '&recordType=' + this.importType,
          data: formData,
          method: 'post',
          headers: {

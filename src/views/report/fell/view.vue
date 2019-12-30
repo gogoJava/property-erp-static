@@ -8,7 +8,7 @@
           :label="item.communityName"
           :value="item.communityId" />
       </el-select>
-      <el-date-picker v-model="searchDate" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" style="position: relative;top: -4px;margin-left: 15px;"/>
+      <el-date-picker v-model="searchDate" :picker-options="pickerOptions" type="monthrange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" style="position: relative;top: -4px;margin-left: 15px;width: 360px;"/>
       <!-- v-if="$store.getters.isSuper" -->
       <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImport()">{{ $t('table.import') }}</el-button>
     </div>
@@ -72,10 +72,19 @@
     </el-table> -->
     <!-- 导入 -->
     <el-dialog :title="$t('table.import')" :visible.sync="importUserShow">
-      <el-select v-model="communityId" placeholder="请选择要导入的社区" style="position: relative;top: -2px;">
-        <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
-      </el-select>
-      <import-user :community-id="communityId" style="position: relative;top: -4px;left: 15px;display: inline-block;" @success="importUserSuccess"/>
+      <div style="padding: 15px 0;">
+        <span>导入类型：</span>
+        <el-select v-model="importType" placeholder="请选择导入类型">
+          <el-option value="0" label="物业收费" />
+          <el-option value="1" label="基金收费" />
+        </el-select>
+      </div>
+      <div>
+        <el-select v-model="communityId" placeholder="请选择要导入的社区" style="position: relative;top: -2px;">
+          <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
+        </el-select>
+        <import-user :community-id="communityId" :import-type="importType" style="position: relative;top: -4px;left: 15px;display: inline-block;" @success="importUserSuccess"/>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -173,7 +182,31 @@
         searchDate: [],
         importUserShow: false,
         communityId: '',
-        recordType: '0' // 记录类型0物业费1基金收费2订场收费3其他收费
+        recordType: '0', // 记录类型0物业费1基金收费2订场收费3其他收费
+        importType: null,
+        pickerOptions: {
+          shortcuts: [{
+            text: '本月',
+            onClick(picker) {
+              picker.$emit('pick', [new Date(), new Date()])
+            }
+          }, {
+            text: '今年至今',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date(new Date().getFullYear(), 0)
+              picker.$emit('pick', [start, end])
+            }
+          }, {
+            text: '最近六个月',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setMonth(start.getMonth() - 6)
+              picker.$emit('pick', [start, end])
+            }
+          }]
+        }
       }
     },
     computed: {
@@ -208,8 +241,8 @@
     methods: {
       printJS,
       async queryChargeUnitChargeList() {
-        const dateStart = this.searchDate && this.searchDate[0] ? this.$moment(this.searchDate[0]).format('YYYY-MM-DD') : ''
-        const dateEnd = this.searchDate && this.searchDate[1] ? this.$moment(this.searchDate[1]).format('YYYY-MM-DD') : ''
+        const dateStart = this.searchDate && this.searchDate[0] ? this.$moment(this.searchDate[0]).format('YY年MM月') : ''
+        const dateEnd = this.searchDate && this.searchDate[1] ? this.$moment(this.searchDate[1]).format('YY年MM月') : ''
         const param = {
           conmunityId: this.listQuery.communityId || '',
           recordType: (this.recordType - 0), // 记录类型0物业费1基金收费2订场收费3其他收费

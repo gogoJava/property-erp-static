@@ -287,9 +287,9 @@
           return {
             ...obj,
             unitName: v,
-            count: Object.keys(obj).length / 2,
+            count: Object.keys(obj).length / 3,
             sum: sum.toFixed(2),
-            price: parseFloat(sum / (Object.keys(obj).length / 2)).toFixed(2)
+            price: parseFloat(sum / (Object.keys(obj).length / 3)).toFixed(2)
             // data: data.chargeVoList[i]
           }
         })

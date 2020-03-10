@@ -92,8 +92,9 @@
           <el-col :span="12">
             <el-form-item :label="$t('chargeItem.alculationMethod')" prop="alculationMethod">
               <el-select v-model="temp.alculationMethod" placeholder="请选择">
-                <el-option :value="0" label="每月一次" />
-                <el-option :value="1" label="单次收费" />
+                <!-- 状态0欠费1已付2预支付 -->
+                <el-option :value="0" label="定额" />
+                <el-option :value="1" label="公式" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -122,9 +123,8 @@
           <el-col :span="12">
             <el-form-item :label="$t('chargeItem.billingMode')" prop="billingMode">
               <el-select v-model="temp.billingMode" placeholder="请选择">
-                <!-- 状态0欠费1已付2预支付 -->
-                <el-option :value="0" label="定额" />
-                <el-option :value="1" label="公式" />
+                <el-option :value="0" label="每月一次" />
+                <el-option :value="1" label="单次收费" />
               </el-select>
             </el-form-item>
           </el-col>

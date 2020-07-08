@@ -96,6 +96,7 @@
                 <!-- <el-option v-for="(item, index) in roleList" :key="index" :value="item.roleId" :label="item.roleName" /> -->
                 <el-option :key="0" :value="0" label="普通管理员" />
                 <el-option :key="1" :value="1" label="超级管理员" />
+                <el-option :key="2" :value="2" label="经理" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -197,7 +198,8 @@
       typeFilter(type) {
         const typeMap = {
           0: '普通管理员',
-          1: '超级管理员'
+          1: '超级管理员',
+          2: '经理'
         }
         return typeMap[type]
       }

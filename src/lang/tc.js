@@ -277,7 +277,7 @@ export default {
     unitCoveredArea: '覆蓋面積大小(單位平方米)', // 覆蓋面積大小(單位平方米)
     unitName: '單位名字', // 单元名字
     unitFullAddress: '全址', // 全址
-    unitId: 'ID', // unitId
+    unitId: '單位', // unitId
     unitNo: '單位編號', // 單位編號
     unitPosition: '位置', // 位置(地下,一楼,二楼,三楼,户外.)
     unitPurpose: '用途', // 用途

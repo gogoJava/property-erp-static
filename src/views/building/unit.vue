@@ -155,8 +155,8 @@
     <el-dialog :visible.sync="dialogShow" width="75%">
       <el-form ref="dataForm" :model="temp" label-position="right" style="text-align: left;">
         <el-form-item label="业主">
-          <el-select v-model="userIds" :remote-method="remoteMethod" :placeholder="$t('proprietor.username') + '、' + $t('proprietor.englishName')" remote filterable multiple collapse-tags reserve-keyword style="width: 250px;">
-            <el-option v-for="(item, index) in allProprietorList" :key="index" :value="item.userId" :label="item.username + '（ '+ item.englishName + '）'" />
+          <el-select v-model="userIds" :remote-method="remoteMethod" :placeholder="$t('proprietor.username') + '、' + $t('proprietor.name') + '、' + $t('proprietor.englishName')" remote filterable multiple collapse-tags reserve-keyword style="width: 250px;">
+            <el-option v-for="(item, index) in allProprietorList" :key="index" :value="item.userId" :label="item.username + ('（ '+ item.name + (item.englishName ? `、${item.englishName}` : '') + '）')" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -168,7 +168,7 @@
         </el-table-column>
         <el-table-column :label="$t('proprietor.englishName')" prop="id" align="center" min-width="120">
           <template slot-scope="scope">
-            <span>{{ scope.row.englishName }}</span>
+            <span>{{ scope.row.englishName || '--' }}</span>
           </template>
         </el-table-column>
         <el-table-column :label="$t('proprietor.owner')" prop="id" align="center" min-width="120">
@@ -253,7 +253,7 @@
         }
         return sexMap[value]
       },
-      unitTypefilter(type) {
+      unitTypeFilter(type) {
         // 单位类型1商铺2住宅3停车场
         const typeMap = {
           1: '商铺',
@@ -268,16 +268,17 @@
           1: '男'
         }
         return sexMap[value]
-      },
-      unitTypeFilter(type) {
-        // 单位用途1商业2轻型汽车/电单车3住宅
-        const typeMap = {
-          1: '商业',
-          2: '轻型汽车/电单车',
-          3: '住宅'
-        }
-        return typeMap[type]
       }
+      // unitTypeFilter(type) {
+      //   console.log('ssss')
+      //   // 单位用途1商业2轻型汽车/电单车3住宅
+      //   const typeMap = {
+      //     1: '商业',
+      //     2: '轻型汽车/电单车',
+      //     3: '住宅'
+      //   }
+      //   return typeMap[type]
+      // }
     },
     data() {
       return {
@@ -430,12 +431,12 @@
           if (this.userIds.some(item => item === v.userId)) {
             // title: 业权
             const rr = this.proprietorList.find(info => info.userId === v.userId)
-            list.push({ ...v, owner: rr ? rr.owner : false, title: 0 })
+            list.push({ ...v, owner: rr ? rr.owner : false, title: rr ? rr.title : null })
           }
         })
         // const length = list.length
         this.proprietorList = list.map((v, index) => {
-          return { ...v, title: null }
+          return { ...v }
           // const title = parseInt(this.unitInfo.unitTitle / length)
           // 余数
           // const remainder = parseInt(this.unitInfo.unitTitle % length)

@@ -69,8 +69,7 @@
       </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="130" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
-          <el-button type="text" size="mini" @click="test(scope.row)">关联收费项目</el-button>
-          <!-- <el-button size="text" type="danger" @click="handleDelete(scope.row,'deleted')">{{ $t('table.delete') }} -->
+          <el-button type="text" size="mini" @click="handleDelete(scope.row)">关联收费项目</el-button>
           <!-- </el-button> -->
         </template>
       </el-table-column>
@@ -91,6 +90,49 @@
         <el-button type="primary" @click="testTwo">{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
+    <!-- 删除关联收费项目 -->
+    <el-dialog :visible.sync="deleteDialogShow" width="900px">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" style="width: 700px;">
+        <el-form-item label="收费项目" prop="itemId">
+          <el-select v-model="itemId" filterable size="small" placeholder="请绑定收费项目">
+            <el-option v-for="(item, index) in chargeItemList" :key="index" :value="item.itemId" :label="item.itemName" />
+          </el-select>
+          <el-button type="primary" size="small" style="margin-left: 15px;" @click="testTwo">关联</el-button>
+        </el-form-item>
+      </el-form>
+      <el-table v-loading="chargeListLoading" :key="1" :data="chargeList" border fit highlight-current-row style="width: 100%;">
+        <el-table-column :label="$t('unit.itemNo')" prop="id" align="center" min-width="120">
+          <template slot-scope="scope">
+            <span>{{ scope.row.itemNo }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('unit.itemName')" min-width="120px" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.itemName }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('unit.community')" min-width="80px" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.community.communityName }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('unit.additionalCost')" min-width="80px" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.additionalCost }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('unit.alculationMethod')" min-width="80px" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.alculationMethod | alculationMethodFilter }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('table.actions')" align="center" width="180">
+          <template slot-scope="scope">
+            <el-button type="text" size="mini" @click="deleteLink(scope.row)">删除关联收费项目</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -98,12 +140,14 @@
   import {
     getUnitList,
     createUnit,
-    updateUnit,
-    delUnit
+    updateUnit
+    // delUnit
   } from '@/api/unit'
   import {
+    getChargeUnitItemList,
     getChargeItemList,
-    addUnitItem
+    addUnitItem,
+    delChargeItemRecord
   } from '@/api/charge'
   import {
     getBuildingList
@@ -139,14 +183,24 @@
           3: '停车场'
         }
         return typeMap[type]
+      },
+      alculationMethodFilter(type) {
+        // 计算方式0定额1公式
+        const typeMap = {
+          0: '定额',
+          1: '公式'
+        }
+        return typeMap[type]
       }
     },
     data() {
       return {
         tableKey: 0,
         list: null,
+        chargeList: null,
         total: 0,
         listLoading: true,
+        chargeListLoading: false,
         listQuery: {
           pageNo: 1,
           pageSize: 10,
@@ -209,7 +263,8 @@
         chargeItemList: [],
         dialogShow: false,
         itemId: null,
-        unitId: null
+        unitId: null,
+        deleteDialogShow: false
       }
     },
     watch: {
@@ -277,7 +332,8 @@
           type: 'success',
           duration: 2000
         })
-        this.getList()
+        // this.getList()
+        this.getChargeList({ unitId: this.unitId })
       },
       async createData() {
         const response = await createUnit(this.temp).catch(e => e)
@@ -313,24 +369,19 @@
         this.dialogUpdateVisible = false
         this.getList()
       },
-      handleDelete(row) {
-        this.$confirm('确定删除单位【' + row.unitName + '】?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async() => {
-          const { code, msg } = await delUnit({ unitId: row.unitId }).catch(e => e)
-          if (code !== 200) {
-            return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
-          }
-          this.$notify({
-            title: '成功',
-            message: '删除成功',
-            type: 'success',
-            duration: 2000
-          })
-          this.getList()
-        }).catch(() => {})
+      async handleDelete(row) {
+        await this.getChargeList(row)
+        this.unitId = row.unitId
+        this.deleteDialogShow = true
+      },
+      async getChargeList(info) {
+        this.chargeListLoading = true
+        const { code, msg, data } = await getChargeUnitItemList({ pageNo: 1, pageSize: 99999, unitId: info.unitId }).catch(e => e)
+        this.chargeListLoading = false
+        if (code !== 200) {
+          return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+        }
+        this.chargeList = [... data.list]
       },
        // 获取建筑列表
       async queryBuildyList() {
@@ -342,6 +393,21 @@
       async queryChargeItemList() {
         const response = await getChargeItemList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.chargeItemList = response.data.list
+      },
+      // 删除关联收费项目
+      async deleteLink(info) {
+        const data = { itemId: info.itemId }
+        const response = await delChargeItemRecord(data).catch(e => e)
+        if (response.code !== 200) {
+          return this.$notify({ title: '删除关联失败', message: response.msg, type: 'error', duration: 2000 })
+        }
+        this.$notify({
+          title: '成功',
+          message: '删除关联成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.getChargeList({ unitId: this.unitId })
       }
     }
   }

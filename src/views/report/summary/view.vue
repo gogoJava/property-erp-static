@@ -77,7 +77,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('charge.unitItemId')" prop="username">
-              <el-input v-model="temp.chargeItem.itemName" />
+              <el-input v-if="temp.chargeItem" v-model="temp.chargeItem.itemName" />
             </el-form-item>
           </el-col>
           <el-col :span="12">

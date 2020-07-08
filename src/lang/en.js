@@ -277,7 +277,7 @@ export default {
     unitCoveredArea: 'Coverage Area(Unit Square Meter)', // 覆盖面积大小(单位平方米)
     unitName: 'Unit Name', // 单元名字
     unitFullAddress: 'Address', // 全址
-    unitId: 'ID', // unitId
+    unitId: 'Unit', // unitId
     unitNo: 'Unit No', // 单位编号
     unitPosition: 'Position', // 位置(地下,一楼,二楼,三楼,户外.)
     unitPurpose: 'Use', // 用途

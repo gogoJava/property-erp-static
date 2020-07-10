@@ -91,6 +91,15 @@ export function addUnitItem(params) {
   })
 }
 
+// 删除单元的收费项目
+export function delUnitChargeItem(query) {
+  return request({
+    url: '/back/chargeItem/delUnitChargeItem',
+    method: 'get',
+    params: query
+  })
+}
+
 // 设置为已收费
 export function setChargeItemRecordConfirm(params) {
   return request({

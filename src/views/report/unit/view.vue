@@ -147,7 +147,7 @@
     getChargeUnitItemList,
     getChargeItemList,
     addUnitItem,
-    delChargeItemRecord
+    delUnitChargeItem
   } from '@/api/charge'
   import {
     getBuildingList
@@ -396,8 +396,8 @@
       },
       // 删除关联收费项目
       async deleteLink(info) {
-        const data = { itemId: info.itemId }
-        const response = await delChargeItemRecord(data).catch(e => e)
+        const data = { unitItemId: info.unitItemId }
+        const response = await delUnitChargeItem(data).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '删除关联失败', message: response.msg, type: 'error', duration: 2000 })
         }

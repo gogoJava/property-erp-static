@@ -11,7 +11,7 @@
           :value="item.buildingId" />
       </el-select>
       <span style="position: relative;top: -4px;padding-left: 15px;">{{ $t('unit.unitId') }}:</span>
-      <el-select v-model="unitId" filterable placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
+      <el-select v-model="unitId" filterable clearable placeholder="请选择" style="position: relative;top: -4px;padding-left: 15px;">
         <el-option
           v-for="item in unitList"
           :key="item.unitId"
@@ -33,6 +33,11 @@
       <el-table-column :label="$t('unit.community')" min-width="80px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.community.communityName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('unit.unitName')" min-width="100px" align="center">
+        <template slot-scope="scope">
+          <span v-if="scope.row.unit">{{ scope.row.unit.unitName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('unit.additionalCost')" min-width="80px" align="center">
@@ -285,6 +290,7 @@
     async created() {
       // await this.queryBuildyList()
       await Promise.all([
+        this.getList(),
         // this.queryUnitList(),
         this.queryBuildyList()
       ])
@@ -293,7 +299,7 @@
     },
     methods: {
       async getList() {
-        if (!this.unitId) return
+        // if (!this.unitId) return
         this.listLoading = true
         const { code, msg, data } = await getChargeUnitItemList({ ...this.listQuery, unitId: this.unitId, recordStatus: this.recordStatus }).catch(e => e)
         this.listLoading = false
@@ -312,7 +318,7 @@
           return this.$notify({ title: '失败1', message: msg, type: 'error', duration: 2000 })
         }
         this.unitList = data.list
-        this.unitId = this.unitList[0] && this.unitList[0].unitId || null
+        // this.unitId = this.unitList[0] && this.unitList[0].unitId || null
       },
       handleModifyStatus(row, status) {
         this.$message({
@@ -344,7 +350,6 @@
       },
       paymentNotice(info) {
         this.dialogShow2 = true
-        console.log('paymentNotice')
       },
       async testTwo() {
         const data = [{ itemId: this.itemId, unitId: this.selectUnitId }]

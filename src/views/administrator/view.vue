@@ -102,7 +102,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('administrator.communityId')" prop="communityId">
-              <el-select v-model="temp.communityId" placeholder="请绑定社区">
+              <el-select v-model="temp.communityId" placeholder="请绑定社区" multiple style="width: 240px;">
                 <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
               </el-select>
             </el-form-item>
@@ -227,7 +227,7 @@
         statusOptions: ['published', 'draft', 'deleted'],
         showReviewer: false,
         temp: {
-          communityId: '',
+          communityId: [],
           managerId: '',
           name: '',
           username: '',
@@ -264,12 +264,6 @@
           sex: [{
             required: true,
             message: '请选择性别',
-            trigger: ['change', 'blur']
-          }],
-          communityId: [{
-            type: 'string',
-            required: true,
-            message: '请选择社区',
             trigger: ['change', 'blur']
           }]
         },
@@ -363,6 +357,8 @@
       },
       async createData() {
         this.temp.roleIds = this.temp.roleIds.join(',')
+        this.temp.communityId = this.temp.communityId.join(',')
+        if (!this.temp.communityId) return this.$notify({ title: '提示', message: '请选择社区！', type: 'info', duration: 2000 })
         const response = await addManager(this.temp).catch(e => e)
         if (response.code !== 200) {
           return this.$notify({ title: '创建失败', message: response.msg, type: 'error', duration: 2000 })
@@ -380,6 +376,7 @@
         const res = await getManagerDetail({ managerId: row.managerId })
         this.temp = Object.assign({}, res.data) // copy obj
         this.temp.roleIds = this.temp.roleIds && this.temp.roleIds.split(',')
+        this.temp.communityId = this.temp.communityId.split(',')
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -399,6 +396,8 @@
       async updateData() {
         this.listLoading = true
         this.temp.roleIds = this.temp.roleIds.join(',')
+        this.temp.communityId = this.temp.communityId.join(',')
+        if (!this.temp.communityId) return this.$notify({ title: '提示', message: '请选择社区！', type: 'info', duration: 2000 })
         const response = await updateManager(this.temp).catch(e => e)
         this.listLoading = false
         if (response.code !== 200) {

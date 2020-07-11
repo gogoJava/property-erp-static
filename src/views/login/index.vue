@@ -115,12 +115,14 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
-            // console.log('sssss')
+          this.$store.dispatch('LoginByUsername', this.loginForm).then((e) => {
             this.loading = false
+            if (e && e.code !== 200) {
+              return this.$notify({ title: '登录失败', message: e.msg, type: 'error', duration: 2000 })
+            }
             // this.$router.push({ path: this.redirect || '/' })
             this.$router.push({ path: '/' })
-          }).catch(() => {
+          }).catch((e) => {
             this.loading = false
           })
         } else {

@@ -10,6 +10,7 @@ const user = {
     name: '',
     communityId: '',
     isSuper: false,
+    manager: false, // 经理身份
     avatar: '',
     introduction: '',
     roles: [],
@@ -39,6 +40,7 @@ const user = {
       state.name = data.name
       state.communityId = data.communityId
       state.isSuper = data.type === 1
+      state.manager = data.type === 2
       state.managementType = data.managementType
     },
     SET_AVATAR: (state, avatar) => {
@@ -53,8 +55,8 @@ const user = {
     // 用户名登录
     async LoginByUsername({ commit, dispatch }, userInfo) {
       const username = userInfo.username.trim()
-      const { code, data } = await loginByUsername(username, userInfo.password).catch(e => e)
-      if (code !== 200) return
+      const { code, data, msg } = await loginByUsername(username, userInfo.password).catch(e => e)
+      if (code !== 200) return { code, msg }
       commit('SET_TOKEN', data.token)
       setToken(data.token)
       commit('SET_ROLES', [data.manager])

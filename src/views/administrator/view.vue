@@ -92,7 +92,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('administrator.type')" prop="type">
-              <el-select v-model="temp.type" placeholder="请选择">
+              <el-select v-model="temp.type" placeholder="请选择" @click.native="typeChange">
                 <!-- <el-option v-for="(item, index) in roleList" :key="index" :value="item.roleId" :label="item.roleName" /> -->
                 <el-option :key="0" :value="0" label="普通管理员" />
                 <el-option :key="1" :value="1" label="超级管理员" />
@@ -102,7 +102,8 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('administrator.communityId')" prop="communityId">
-              <el-select v-model="temp.communityId" placeholder="请绑定社区" multiple style="width: 240px;">
+              <!-- 普通管理员只能选择一个设置 -->
+              <el-select v-model="temp.communityId" :multiple="!!temp.type" placeholder="请绑定社区" style="width: 240px;">
                 <el-option v-for="(item, index) in communityList" :key="index" :value="item.communityId" :label="item.communityName" />
               </el-select>
             </el-form-item>
@@ -311,6 +312,11 @@
         const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = response.data.list
         this.communityList2 = [...this.communityList2, ...response.data.list]
+        // 经理身份
+        if (this.$store.getters.manager) {
+          this.communityList = this.communityList.filter(v => this.$store.getters.communityId.split(',').some((item) => item === v.communityId))
+          this.communityList2 = this.communityList2.filter(v => this.$store.getters.communityId.split(',').some((item) => item === v.communityId))
+        }
       },
       // 获取社区列表
       async queryRoleList() {
@@ -356,8 +362,10 @@
         })
       },
       async createData() {
-        this.temp.roleIds = this.temp.roleIds.join(',')
-        this.temp.communityId = this.temp.communityId.join(',')
+        if (this.temp.type === 2 && this.temp.communityId.length < 2) return this.$notify({ title: '提示', message: '请选择两个或以上社区！', type: 'info', duration: 2000 })
+        // this.temp.roleIds = this.temp.roleIds.join(',')
+        if (this.temp.roleIds && typeof this.temp.roleIds !== 'string') this.temp.roleIds = this.temp.roleIds.join(',')
+        if (this.temp.communityId && typeof this.temp.communityId !== 'string') this.temp.communityId = this.temp.communityId.join(',')
         if (!this.temp.communityId) return this.$notify({ title: '提示', message: '请选择社区！', type: 'info', duration: 2000 })
         const response = await addManager(this.temp).catch(e => e)
         if (response.code !== 200) {
@@ -375,13 +383,17 @@
       async handleUpdate(row) {
         const res = await getManagerDetail({ managerId: row.managerId })
         this.temp = Object.assign({}, res.data) // copy obj
-        this.temp.roleIds = this.temp.roleIds && this.temp.roleIds.split(',')
-        this.temp.communityId = this.temp.communityId.split(',')
+        // this.temp.roleIds = this.temp.roleIds && this.temp.roleIds.split(',')
+        if (this.temp.roleIds && this.temp.roleIds.split(',').length > 1) this.temp.roleIds = this.temp.roleIds.split(',')
+        if (this.temp.communityId && this.temp.communityId.split(',').length > 1) this.temp.communityId = this.temp.communityId.split(',')
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })
+      },
+      typeChange() {
+        this.temp.communityId = ''
       },
       // 修改密码
       handleUpdatePwd(row) {
@@ -394,11 +406,15 @@
         })
       },
       async updateData() {
-        this.listLoading = true
-        this.temp.roleIds = this.temp.roleIds.join(',')
-        this.temp.communityId = this.temp.communityId.join(',')
+        if (this.temp.type === 2 && this.temp.communityId.length < 2) return this.$notify({ title: '提示', message: '请选择两个或以上社区！', type: 'info', duration: 2000 })
+        // this.temp.roleIds = this.temp.roleIds.join(',')
+        if (this.temp.roleIds && typeof this.temp.roleIds !== 'string') this.temp.roleIds = this.temp.roleIds.join(',')
+        // this.temp.communityId = this.temp.communityId.join(',')
+        if (typeof this.temp.communityId !== 'string') this.temp.communityId = this.temp.communityId.join(',')
         if (!this.temp.communityId) return this.$notify({ title: '提示', message: '请选择社区！', type: 'info', duration: 2000 })
-        const response = await updateManager(this.temp).catch(e => e)
+        const param = { ...this.temp }
+        this.listLoading = true
+        const response = await updateManager(param).catch(e => e)
         this.listLoading = false
         if (response.code !== 200) {
           return this.$notify({ title: '修改失败', message: response.msg, type: 'error', duration: 2000 })

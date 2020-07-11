@@ -216,6 +216,8 @@
       }
     },
     created() {
+      this.queryCommunityList()
+      this.queryBuildingList()
       this.getList()
     },
     methods: {
@@ -237,8 +239,13 @@
       },
       // 获取社区列表
       async queryCommunityList() {
+        if (!(this.$store.getters.isSuper || this.$store.getters.manager)) return
         const response = await getCommunityList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.communityList = [...this.communityList, ...response.data.list]
+        // 经理身份
+        if (this.$store.getters.manager) {
+          this.communityList = this.communityList.filter(v => this.$store.getters.communityId.split(',').some((item) => item === v.communityId))
+        }
       },
       // 获取建筑列表
       async queryBuildingList() {

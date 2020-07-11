@@ -11,6 +11,7 @@ const getters = {
   managementType: state => state.user.managementType,
   communityId: state => state.user.communityId,
   isSuper: state => state.user.isSuper,
+  manager: state => state.user.manager,
   introduction: state => state.user.introduction,
   status: state => state.user.status,
   roles: state => state.user.roles,

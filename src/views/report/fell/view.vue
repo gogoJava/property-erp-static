@@ -322,12 +322,16 @@
       },
       // 获取社区列表
       async queryCommunityList() {
-        if (!this.$store.getters.isSuper) return
+        if (!(this.$store.getters.isSuper || this.$store.getters.manager)) return
         const response = await getCommunityList({
           pageNo: 1,
           pageSize: 99999
         }).catch(e => e)
         this.communityList = response.data.list
+        // 经理身份
+        if (this.$store.getters.manager) {
+          this.communityList = this.communityList.filter(v => this.$store.getters.communityId.split(',').some((item) => item === v.communityId))
+        }
         this.listQuery.communityId = response.data.list.length ? this.communityList[0].communityId : null
       },
       // 获取建筑列表

@@ -423,7 +423,8 @@
       async queryBuildyList() {
         const response = await getBuildingList({ pageNo: 1, pageSize: 99999 }).catch(e => e)
         this.buildingList = response.data.list
-        this.buildingId = this.buildingList[0].buildingId
+        this.buildingId = this.buildingList[0] ? this.buildingList[0].buildingId : null
+        if (!this.buildingId) this.queryUnitList()
       },
       // 获取社区列表
       async queryChargeItemList() {

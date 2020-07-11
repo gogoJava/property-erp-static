@@ -103,6 +103,7 @@
           </el-tab-pane>
         </el-tabs>
       </el-tab-pane>
+      <div v-if="!treeData.length" style="text-align: center;font-size: 32px;padding-top: 60px;">暫無信息</div>
     </el-tabs>
     <!-- 添加、编辑、详情 -->
     <el-dialog :visible.sync="dialogFormVisible" title="Edit" width="800px" top="15px">
@@ -691,14 +692,15 @@
             duration: 2000
           })
         }
+        if (response.data && !response.data.length) return
         this.resData = response.data
         this.list = this.resData[0].buildingWithUnits || this.resData[0].unitList || []
         this.key = this.resData[0].communityId || this.resData[0].buildingId
         this.communityId = this.resData[0].communityId
         // 第一次加载的是第一个社区信息
         this.getCommunityDetail(this.treeData[0].communityId)
-        this.querBuildingDetail(this.treeData[0].buildingWithUnits[0].buildingId)
-        this.buildingId = this.treeData[0].buildingWithUnits[0].buildingId
+        this.querBuildingDetail(this.treeData[0].buildingWithUnits[0] ? this.treeData[0].buildingWithUnits[0].buildingId : null)
+        this.buildingId = this.treeData[0].buildingWithUnits[0] ? this.treeData[0].buildingWithUnits[0].buildingId : null
         this.queryUnitList()
         const obj = this.buildingList.find(v => v.buildingId === this.buildingId)
         this.managementType = obj ? obj.managementType : null

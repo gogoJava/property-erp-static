@@ -13,6 +13,7 @@ const user = {
     manager: false, // 经理身份
     avatar: '',
     introduction: '',
+    userInfo: null,
     roles: [],
     setting: {
       articlePlatform: []
@@ -48,6 +49,9 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_USER_INFO: (state, userInfo) => {
+      state.userInfo = userInfo
     }
   },
 
@@ -60,6 +64,7 @@ const user = {
       commit('SET_TOKEN', data.token)
       setToken(data.token)
       commit('SET_ROLES', [data.manager])
+      commit('SET_USER_INFO', data.manager)
       commit('SET_NAME', { name: data.manager.username, communityId: data.manager.communityId, type: data.manager.type, managementType: data.manager.managementType })
       // type 类型0普通管理员1超级管理员
       const role = { roles: [data.manager.type === 1 ? 'super' : 'admin'] }
@@ -71,6 +76,7 @@ const user = {
       const { code, data } = await getUserInfo().catch(e => e)
       if (!data || code !== 200) return
       commit('SET_ROLES', [data])
+      commit('SET_USER_INFO', data)
       commit('SET_NAME', { name: data.username, communityId: data.communityId, type: data.type, managementType: data.managementType })
       const role = { roles: [data.type === 1 ? 'super' : 'admin'] }
       dispatch('GenerateRoutes', role) // 动态修改权限后 重绘侧边菜单
@@ -83,6 +89,7 @@ const user = {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
+          commit('SET_USER_INFO', null)
           removeToken()
           resolve()
         }).catch(error => {

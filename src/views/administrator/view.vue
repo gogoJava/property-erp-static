@@ -321,7 +321,7 @@
       // 获取社区列表
       async queryRoleList() {
         const response = await getRoleList().catch(e => e)
-        this.roleList = response.data
+        this.roleList = response.data.map(v => { return { ...v, roleId: v.roleId.toString() } })
       },
       handleModifyStatus(row, status) {
         this.$message({
@@ -410,8 +410,11 @@
         // this.temp.roleIds = this.temp.roleIds.join(',')
         if (this.temp.roleIds && typeof this.temp.roleIds !== 'string') this.temp.roleIds = this.temp.roleIds.join(',')
         // this.temp.communityId = this.temp.communityId.join(',')
-        if (typeof this.temp.communityId !== 'string') this.temp.communityId = this.temp.communityId.join(',')
-        if (!this.temp.communityId) return this.$notify({ title: '提示', message: '请选择社区！', type: 'info', duration: 2000 })
+        if (this.temp.communityId && typeof this.temp.communityId !== 'string') this.temp.communityId = this.temp.communityId.join(',')
+        // 修改密码的时候不判断
+        if (!this.temp.communityId && !this.dialogUpdateVisible) return this.$notify({ title: '提示', message: '请选择社区！', type: 'info', duration: 2000 })
+        // 编辑
+        if (this.dialogFormVisible && this.dialogStatus !== 'create') this.temp.password = null
         const param = { ...this.temp }
         this.listLoading = true
         const response = await updateManager(param).catch(e => e)

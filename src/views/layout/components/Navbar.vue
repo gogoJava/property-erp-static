@@ -44,11 +44,27 @@
             <span style="display:block;" @click="logout">{{ $t('navbar.logOut') }}</span>
           </el-dropdown-item>
           <el-dropdown-item>
-            <span style="display:block;" @click="logout">{{ $t('navbar.updatePwd') }}</span>
+            <span style="display:block;" @click="handleUpdatePwd">{{ $t('navbar.updatePwd') }}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <!-- 修改密码 -->
+    <el-dialog :title="'修改密码'" :visible.sync="dialogUpdateVisible">
+      <el-form ref="dataForm" label-position="right" label-width="90px" style="width: 400px; margin-left:50px;">
+        <el-form-item :label="$t('administrator.name')" prop="name">
+          <!-- <el-input v-model="temp.name" /> -->
+          <span>{{ $store.getters.name }}</span>
+        </el-form-item>
+        <el-form-item label="新密码" prop="password">
+          <el-input v-model="temp.password" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogUpdateVisible = false">{{ $t('table.cancel') }}</el-button>
+        <el-button type="primary" @click="updateData()">{{ $t('table.confirm') }}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -61,6 +77,9 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
+  import {
+    updateManager
+  } from '@/api/administrator'
 
 export default {
   components: {
@@ -71,6 +90,14 @@ export default {
     SizeSelect,
     LangSelect,
     ThemePicker
+  },
+  data() {
+    return {
+      dialogUpdateVisible: false,
+      temp: {
+        password: ''
+      }
+    }
   },
   computed: {
     ...mapGetters([
@@ -88,6 +115,24 @@ export default {
       this.$store.dispatch('LogOut').then(() => {
         location.reload()// In order to re-instantiate the vue-router object to avoid bugs
       })
+    },
+    // 修改密码
+    handleUpdatePwd() {
+      this.temp.password = ''
+      this.dialogUpdateVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    async updateData() {
+      const param = { ...this.$store.getters.userInfo, password: this.temp.password }
+      const response = await updateManager(param).catch(e => e)
+      if (response.code !== 200) {
+        return this.$notify({ title: '修改失败', message: response.msg, type: 'error', duration: 2000 })
+      }
+      this.$notify({ title: '成功', message: '修改成功', type: 'success', duration: 2000 })
+      this.dialogUpdateVisible = false
+      this.logout()
     }
   }
 }

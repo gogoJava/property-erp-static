@@ -21,10 +21,12 @@
       <!-- <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImportUnit()">{{ $t('table.importUnit') }}</el-button> -->
       <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleDownUnit()">下载文件模板</el-button>
       <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button>
+      <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleBatchDelete()">批量删除</el-button>
       <import-unit :building-id="buildingId" style="position: relative;top: -4px;left: 30px;display: inline-block;" @success="getList"/>
       <el-button size="mini" type="success" style="position: relative;top: 4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
-    <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
+    <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @selection-change="handleSelectionChange">
+      <el-table-column type="selection">{{ null }}</el-table-column>
       <el-table-column :label="$t('unit.unitNo')" prop="id" align="center" min-width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.unitNo }}</span>
@@ -75,12 +77,6 @@
           <span>{{ scope.row.unitRelativeProportion }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column :label="$t('unit.unitChildRelativeProportion')" width="190px" align="center">
-        <template slot-scope="scope">
-          <span v-if="communityType(scope.row)">{{ scope.row.unitChildRelativeProportion }}</span>
-          <span v-else>--</span>
-        </template>
-      </el-table-column> -->
       <el-table-column :label="$t('table.actions')" align="center" width="200" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
@@ -155,7 +151,7 @@
     <el-dialog :visible.sync="dialogShow" width="75%">
       <el-form ref="dataForm" :model="temp" label-position="right" style="text-align: left;">
         <el-form-item label="业主">
-          <el-select v-model="userIds" :remote-method="remoteMethod" :placeholder="$t('proprietor.username') + '、' + $t('proprietor.name') + '、' + $t('proprietor.englishName')" remote filterable multiple collapse-tags reserve-keyword style="width: 250px;">
+          <el-select v-model="userIds" :remote-method="remoteMethod" :placeholder="$t('proprietor.username') + '、' + $t('proprietor.name') + '、' + $t('proprietor.englishName')" filterable multiple reserve-keyword style="width: 420px;">
             <el-option v-for="(item, index) in allProprietorList" :key="index" :value="item.userId" :label="item.username + ('（ '+ item.name + (item.englishName ? `、${item.englishName}` : '') + '）')" />
           </el-select>
         </el-form-item>
@@ -434,13 +430,8 @@
             list.push({ ...v, owner: rr ? rr.owner : false, title: rr ? rr.title : null })
           }
         })
-        // const length = list.length
         this.proprietorList = list.map((v, index) => {
           return { ...v }
-          // const title = parseInt(this.unitInfo.unitTitle / length)
-          // 余数
-          // const remainder = parseInt(this.unitInfo.unitTitle % length)
-          // return { ...v, title: (title + ((remainder && remainder > index) ? 1 : 0)) }
         })
       },
       'temp.communityId'() {
@@ -687,6 +678,33 @@
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
+      },
+      handleSelectionChange(val) {
+        this.unitIds = ''
+        val.forEach((v, index) => {
+          this.unitIds = this.unitIds + (index ? ',' : '') + v.unitId
+        })
+      },
+      // 批量删除
+      handleBatchDelete() {
+        if (!this.unitIds) return this.$notify({ title: '', message: '请选择要删除的单位！', type: 'info', duration: 2000 })
+        this.$confirm('确定删除单位?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async() => {
+          const { code, msg } = await delUnit({ unitId: this.unitIds }).catch(e => e)
+          if (code !== 200) {
+            return this.$notify({ title: '失败2', message: msg, type: 'error', duration: 2000 })
+          }
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+        }).catch(() => {})
       }
     }
   }

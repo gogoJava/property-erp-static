@@ -14,11 +14,13 @@
       <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleExport()">{{ $t('table.export') }}</el-button>
       <!-- 超级管理员 -->
       <el-button v-if="$store.getters.isSuper" size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImportUser()">{{ $t('table.importUser') }}</el-button>
+      <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleBatchDelete()">批量删除</el-button>
       <!-- 普通管理员 -->
       <import-user v-if="!$store.getters.isSuper" :community-id="$store.getters.communityId" style="position: relative;top: -4px;left: 30px;display: inline-block;" @success="importUserSuccess"/>
       <el-button size="mini" type="success" style="position: relative;top: -4px;float: right;" @click="handleCreate()">{{ $t('table.add') }}</el-button>
     </div>
-    <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
+    <el-table v-loading="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;" @selection-change="handleSelectionChange">
+      <el-table-column type="selection">{{ null }}</el-table-column>
       <el-table-column :label="$t('proprietor.username')" prop="id" align="center" min-width="120">
         <template slot-scope="scope">
           <span>{{ scope.row.username }}</span>
@@ -104,7 +106,7 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNo" :limit.sync="listQuery.pageSize" @pagination="getList" />
     <!-- 添加、编辑、详情 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="70%" top="30px">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px" style="margin:0 50px;">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="120px" style="margin:0 50px;">
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('proprietor.username')" prop="username">
@@ -691,6 +693,33 @@
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
+      },
+      handleSelectionChange(val) {
+        this.userIds = ''
+        val.forEach((v, index) => {
+          this.userIds = this.userIds + (index ? ',' : '') + v.userId
+        })
+      },
+      // 批量删除
+      handleBatchDelete() {
+        if (!this.userIds) return this.$notify({ title: '', message: '请选择要删除的业主！', type: 'info', duration: 2000 })
+        this.$confirm('确定删除业主?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async() => {
+          const { code, msg } = await delProprietor({ userId: this.userIds }).catch(e => e)
+          if (code !== 200) {
+            return this.$notify({ title: '失败', message: msg, type: 'error', duration: 2000 })
+          }
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+        }).catch(() => {})
       }
     }
   }

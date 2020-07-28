@@ -9,7 +9,6 @@
           :value="item.communityId" />
       </el-select>
       <el-date-picker v-model="searchDate" :picker-options="pickerOptions" type="monthrange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" style="position: relative;top: -4px;margin-left: 15px;width: 360px;"/>
-      <!-- v-if="$store.getters.isSuper" -->
       <el-button size="mini" type="primary" style="position: relative;top: -4px;left: 15px;" @click="handleImport()">{{ $t('table.import') }}</el-button>
     </div>
     <el-tabs v-model="recordType" type="border-card">
@@ -18,58 +17,6 @@
       <el-tab-pane name="2" label="定场收费"><table-data-form v-loading="listLoading" :list="list" :list2="list2" :x-date-list="xDateList" :community-id="listQuery.communityId" :record-type="(recordType - 0)" /></el-tab-pane>
       <el-tab-pane name="3" label="其它收费"><table-data-form v-loading="listLoading" :list="list" :list2="list2" :x-date-list="xDateList" :community-id="listQuery.communityId" :record-type="(recordType - 0)" /></el-tab-pane>
     </el-tabs>
-    <!-- table 1 -->
-    <!-- <el-table v-loading="listLoading" :key="tableKey" :data="list" :summary-method="getSummaries" show-summary height="400" border fit highlight-current-row style="width: 100%;">
-      <el-table-column label="单位号" prop="id" align="center" min-width="80">
-        <template slot-scope="scope">
-          <span>{{ scope.row.unitName || '--' }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="共缴费" min-width="100px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.sum || '--' }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="单价" min-width="80px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.price || '--' }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="交月数" min-width="80px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.count || '--' }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column v-for="(item, index) in xDateList" :key="index" :label="item" min-width="100px" align="center">
-        <el-table-column label="缴费日期">
-          <template slot-scope="scope">
-            <span>{{ scope.row[item + 'v1Date'] }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="金额">
-          <template slot-scope="scope">
-            <span>{{ scope.row[item + 'v2Money'] }}</span>
-          </template>
-        </el-table-column>
-      </el-table-column>
-    </el-table>
-    <el-table v-loading="listLoading" :data="list2" :summary-method="getSummaries2" show-summary height="400" border fit highlight-current-row style="width: 100%; margin-top: 15px;">
-      <el-table-column label="每月共收" prop="id" align="center" min-width="120">
-        <template slot-scope="scope">
-          <span>{{ scope.row.sum }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="收款月份" min-width="100px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.dataYName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column v-for="(item, index) in xDateList" :key="index" :label="'应收月份 (' + item + ')'" min-width="90px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row[item] || 0 }}</span>
-        </template>
-      </el-table-column>
-    </el-table> -->
     <!-- 导入 -->
     <el-dialog :title="$t('table.import')" :visible.sync="importUserShow">
       <div style="padding: 15px 0;">
@@ -220,6 +167,9 @@
     },
     watch: {
       'listQuery.communityId'() {
+        if (!this.searchDate) this.searchDate = []
+        this.searchDate[0] = this.$moment().subtract(12, 'months')
+        this.searchDate[1] = this.$moment()
         this.queryChargeUnitChargeList()
       },
       recordType() {

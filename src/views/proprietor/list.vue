@@ -479,7 +479,7 @@
         this.getList()
       },
       handleDownUser() {
-        const url = 'http://songsong.fun/down/file/user_unit.xlsx.zip'
+        const url = 'http://songsong.fun/file/user_unit.xlsx.zip'
         downloadFile(url)
       },
       async createData() {

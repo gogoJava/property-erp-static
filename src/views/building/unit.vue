@@ -502,7 +502,7 @@
       },
       // 下载文件模板
       handleDownUnit() {
-        const url = 'http://songsong.fun/down/file/unit.xlsx.zip'
+        const url = 'http://songsong.fun/file/unit.xlsx.zip'
         downloadFile(url)
       },
       async createData() {
